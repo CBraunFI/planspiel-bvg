@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+<title>Planspiel Hot-Seat</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap">
+<style>
+/* Pappe und Tinte: ein Bürotisch aus Papier, Tinte und Klebeband. HUD als Holzbrett oben, Tisch links, Bühne Mitte, Team rechts mit Portraits, Protokoll als Notizblock unten. Ein Look, keine Dark-Mode-Variante. */
+:root{
+  --paper:#e9dcc0; --paper-2:#f3eadb; --card:#dcc8a0; --wood:#8a5a2d; --wood-2:#6e4522; --ink:#241f1b; --ink-soft:#5a4d42; --line:#8c7d6b;
+  --olive:#6f7040; --rust:#b8452b; --teal:#2f6f6a; --mustard:#d0a033; --slate:#7b8a8f; --bone:#d6c9a8;
+  --good:#3f7a3a; --crit:#b8452b; --accent:#d0a033;
+  --t-stoerung:#b8452b; --t-team:#2f6f6a; --t-politik:#6a4c93; --t-chance:#6f7040;
+  --p1:#2f6f6a; --p2:#b8452b; --p3:#6a4c93; --p4:#6f7040; --narr:#6b4a1f;
+  --hand:"Shantell Sans",cursive,system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--hand);font-size:15px;line-height:1.35;
+  padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));padding-block:8px;
+  background-image:radial-gradient(ellipse at 15% 0%,#f1e6cf 0,transparent 55%),radial-gradient(ellipse at 90% 100%,#d6c39d 0,transparent 55%)}
+.grain{position:fixed;inset:0;pointer-events:none;opacity:.12;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .5 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");mix-blend-mode:multiply}
+button{font:inherit;font-weight:600;cursor:pointer;background:var(--paper-2);color:var(--ink);border:2.5px solid var(--ink);border-radius:16px 4px 14px 5px / 5px 13px 4px 16px;padding:7px 14px;line-height:1.2;box-shadow:3px 3px 0 var(--ink)}
+button:hover{background:#fff8ea}
+button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--rust);outline-offset:2px}
+button:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+button.primary{background:var(--mustard);font-weight:800}
+button.big{font-size:22px;font-weight:800;padding:12px 22px;letter-spacing:.01em}
+button.ghost{background:transparent;box-shadow:none;border-color:var(--line)}
+button.small{padding:4px 10px;font-size:13px;box-shadow:2px 2px 0 var(--ink)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--paper-2);border:2.5px solid var(--ink);border-radius:6px 3px 7px 3px;padding:6px 8px;max-width:100%}
+textarea{width:100%;min-height:56px;resize:vertical}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-soft)}
+
+.app{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:10px;position:relative;z-index:2}
+.card{background:var(--paper-2);border:3px solid var(--ink);border-radius:255px 14px 225px 14px / 14px 225px 14px 255px;box-shadow:5px 6px 0 var(--ink);min-width:0;min-height:0}
+.card.tl{transform:rotate(-.4deg)}.card.tr{transform:rotate(.35deg)}
+
+/* HUD: Holzbrett */
+.hud{display:grid;grid-template-columns:auto 1fr 1fr auto auto;gap:14px 20px;align-items:center;padding:10px 18px;background:var(--wood);color:var(--paper-2);border-radius:6px 255px 8px 225px / 225px 8px 255px 6px;box-shadow:5px 6px 0 var(--ink)}
+.hud .stamp{font-weight:800;font-size:34px;line-height:1;border:4px solid #f2c6b5;color:#f2c6b5;padding:4px 12px;border-radius:6px;transform:rotate(-2.5deg);display:inline-block;background:rgba(0,0,0,.12);white-space:nowrap}
+.hud .stamp small{display:block;font-size:12px;letter-spacing:.08em;font-weight:600;white-space:normal}
+.meter{display:grid;gap:4px}
+.meter .lab{display:flex;justify-content:space-between;font-weight:800;font-size:15px;gap:8px}
+.meter .lab span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.meter .pips{display:flex;gap:4px}
+.meter .pip{flex:1;height:18px;border:2.5px solid var(--ink);background:var(--paper-2);border-radius:5px 9px 4px 8px}
+.meter.standing .pip.on{background:var(--teal)}
+.meter.standing .pip.on.low{background:var(--rust)}
+.meter.proj .pip.on{background:var(--olive)}
+.clock{width:68px;height:68px;border:4px solid var(--ink);border-radius:50%;background:var(--paper-2);position:relative;box-shadow:3px 3px 0 var(--ink);color:var(--ink)}
+.clock i{position:absolute;left:50%;top:50%;width:3px;height:26px;margin-left:-1.5px;background:var(--rust);transform-origin:50% 0;transform:rotate(180deg)}
+.clock b{position:absolute;inset:0;display:grid;place-items:center;font-weight:800;font-size:17px;padding-top:30px}
+.clock.critt{background:#f6d2c8;animation:shake .4s infinite}
+.clock.off b{padding-top:0;font-size:22px}
+@keyframes shake{0%,100%{transform:rotate(0)}50%{transform:rotate(3deg)}}
+.gear{font-size:20px;padding:6px 12px;background:var(--paper-2)}
+@media (max-width:900px){.hud{grid-template-columns:auto 1fr auto auto}.hud .meter.proj{grid-column:1/-1}}
+
+/* Mitte */
+.mid{display:grid;grid-template-columns:minmax(240px,.9fr) minmax(0,1.7fr) minmax(220px,.8fr);gap:14px;min-height:0;padding:4px 6px 8px}
+@media (max-width:900px){.app{height:auto}.mid{grid-template-columns:1fr}}
+.col{display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}
+.col h2{margin:0;padding:10px 16px 2px;font-weight:800;font-size:17px;display:inline-block}
+.col h2 span{border-bottom:3px solid var(--ink);padding-bottom:1px}
+.scroll{overflow:auto;padding:8px 12px 12px;min-height:0}
+
+/* Tisch */
+.evs{display:grid;gap:10px}
+.ev{border:2.5px solid var(--ink);border-radius:10px 3px 12px 4px / 4px 10px 3px 12px;padding:8px 10px;background:var(--card);display:grid;grid-template-columns:56px 1fr auto;gap:4px 10px;align-items:start;box-shadow:3px 3px 0 var(--ink);position:relative}
+.ev::before{content:"";position:absolute;top:-9px;left:14px;width:46px;height:16px;background:rgba(214,201,168,.9);border:2px solid var(--ink);transform:rotate(-4deg)}
+.ev .ico-svg{width:56px;height:56px;background:var(--paper-2);border:2.5px solid var(--ink);grid-row:1/4}
+.ev .t{font-weight:800;font-size:18px;line-height:1.05}
+.ev .x{font-size:13px;grid-column:2/4}
+.ev .m{font-size:12px;color:var(--ink-soft);grid-column:2/4}
+.ev .diff{font-weight:800;font-size:28px;line-height:1;color:var(--rust);text-align:center}
+.ev .diff small{display:block;font-size:10px;letter-spacing:.08em;color:var(--ink-soft)}
+.ev.sel{outline:4px solid var(--mustard)}
+.ev.pick{cursor:pointer}
+.ev.pick:hover{background:#e8d6ad}
+.ev .prot{color:var(--good);font-weight:600}
+.empty{color:var(--ink-soft);font-style:italic;padding:10px 4px}
+
+/* Bühne */
+.stage{display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0}
+.stage.crit{outline:4px solid var(--rust);outline-offset:-2px}
+.who{display:flex;align-items:center;gap:14px;padding:12px 16px 6px;flex-wrap:wrap}
+.who .pf{width:72px;height:80px;border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);flex:none}
+.who .pf svg{width:100%;height:100%;display:block}
+.who .nm{font-weight:800;font-size:38px;line-height:.95;color:var(--pc)}
+.who .rl{font-weight:600;font-size:14px;color:var(--ink-soft)}
+.chips{display:flex;gap:5px;align-items:center;margin-left:auto}
+.chip{width:22px;height:22px;border-radius:50%;background:var(--mustard);border:2.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.chip.off{background:transparent;box-shadow:none;border-style:dashed;opacity:.6}
+.chip.puf{background:var(--teal)}
+.body{padding:4px 16px 14px;overflow:auto;display:grid;gap:10px;align-content:start}
+.facts.mini{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:13px;color:var(--ink-soft)}
+.facts.mini b{color:var(--ink)}
+.secretbox{border:2.5px dashed var(--ink);border-radius:8px;padding:8px 10px;font-size:14px;background:var(--paper)}
+.sides{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.side{display:grid;gap:6px;text-align:left;padding:16px 18px 14px;border-width:3px;border-radius:255px 14px 225px 14px / 14px 225px 14px 255px}
+.side .big{font-weight:800;font-size:38px;line-height:1}
+.side.st{background:#f0dfb0}.side.pr{background:#dfe3c2}
+.side .muted{font-size:13px}
+.sidetag{font-weight:800;font-size:13px;letter-spacing:.04em;padding:2px 8px;border:2.5px solid var(--ink);border-radius:6px 2px 7px 3px;transform:rotate(-2deg);display:inline-block}
+.sidetag.st{background:#f0dfb0}.sidetag.pr{background:#dfe3c2}
+.optlabel{font-weight:800;font-size:14px;color:var(--ink-soft);margin-top:2px}
+.optgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;align-items:start}
+.optc{border:2.5px solid var(--ink);border-radius:12px 3px 14px 4px / 4px 12px 3px 14px;padding:10px 12px;background:var(--paper);display:grid;gap:6px;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+.optc:hover{background:#fff6e2}
+.optc.sel{grid-column:1/-1;background:var(--paper-2);box-shadow:5px 5px 0 var(--ink);cursor:default}
+.optc.dis{opacity:.45;cursor:not-allowed;box-shadow:none}
+.optc.t-Störung .ot{color:var(--t-stoerung)}.optc.t-Team .ot{color:var(--t-team)}.optc.t-Politik .ot{color:var(--t-politik)}.optc.t-Chance .ot{color:var(--t-chance)}
+.optc.pass{background:transparent;border-style:dashed;box-shadow:none}
+.optc .oh{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.optc .ot{font-weight:800;font-size:20px;line-height:1}
+.optc .os{font-size:13px;color:var(--ink-soft);margin-top:3px}
+.optc .oc{font-weight:800;font-size:30px;line-height:1;text-align:right;white-space:nowrap}
+.optc .oc small{display:block;font-size:11px;color:var(--ink-soft);font-weight:600}
+.optc .oc.hi{color:var(--good)}.optc .oc.mid{color:var(--mustard)}.optc .oc.lo{color:var(--rust)}
+.optc .oc.nc{font-size:13px;color:var(--ink-soft);padding-top:6px}
+.optc .oe{font-size:13px}.optc .oe .g{color:var(--good);font-weight:600}.optc .oe .r{color:var(--rust);font-weight:600}
+.orows{display:grid;gap:8px}
+.orow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:8px 10px;border:2.5px solid var(--ink);border-radius:12px 3px 10px 4px / 4px 10px 3px 12px;background:var(--paper-2)}
+.orow.wag{border-style:dashed;background:transparent}
+.orow.dis{opacity:.45}
+.orow .ol{font-weight:800;font-size:18px;line-height:1.05}
+.orow .ol small{font-weight:400;font-size:13px;color:var(--ink-soft);margin-left:6px}
+.orow .ox{font-size:13.5px;color:var(--narr);font-style:italic}
+.orow .oce{font-size:13px}.orow .oce .g{color:var(--good);font-weight:600}.orow .oce .r{color:var(--rust);font-weight:600}.orow .oce .w{color:#8a6a10;font-weight:600}
+.orow .ocost{font-weight:800;font-size:15px;text-align:right;white-space:nowrap;grid-column:2}
+.orow .ocost small{display:block;font-size:11px;color:var(--ink-soft);font-weight:600}
+.orow button{grid-column:2;justify-self:end}
+.opts{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:14px;padding:8px 12px;background:var(--paper);border:2px dashed var(--line);border-radius:8px}
+.opts label{display:flex;gap:6px;align-items:center;cursor:pointer}
+.opts .sum{margin-left:auto;font-weight:800;font-size:18px}
+.prompt{font-size:19px;line-height:1.3;max-width:62ch}
+.prompt.narr{color:var(--narr);font-style:italic}
+.dmbox{background:var(--paper);border:2.5px solid var(--ink);border-radius:255px 10px 225px 10px / 10px 225px 10px 255px;padding:10px 14px;display:grid;gap:6px;max-width:70ch}
+.dmbox .h{font-weight:800;font-size:13px;color:var(--ink-soft)}
+.dmbox .r{font-size:15.5px;line-height:1.4}
+.dmbox .q{font-size:13.5px;color:var(--ink-soft)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.result{font-weight:800;font-size:30px;line-height:1}
+.result.ok{color:var(--good)}.result.fail{color:var(--crit)}
+.qs{margin:0;padding-left:20px;font-size:15px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+.tile{background:var(--paper);border:2.5px solid var(--ink);border-radius:9px 3px 8px 4px;padding:8px 10px;box-shadow:2px 2px 0 var(--ink)}
+.tile .v{font-weight:800;font-size:26px;line-height:1}
+.tile .k{font-size:11px;color:var(--ink-soft);font-weight:600}
+.rev{width:100%;border-collapse:collapse;font-size:14px}
+.rev td{border-top:2px dashed var(--line);padding:6px 4px;vertical-align:top}
+.acts{display:flex;flex-wrap:wrap;gap:8px}
+
+/* Team */
+.team{display:grid;gap:10px}
+.tm{display:grid;grid-template-columns:54px 1fr;gap:3px 10px;align-items:center;padding:6px 8px;border:2.5px solid var(--ink);border-radius:12px 3px 10px 4px / 4px 10px 3px 12px;background:var(--paper);box-shadow:3px 3px 0 var(--ink)}
+.tm.active{background:#fff2cf;outline:4px solid var(--mustard)}
+.tm.passed{opacity:.55}
+.tm .pf{width:54px;height:60px;border:2.5px solid var(--ink);grid-row:1/3}
+.tm .pf svg{width:100%;height:100%;display:block}
+.tm .r1{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.tm .n{font-weight:800;font-size:19px;color:var(--pc);line-height:1}
+.tm .rl{font-size:11px;color:var(--ink-soft);font-weight:600}
+.tm .r2{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);flex-wrap:wrap}
+.tm .chips{margin-left:auto}.tm .chip{width:13px;height:13px;border-width:2px;box-shadow:none}
+.tm .tag{font-size:10.5px;font-weight:700;border:2px solid var(--ink);border-radius:5px 2px 6px 2px;padding:0 5px;background:var(--paper-2)}
+.tm .sidetag{font-size:10.5px;padding:0 5px;border-width:2px}
+.lk{margin-top:10px;font-size:13px;color:var(--ink-soft)}
+.lk .k{display:inline-block;border:2px solid var(--ink);border-radius:6px 2px 7px 2px;padding:2px 6px;margin:2px 2px 0 0;font-size:12.5px;color:var(--ink);background:var(--paper-2)}
+.lk .k.used{text-decoration:line-through;color:var(--ink-soft)}
+.pufferbox{margin-top:10px;font-size:13px;display:flex;align-items:center;gap:6px}
+
+/* Protokoll: Notizblock */
+.logbox{background:var(--paper-2);border:3px solid var(--ink);border-radius:8px 255px 10px 225px / 225px 10px 255px 8px;box-shadow:5px 6px 0 var(--ink);background-image:repeating-linear-gradient(transparent 0 23px,rgba(36,31,27,.08) 23px 24px)}
+.log{height:150px;min-height:60px;max-height:60vh;overflow:auto;resize:vertical;padding:6px 16px 8px;font-size:14px;line-height:24px}
+.log .l{padding:0}
+.log .l.round{font-weight:800;font-size:16px;text-align:center;margin-top:4px}
+.log .l.round::before,.log .l.round::after{content:" ~~ "}
+.log .l.phase{font-weight:800;font-size:12px;color:var(--ink-soft);letter-spacing:.06em;text-transform:uppercase}
+.log .l.narr{color:var(--narr);font-style:italic}.log .l.narr b{font-style:normal}
+.log .l.sys{color:var(--ink-soft)}
+.log .l.ref{color:var(--t-politik)}
+.log .l.track{font-weight:700}.log .l.track.up{color:var(--good)}.log .l.track.down{color:var(--crit)}
+.log .nm{font-weight:800}
+.log .ok{color:var(--good);font-weight:700}.log .fail{color:var(--crit);font-weight:700}
+.log .calc{color:var(--ink-soft)}
+
+/* Einblendungen: Pappschild */
+.flash{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:50;padding:0 16px}
+.flash div{background:var(--paper-2);color:var(--ink);font-weight:800;font-size:40px;letter-spacing:.01em;padding:18px 36px;border:4px solid var(--ink);border-radius:255px 18px 225px 18px / 18px 225px 18px 255px;box-shadow:8px 9px 0 var(--ink);text-align:center;max-width:900px;line-height:1.05;text-wrap:balance;transform:rotate(-1.5deg)}
+.flash div.good{background:#dfe3c2}
+.flash div.bad{background:#f2c9bd}
+.flash div.round{font-size:60px;background:var(--mustard)}
+@media (max-width:560px){.flash div{font-size:28px;padding:14px 20px}.flash div.round{font-size:42px}}
+@media (prefers-reduced-motion:no-preference){
+  .flash div{animation:pop var(--dur,1.6s) ease-out forwards}
+  @keyframes pop{0%{transform:rotate(-1.5deg) scale(.85);opacity:0}10%{transform:rotate(-1.5deg) scale(1.03);opacity:1}16%{transform:rotate(-1.5deg) scale(1)}85%{opacity:1}100%{opacity:0}}
+}
+
+/* Overlay: Setup / Einstellungen */
+.ov{position:fixed;inset:0;background:rgba(36,31,27,.55);display:grid;place-items:start center;overflow:auto;z-index:40;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px))}
+.ov .box{background:var(--paper-2);border:3px solid var(--ink);border-radius:255px 18px 225px 18px / 18px 225px 18px 255px;box-shadow:7px 8px 0 var(--ink);padding:20px 24px;width:min(980px,100%);display:grid;gap:16px}
+.ov h1{font-weight:800;font-size:40px;line-height:1;margin:0;transform:rotate(-1deg);display:inline-block}
+.ov h3{font-weight:800;font-size:15px;color:var(--ink-soft);margin:0}
+.seats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.seat{border:2.5px solid var(--ink);border-radius:12px 3px 14px 4px / 4px 12px 3px 14px;background:var(--paper);padding:10px;display:grid;gap:6px;box-shadow:3px 3px 0 var(--ink)}
+.seat .r{font-weight:800;font-size:17px;color:var(--pc);line-height:1}
+.seat input,.seat select{width:100%}
+.seat .pf{width:64px;height:72px;border:2.5px solid var(--ink);box-shadow:2px 2px 0 var(--ink)}
+.seat .pf svg{width:100%;height:100%;display:block}
+.seat .pick{display:flex;gap:8px;align-items:center}
+.pgrid{display:flex;flex-wrap:wrap;gap:6px}
+.pgrid .pp{width:44px;height:50px;border:2.5px solid var(--ink);cursor:pointer;opacity:.75;background:#1b2224}
+.pgrid .pp svg{width:100%;height:100%;display:block}
+.pgrid .pp.on{opacity:1;outline:3px solid var(--mustard)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px 12px}
+.grid label{display:grid;gap:3px;font-size:12px;color:var(--ink-soft);font-weight:600}
+.grid label.ck{grid-template-columns:auto 1fr;align-items:center;align-self:end}
+details summary{cursor:pointer;font-weight:800;font-size:14px;color:var(--ink-soft)}
+.scen{font-size:14.5px;line-height:1.45;max-width:78ch;background:var(--paper);border:2px dashed var(--line);padding:10px 12px;border-radius:8px}
+</style>
+</head>
+<body>
+
+
+<div class="grain"></div>
+<div class="app" id="app">
+  <div class="hud" id="hud"></div>
+  <div class="mid">
+    <div class="card col tl"><h2><span>Auf dem Tisch</span></h2><div class="scroll"><div id="evs" class="evs"></div></div></div>
+    <div class="card stage" id="stage"></div>
+    <div class="card col tr"><h2><span>Team</span></h2><div class="scroll"><div id="team" class="team"></div><div id="puffer" class="pufferbox"></div><div id="lk" class="lk"></div></div></div>
+  </div>
+  <div class="logbox"><div id="log" class="log"></div></div>
+</div>
+<div id="flash" class="flash" hidden><div></div></div>
+<div id="ov" class="ov" hidden></div>
+<script>
+// ---------- Grafik: Portraits und Piktogramme (alles SVG, Tinte und matte Farben) ----------
+const INK='#241f1b';
+function portraitSVG(p,size){
+  const w=size||150,h=Math.round(w*1.13);const id='g'+p.id;
+  const dark=c=>c; // Platzhalter, Töne sind bereits matt gewählt
+  let hair='';
+  const hc=p.hairc;
+  switch(p.hair){
+    case 'bun':hair=`<path d="M46 50 Q48 16 76 14 Q106 16 106 50 L102 44 Q96 30 76 28 Q56 30 50 48 Z" fill="${hc}"/><circle cx="104" cy="26" r="12" fill="${hc}"/>`;break;
+    case 'cap':hair=`<path d="M38 50 Q40 24 75 22 Q110 24 112 50 L112 56 L38 56 Z" fill="${hc}"/><path d="M32 56 L120 56 L123 62 L30 62 Z" fill="${INK}" opacity=".8"/><rect x="66" y="40" width="18" height="8" fill="${p.acc}"/>`;break;
+    case 'long':hair=`<path d="M44 48 Q48 12 78 12 Q108 16 106 48 L108 100 Q104 104 98 100 L98 60 Q92 30 76 30 Q58 32 54 58 L54 102 Q48 106 44 100 Z" fill="${hc}"/>`;break;
+    case 'short':hair=`<path d="M46 48 Q48 16 76 14 Q106 16 106 48 L102 46 Q96 30 76 28 Q56 30 50 50 Z" fill="${hc}"/>`;break;
+    case 'curly':hair=`<path d="M42 50 Q40 14 76 12 Q112 14 110 50 Q104 44 98 48 Q94 32 76 30 Q58 32 54 48 Q48 44 42 50 Z" fill="${hc}"/><circle cx="46" cy="40" r="8" fill="${hc}"/><circle cx="106" cy="40" r="8" fill="${hc}"/><circle cx="60" cy="22" r="8" fill="${hc}"/><circle cx="92" cy="22" r="8" fill="${hc}"/>`;break;
+    case 'bob':hair=`<path d="M44 48 Q48 12 78 12 Q108 16 106 48 L106 84 Q100 90 94 84 L94 56 Q90 32 76 30 Q60 32 58 56 L58 84 Q52 90 46 84 Z" fill="${hc}"/>`;break;
+    case 'beanie':hair=`<path d="M42 54 Q44 18 76 16 Q108 18 110 54 Z" fill="${hc}"/><rect x="40" y="48" width="72" height="12" rx="3" fill="${hc}" stroke="${INK}" stroke-width="2" opacity=".95"/><circle cx="76" cy="16" r="6" fill="${hc}"/>`;break;
+    default:hair='';
+  }
+  let cloth='';const cc=p.clothc;
+  switch(p.cloth){
+    case 'vest':cloth=`<path d="M20 ${h} L30 128 Q75 108 120 128 L130 ${h} Z" fill="${cc}"/><path d="M34 ${h} L40 130 Q58 122 66 120 L68 ${h} Z M116 ${h} L110 130 Q92 122 84 120 L82 ${h} Z" fill="#9a9a9a" opacity=".7"/><rect x="62" y="104" width="26" height="26" fill="${p.skin}"/>`;break;
+    case 'headset':cloth=`<path d="M22 ${h} L30 128 Q75 108 120 128 L128 ${h} Z" fill="${cc}"/><rect x="62" y="104" width="26" height="26" fill="${p.skin}"/><path d="M42 54 q-8 24 2 44" stroke="${p.acc}" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="42" cy="58" r="7" fill="${p.acc}"/><path d="M44 98 q6 10 18 8" stroke="${p.acc}" stroke-width="3" fill="none"/>`;break;
+    case 'jacket':cloth=`<path d="M14 ${h} L26 124 Q75 100 124 124 L136 ${h} Z" fill="${cc}"/><path d="M58 122 L75 150 L92 122 Z" fill="#d6c9a8"/><path d="M68 124 L75 ${h} L82 124 Z" fill="${p.acc}"/><rect x="60" y="100" width="30" height="28" fill="${p.skin}"/>`;break;
+    case 'blazer':cloth=`<path d="M20 ${h} L30 126 Q75 106 120 126 L130 ${h} Z" fill="${cc}"/><path d="M58 126 L75 146 L92 126 L92 ${h} L58 ${h} Z" fill="#e8dcc4"/><rect x="63" y="104" width="24" height="26" fill="${p.skin}"/>`;break;
+    case 'overall':cloth=`<path d="M20 ${h} L30 126 Q75 110 120 126 L130 ${h} Z" fill="${cc}"/><path d="M54 126 L58 ${h} L66 ${h} L62 128 Z M96 126 L92 ${h} L84 ${h} L88 128 Z" fill="${p.acc}"/><rect x="62" y="104" width="26" height="26" fill="${p.skin}"/>`;break;
+    case 'sweater':cloth=`<path d="M18 ${h} L28 124 Q75 104 122 124 L132 ${h} Z" fill="${cc}"/><path d="M56 122 Q75 136 94 122 L94 130 Q75 144 56 130 Z" fill="${INK}" opacity=".35"/><rect x="62" y="104" width="26" height="26" fill="${p.skin}"/>`;break;
+    case 'shirt':cloth=`<path d="M20 ${h} L30 126 Q75 108 120 126 L130 ${h} Z" fill="${cc}"/><path d="M62 124 L75 140 L88 124" fill="none" stroke="${INK}" stroke-width="2.5"/><rect x="63" y="104" width="24" height="26" fill="${p.skin}"/>`;break;
+    default:cloth=`<path d="M20 ${h} L30 126 Q75 108 120 126 L130 ${h} Z" fill="${cc}"/><rect x="62" y="104" width="26" height="26" fill="${p.skin}"/>`;
+  }
+  const glasses=p.glasses?`<circle cx="64" cy="62" r="11" fill="none" stroke="${INK}" stroke-width="2.5"/><circle cx="88" cy="62" r="11" fill="none" stroke="${INK}" stroke-width="2.5"/><path d="M75 62 h2" stroke="${INK}" stroke-width="2.5"/>`:'';
+  const eye=(cx)=>`<ellipse cx="${cx}" cy="63" rx="6.5" ry="5" fill="#f6f1e6"/><circle cx="${cx+1}" cy="63.5" r="3.6" fill="#3b3a44"/><circle cx="${cx+2.2}" cy="62.2" r="1.3" fill="#fff"/>`;
+  return `<svg viewBox="0 0 150 ${h}" width="${w}" height="${h}" aria-label="Portrait ${p.name}">
+    <defs><radialGradient id="${id}" cx="50%" cy="38%" r="72%"><stop offset="0" stop-color="${p.bg}"/><stop offset="1" stop-color="#1b2224"/></radialGradient></defs>
+    <rect width="150" height="${h}" fill="url(#${id})"/>
+    ${cloth}
+    <path d="M48 44 Q50 18 75 16 Q102 18 104 46 L102 88 Q98 112 75 114 Q52 112 48 88 Z" fill="${p.skin}"/>
+    <path d="M90 40 L88 92 Q84 110 75 114 Q98 112 102 88 L104 46 Q100 24 90 40 Z" fill="${INK}" opacity=".12"/>
+    <ellipse cx="60" cy="76" rx="7" ry="4" fill="${p.acc}" opacity=".22"/><ellipse cx="92" cy="76" rx="7" ry="4" fill="${p.acc}" opacity=".22"/>
+    ${eye(64)}${eye(88)}
+    <path d="M56 54 q8 -5 16 -1 M80 53 q8 -4 16 1" stroke="${p.hairc}" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M76 66 q-4 12 1 16" stroke="${INK}" stroke-width="2" fill="none" opacity=".45"/>
+    <path d="M64 92 q12 9 24 0" stroke="${INK}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/>
+    ${hair}${glasses}
+  </svg>`;
+}
+// Piktogramme 84×84: Tinte auf Papier, ein Akzent
+const PAPER='#f3eadb',RUST='#b8452b',OLIVE='#6f7040',TEAL='#2f6f6a',MUST='#d0a033',SLATE='#7b8a8f',BONE='#d6c9a8';
+const ICONS={
+  wire:`<path d="M8 30 L28 40 L46 28 L62 42 L76 30" fill="none" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/><path d="M40 29 L36 44 L44 40 L39 56" fill="none" stroke="${RUST}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="10" y="58" width="64" height="12" fill="${SLATE}" stroke="${INK}" stroke-width="3"/>`,
+  bed:`<rect x="12" y="40" width="60" height="26" fill="${PAPER}" stroke="${INK}" stroke-width="3.5"/><rect x="12" y="34" width="22" height="10" fill="${INK}"/><circle cx="24" cy="30" r="9" fill="${BONE}" stroke="${INK}" stroke-width="3"/><path d="M54 18 v16 M46 26 h16" stroke="${RUST}" stroke-width="5" stroke-linecap="round"/>`,
+  truck:`<path d="M6 62 h72" stroke="${INK}" stroke-width="3"/><rect x="18" y="26" width="40" height="28" fill="${OLIVE}" stroke="${INK}" stroke-width="3.5"/><rect x="58" y="36" width="14" height="18" fill="${MUST}" stroke="${INK}" stroke-width="3.5"/><circle cx="28" cy="58" r="6" fill="${INK}"/><circle cx="62" cy="58" r="6" fill="${INK}"/>`,
+  twoq:`<circle cx="28" cy="36" r="11" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><circle cx="56" cy="36" r="11" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><path d="M12 70 q16 -20 24 -8 M72 70 q-16 -20 -24 -8" fill="none" stroke="${INK}" stroke-width="3.5"/><text x="36" y="22" font-size="22" font-weight="700" fill="${RUST}" font-family="sans-serif">?</text>`,
+  folders:`<rect x="10" y="26" width="26" height="34" fill="${MUST}" stroke="${INK}" stroke-width="3"/><rect x="30" y="20" width="26" height="34" fill="${PAPER}" stroke="${INK}" stroke-width="3"/><rect x="50" y="14" width="26" height="34" fill="${MUST}" stroke="${INK}" stroke-width="3"/><circle cx="42" cy="66" r="8" fill="${BONE}" stroke="${INK}" stroke-width="3"/><path d="M26 82 q16 -16 32 0" fill="none" stroke="${INK}" stroke-width="3.5"/>`,
+  quarrel:`<circle cx="28" cy="34" r="11" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><circle cx="56" cy="34" r="11" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><path d="M12 68 q16 -20 24 -8 M72 68 q-16 -20 -24 -8" fill="none" stroke="${INK}" stroke-width="3.5"/><path d="M36 46 l12 0 M42 40 l0 12" stroke="${RUST}" stroke-width="4" stroke-linecap="round" transform="rotate(45 42 46)"/>`,
+  warn:`<path d="M14 66 L42 20 L70 66 Z" fill="${MUST}" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/><path d="M42 36 v14" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><circle cx="42" cy="58" r="3" fill="${INK}"/>`,
+  grab:`<rect x="30" y="30" width="40" height="30" fill="${PAPER}" stroke="${INK}" stroke-width="3.5"/><path d="M30 36 h40" stroke="${INK}" stroke-width="2"/><path d="M8 50 q10 -14 22 -4 q4 10 -2 18 q-10 8 -20 -4" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><path d="M26 40 l8 -8" stroke="${RUST}" stroke-width="4" stroke-linecap="round"/>`,
+  paper:`<rect x="14" y="16" width="56" height="52" fill="${PAPER}" stroke="${INK}" stroke-width="3.5"/><path d="M22 28 h40 M22 36 h40 M22 44 h24 M22 52 h32" stroke="${INK}" stroke-width="3"/><path d="M50 44 h12 v14 h-12 z" fill="${RUST}"/>`,
+  bridge:`<path d="M12 60 q14 -34 30 -10 q16 -28 30 10" fill="none" stroke="${TEAL}" stroke-width="5" stroke-linecap="round"/><path d="M26 44 l-8 -4 M58 44 l8 -4" stroke="${INK}" stroke-width="3" stroke-linecap="round"/><circle cx="42" cy="24" r="6" fill="${MUST}" stroke="${INK}" stroke-width="3"/>`,
+  visitor:`<circle cx="42" cy="26" r="11" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><path d="M18 72 q24 -34 48 0 Z" fill="${INK}"/><path d="M36 44 l6 10 l6 -10" fill="${RUST}"/><rect x="56" y="54" width="18" height="14" fill="${MUST}" stroke="${INK}" stroke-width="3"/>`,
+  door:`<rect x="26" y="14" width="34" height="56" fill="${OLIVE}" stroke="${INK}" stroke-width="3.5"/><circle cx="52" cy="44" r="3" fill="${MUST}"/><path d="M8 42 h14 m-6 -6 l6 6 l-6 6" fill="none" stroke="${RUST}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
+  signal:`<rect x="30" y="12" width="24" height="56" rx="4" fill="${INK}"/><circle cx="42" cy="24" r="7" fill="${RUST}"/><circle cx="42" cy="42" r="7" fill="${BONE}"/><circle cx="42" cy="60" r="7" fill="${BONE}"/><path d="M42 68 v10 M30 78 h24" stroke="${INK}" stroke-width="4"/>`,
+  storm:`<path d="M18 50 q-12 0 -10 -12 q2 -12 16 -10 q6 -14 22 -10 q14 2 16 14 q14 0 12 12 q-2 8 -12 8 Z" fill="${SLATE}" stroke="${INK}" stroke-width="3.5"/><path d="M44 50 l-8 14 h10 l-8 16" fill="none" stroke="${MUST}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
+  chair:`<rect x="24" y="38" width="36" height="8" fill="${OLIVE}" stroke="${INK}" stroke-width="3"/><rect x="24" y="14" width="10" height="26" fill="${OLIVE}" stroke="${INK}" stroke-width="3"/><path d="M28 46 v22 M56 46 v22" stroke="${INK}" stroke-width="4"/><path d="M62 18 l12 12 M74 18 l-12 12" stroke="${RUST}" stroke-width="4" stroke-linecap="round"/>`,
+  scales:`<path d="M42 14 v56 M22 70 h40" stroke="${INK}" stroke-width="4"/><path d="M18 26 h48" stroke="${INK}" stroke-width="4"/><path d="M10 46 q8 10 16 0 Z M58 46 q8 10 16 0 Z" fill="${MUST}" stroke="${INK}" stroke-width="3"/><path d="M18 26 v20 M66 26 v20" stroke="${INK}" stroke-width="2.5"/>`,
+  alone:`<circle cx="24" cy="34" r="9" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><path d="M10 66 q14 -22 28 0 Z" fill="${TEAL}" stroke="${INK}" stroke-width="3"/><circle cx="60" cy="30" r="7" fill="${BONE}" stroke="${INK}" stroke-width="3"/><circle cx="72" cy="36" r="7" fill="${BONE}" stroke="${INK}" stroke-width="3"/><path d="M48 66 q20 -20 36 0 Z" fill="${SLATE}" stroke="${INK}" stroke-width="3"/>`,
+  chart:`<path d="M14 70 h58 M14 70 v-54" stroke="${INK}" stroke-width="4"/><rect x="22" y="48" width="8" height="22" fill="${OLIVE}"/><rect x="36" y="36" width="8" height="34" fill="${OLIVE}"/><rect x="50" y="42" width="8" height="28" fill="${OLIVE}"/><rect x="64" y="22" width="8" height="48" fill="${RUST}"/>`,
+  mic:`<rect x="34" y="12" width="16" height="30" rx="8" fill="${INK}"/><path d="M26 36 q0 18 16 18 q16 0 16 -18 M42 54 v14 M30 68 h24" fill="none" stroke="${INK}" stroke-width="4" stroke-linecap="round"/><circle cx="60" cy="20" r="5" fill="${RUST}"/>`,
+  fund:`<circle cx="42" cy="42" r="24" fill="${MUST}" stroke="${INK}" stroke-width="3.5"/><path d="M42 28 v28 M34 36 q8 -6 16 0 q-8 6 -16 12 q8 6 16 0" fill="none" stroke="${INK}" stroke-width="3.5" stroke-linecap="round"/>`,
+  wrench:`<path d="M20 64 L48 36" stroke="${INK}" stroke-width="7" stroke-linecap="round"/><path d="M46 20 a14 14 0 1 1 18 18 l-8 -2 l-8 -8 Z" fill="${SLATE}" stroke="${INK}" stroke-width="3.5"/><rect x="8" y="66" width="30" height="10" fill="${RUST}" stroke="${INK}" stroke-width="3"/>`,
+  arrows:`<rect x="48" y="22" width="26" height="40" fill="${PAPER}" stroke="${INK}" stroke-width="3.5"/><path d="M10 32 h28 m-8 -8 l8 8 l-8 8 M10 54 h28 m-8 -8 l8 8 l-8 8" fill="none" stroke="${TEAL}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
+  tired:`<circle cx="42" cy="40" r="20" fill="${BONE}" stroke="${INK}" stroke-width="3.5"/><path d="M30 36 q6 4 12 0 M42 36 q6 4 12 0" stroke="${INK}" stroke-width="3" fill="none"/><path d="M34 52 q8 -6 16 0" stroke="${INK}" stroke-width="3" fill="none"/><text x="58" y="26" font-size="18" fill="${RUST}" font-family="sans-serif" font-weight="700">z</text>`,
+  doorclose:`<rect x="26" y="14" width="34" height="56" fill="${SLATE}" stroke="${INK}" stroke-width="3.5"/><circle cx="34" cy="44" r="3" fill="${INK}"/><path d="M76 42 h-14 m6 -6 l-6 6 l6 6" fill="none" stroke="${RUST}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`,
+  puzzle:`<path d="M16 20 h22 q-4 -10 6 -10 q10 0 6 10 h20 v22 q10 -4 10 6 q0 10 -10 6 v20 h-54 Z" fill="${PAPER}" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/><path d="M40 40 h14 v14 h-14 z" fill="${RUST}"/>`,
+  bubbles:`<path d="M10 20 h40 v24 h-26 l-8 8 v-8 h-6 Z" fill="${PAPER}" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/><path d="M34 40 h40 v24 h-6 v8 l-8 -8 h-26 Z" fill="${MUST}" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/>`,
+  clockman:`<circle cx="30" cy="34" r="18" fill="${PAPER}" stroke="${INK}" stroke-width="3.5"/><path d="M30 22 v12 l8 6" fill="none" stroke="${RUST}" stroke-width="3.5" stroke-linecap="round"/><circle cx="62" cy="40" r="8" fill="${BONE}" stroke="${INK}" stroke-width="3"/><path d="M48 72 q14 -20 28 0 Z" fill="${TEAL}" stroke="${INK}" stroke-width="3"/>`,
+  letter:`<rect x="12" y="24" width="60" height="40" fill="${PAPER}" stroke="${INK}" stroke-width="3.5"/><path d="M12 24 l30 24 l30 -24" fill="none" stroke="${INK}" stroke-width="3.5"/><circle cx="64" cy="22" r="8" fill="${RUST}"/>`,
+  tunnel:`<path d="M10 70 v-30 a32 32 0 0 1 64 0 v30 Z" fill="${INK}"/><path d="M22 70 v-24 a20 20 0 0 1 40 0 v24 Z" fill="#3b3a44"/><rect x="34" y="50" width="16" height="12" fill="${SLATE}" stroke="${BONE}" stroke-width="2"/><circle cx="38" cy="56" r="2" fill="${MUST}"/><circle cx="46" cy="56" r="2" fill="${MUST}"/>`,
+  eraser:`<rect x="14" y="16" width="52" height="52" fill="${PAPER}" stroke="${INK}" stroke-width="3.5"/><path d="M22 28 h36 M22 38 h36 M22 48 h20" stroke="${INK}" stroke-width="3"/><rect x="44" y="44" width="28" height="14" fill="${RUST}" stroke="${INK}" stroke-width="3" transform="rotate(-30 58 51)"/>`,
+  point:`<path d="M20 44 h20 v-20 q0 -6 6 -6 q6 0 6 6 v20 h16 q6 0 6 6 v10 q0 10 -10 10 h-30 q-8 0 -14 -8 Z" fill="${BONE}" stroke="${INK}" stroke-width="3.5" stroke-linejoin="round"/><path d="M8 24 l8 8 M8 44 h10" stroke="${RUST}" stroke-width="3.5" stroke-linecap="round"/>`,
+};
+const iconSVG=(key,size)=>`<svg viewBox="0 0 84 84" width="${size||84}" height="${size||84}" class="ico-svg" aria-hidden="true">${ICONS[key]||ICONS.warn}</svg>`;
+
+// ---------- Stammdaten ----------
+const SCENARIO={
+  bereich:'Fachgebiet Nord-Ost', vorstand:'Dr. Kessler', nachbar:'Fachgebiet Süd (Leitung Brandt)',
+  intro:'Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 Leute. Seit Montag liegt die Vorstudie „Depot der Zukunft“ auf eurem Tisch, Abgabe in vier Wochen, Dr. Kessler aus dem Vorstand hat sie persönlich bestellt. Gleichzeitig läuft der Betrieb weiter: Frühschicht, Störungen, Dienstpläne, Presse. Fachgebiet Süd unter Frau Brandt hat Kapazität übrig und ein Auge auf euer Thema. Euer Vertrauen beim Vorstand ist solide, nicht mehr. Jede Woche ist eine Runde. Jede Runde ruft Dr. Kessler an.',
+};
+const ROLES = [
+  {key:'BL', role:'Bereichsleitung', focus:'Politik', color:'--p1', ability:'Hilfe von außen: 1 Chip, ein Wagnis wird um 1 leichter (1×/Runde)', abilityKey:'help',
+   goal:'Das Vertrauen des Vorstands darf nie unter 4 fallen', info:'Dr. Kessler plant eine Umstrukturierung, falls die Vorstudie kippt. Nord-Ost würde unter Süd aufgehen'},
+  {key:'TB', role:'Teamleitung Betrieb', focus:'Betrieb', color:'--p2', ability:'Störung durchziehen: 2 Chips, ohne Wurf und ohne Nebenwirkung (1×/Spiel)', abilityKey:'solve',
+   goal:'Jede Störung in der Runde lösen, in der sie kommt', info:'{MA} hat ein Angebot von Frau Brandt aus Süd und hat es dir im Vertrauen gesagt'},
+  {key:'TP', role:'Teamleitung Projekt', focus:'Projekt', color:'--p3', ability:'Projektschub: 2 Chips für +3 Projekt, ohne Nebenwirkung (1×/Spiel)', abilityKey:'push',
+   goal:'Das Projekt darf nie zwei Runden in Folge stehen bleiben', info:'Frau Brandt will die Vorstudie nach Süd holen. Es gab schon ein Gespräch mit Dr. Kessler'},
+  {key:'MA', role:'Mitarbeitende:r', focus:'Team', color:'--p4', ability:'Störungsbereitschaft: +2 auf Wagnisse bei Störungen (passiv)', abilityKey:'standby',
+   goal:'Du hast ein Angebot aus Süd. Du bleibst, wenn du bis Ende Runde 3 zweimal „zu zweit“ gespielt hast. Sonst: Runde 4 nur ein Chip', info:'Flurfunk: Süd hat gerade Kapazität übrig und sucht Aufgaben'},
+];
+const FOCUS_MATCH = {Politik:['Politik'], Betrieb:['Störung'], Projekt:['Chance'], Team:['Team']};
+const STRENGTHS = {
+  weitblick:{name:'Weitblick', leada:'Kreativität, Lernfreude, Neugier, Klarsicht, Weitblick', effect:'Oberste Ereigniskarte ansehen (1×/Runde, kein Zug)', active:true},
+  mut:{name:'Mut', leada:'Ausdauer, Authentizität, Begeisterung, Mut', effect:'Nach misslungenem Wagnis nachlegen: 1 Chip, Nachwurf +1 (1×/Runde)', active:false},
+  naehe:{name:'Nähe', leada:'Beziehungsstärke, Wertschätzung, Menschengespür', effect:'Wer für dich einspringt, trägt keine Nebenwirkung; beim Helfen zählt dein Chip +3 (passiv)', active:false},
+  fuehrung:{name:'Führung', leada:'Gerechtigkeitssinn, Führungsvermögen, Teamwork', effect:'Einen Chip weitergeben (1×/Runde, ist ein Zug)', active:true},
+  gelassenheit:{name:'Gelassenheit', leada:'Demut, Gelassenheit, Nachsicht, Besonnenheit', effect:'Eine Karte darf heute liegen bleiben, ohne Vertrauen zu kosten (1×/Runde, kein Zug)', active:true},
+  sinn:{name:'Sinn', leada:'Dankbarkeit, Zuversicht, Humor, Qualitätsbewusstsein, Sinnstiftung', effect:'Zwei Lernkarten in der Reflexion (passiv)', active:false},
+};
+// Portraits: zehn Figuren, jede aus denselben Bausteinen. Spieler wählen eine.
+const PORTRAITS=[
+  {id:'p1',name:'Ilka',line:'Leitstand, Nachtschicht, kennt jeden Zug',skin:'#d9b995',hair:'bun',hairc:'#4a3326',cloth:'headset',clothc:'#4f6a73',bg:'#3a5f63',acc:'#d8a93e'},
+  {id:'p2',name:'Bernd',line:'Dreißig Dienstjahre, misstraut Folien',skin:'#c9a07e',hair:'cap',hairc:'#2a3a44',cloth:'jacket',clothc:'#3b4b56',bg:'#55533f',acc:'#c0392b'},
+  {id:'p3',name:'Selin',line:'Hat die Vorstudie im Kopf und im Ordner',skin:'#e2c3a3',hair:'long',hairc:'#2f2420',cloth:'blazer',clothc:'#6f7a5a',bg:'#4a4f66',glasses:true,acc:'#d8a93e'},
+  {id:'p4',name:'Tomasz',line:'Fahrer, Betriebsrat, laut und herzlich',skin:'#d4a98a',hair:'short',hairc:'#5b4a3a',cloth:'vest',clothc:'#d8a93e',bg:'#5a4a3a',acc:'#2f6f6a'},
+  {id:'p5',name:'Grete',line:'Werkstatt, repariert alles, auch Stimmungen',skin:'#e6c9ae',hair:'curly',hairc:'#9a9a9a',cloth:'overall',clothc:'#4a5f72',bg:'#3f5a52',acc:'#c0392b'},
+  {id:'p6',name:'Amir',line:'Neu im Haus, stellt die richtigen Fragen',skin:'#b98c68',hair:'short',hairc:'#1f1a16',cloth:'shirt',clothc:'#d9d2c0',bg:'#52606b',glasses:true,acc:'#2f6f6a'},
+  {id:'p7',name:'Hanne',line:'Assistenz, weiß vor allen, was der Vorstand will',skin:'#dfb9a0',hair:'bob',hairc:'#7a3f2a',cloth:'blazer',clothc:'#8a5a5a',bg:'#5d4a60',acc:'#d8a93e'},
+  {id:'p8',name:'Kemal',line:'Disponent, ruhig, bis die Oberleitung fällt',skin:'#c99a78',hair:'beanie',hairc:'#2f6f6a',cloth:'sweater',clothc:'#5a5a4a',bg:'#3a4a5a',acc:'#c0392b'},
+  {id:'p9',name:'Ruth',line:'Zahlen, Berichte, trockener Humor',skin:'#efd6bf',hair:'short',hairc:'#d6cfc0',cloth:'cardigan',clothc:'#7a6a5a',bg:'#4f5a4a',glasses:true,acc:'#d8a93e'},
+  {id:'p10',name:'Jonah',line:'Azubi, schnell, will alles auf einmal',skin:'#d1a88a',hair:'curly',hairc:'#3a2a1e',cloth:'vest',clothc:'#d8a93e',bg:'#5a5a3a',acc:'#2f6f6a'},
+];
+// Optionen: chips, payer, resolve, standing, project, later{card,delay}, nachbar, noPair, endRound, nextChips, pair, chipsAll, roll{diff,fail}
+// Kein sauberer Weg: jede Option hat einen Malus. Nur Fähigkeiten sind sauber.
+// read = Vorlesetext der Spielleitung, qa = Rückfrage und Antwort, out = Ausgangssatz je Option
+const EVENTS = [
+  {id:1,type:'Störung',title:'Oberleitungsschaden',diff:5,to:'TB',icon:'wire',text:'Auf dem Hauptabschnitt hängt die Oberleitung durch, zwei Linien stehen.',esc:'Der Ersatzverkehr läuft chaotisch, die Presse ruft an.',
+   read:'Dienstag, 6:40 Uhr. Die Leitstelle meldet: Auf dem Hauptabschnitt hängt die Oberleitung durch, ein Pantograph hat sie erwischt. Zwei Linien stehen, auf den Bahnsteigen wird es voll. Die Werkstatt braucht mindestens den Vormittag.',qa:'„Wie lange dauert die Reparatur?“ Bis mittags, wenn nichts dazwischenkommt. „Haben wir Busse?“ Drei, alle anderen sind im Umlauf.',opts:[
+    {id:'a',label:'Ersatzverkehr aus eigener Kraft',text:'Alle verfügbaren Busse, die Schicht bleibt länger.',chips:2,resolve:true,later:{card:101,delay:2},out:'Bis mittags fahren eure Busse im Pendel. Die Frühschicht geht um 15 Uhr nach Hause, nicht um 13. Niemand beschwert sich. Noch nicht.'},
+    {id:'b',label:'Süd um Busse bitten',text:'Ein Anruf bei Frau Brandt, zwanzig Minuten später rollen fremde Busse.',chips:1,resolve:true,nachbar:true,out:'Frau Brandt sagt sofort zu. „Gern. Wir helfen uns doch.“ Sie sagt es so, dass du es dir merkst.'},
+    {id:'w',label:'Provisorium',text:'Der Werkstattmeister sagt, er kriegt das mit Draht und Klemmen hin.',chips:1,roll:{diff:5,fail:{escalateNow:true}},resolve:true,out:'Der Meister steht auf der Leiter und flucht leise.'}]},
+  {id:2,type:'Störung',title:'Krankheitswelle Frühschicht',diff:4,to:'TB',icon:'bed',text:'Drei Kolleg:innen fallen aus, der Dienstplan hat Löcher.',esc:'Überstunden häufen sich, der Betriebsrat beschwert sich.',
+   read:'Montagmorgen, drei Krankmeldungen in der Frühschicht, alle echt, alle gleichzeitig. Der Dienstplan hat Löcher, die nächste Woche zu groß sind, um sie zu übersehen.',qa:'„Können wir Fahrten streichen?“ Könnt ihr, das merkt der Vorstand. „Wer hat frei?“ Niemand, der nicht schon letzte Woche eingesprungen ist.',opts:[
+    {id:'a',label:'{MA} springt ein',text:'Doppelschicht, ohne Diskussion.',chips:1,payer:'MA',resolve:true,noPair:'MA',out:'{MA} nickt, holt den Kaffee und fährt. Für Hilfe bei anderen Dingen ist {MA} diese Woche nicht mehr da.'},
+    {id:'b',label:'Dienstplan neu schneiden',text:'Zwei Stunden am Plan, dann passt es, und du bist den Tag los.',chips:2,resolve:true,endRound:true,out:'Um 11 Uhr steht der Plan. Du hast den Rest der Woche keine Zeit mehr für anderes.'},
+    {id:'w',label:'Leiharbeit anfordern',text:'Die Agentur verspricht Leute bis mittags.',chips:1,roll:{diff:4,fail:{standing:-1}},resolve:true,out:'Die Agentur schickt zwei Leute, die den Betriebshof noch nie gesehen haben.'}]},
+  {id:3,type:'Störung',title:'Hindernis auf der Strecke',diff:4,to:'MA',icon:'truck',text:'Ein Lkw blockiert die Trasse am Depotausgang.',esc:'Verspätungen summieren sich über den ganzen Tag.',
+   read:'Ein Sattelzug hat sich beim Rangieren auf die Trasse am Depotausgang gestellt und kommt nicht mehr vor und nicht zurück. Der Fahrer telefoniert, die erste Bahn wartet, die zweite auch.',qa:'„Können wir ihn abschleppen?“ Nicht ohne Polizei. „Wie lange steht er?“ Bis jemand entscheidet.',opts:[
+    {id:'a',label:'Selbst hinfahren',text:'Du regelst das vor Ort, bist dafür den Rest des Tages weg.',chips:1,resolve:true,endRound:true,out:'Du stehst eine Stunde neben dem Lkw und redest. Es funktioniert. Der Tag ist trotzdem weg.'},
+    {id:'b',label:'Polizei und Abschleppdienst',text:'Offizieller Weg, dauert, und der Vorstand liest den Bericht.',chips:2,resolve:true,standing:-1,out:'Nach neunzig Minuten ist die Trasse frei. Der Vorfall steht im Tagesbericht, mit eurem Namen.'},
+    {id:'w',label:'Durchwinken lassen',text:'Der Fahrer meint, er kommt da noch vorbei.',chips:1,roll:{diff:4,fail:{standing:-1}},resolve:true,out:'Die Bahn schiebt sich Zentimeter für Zentimeter am Lkw vorbei.'}]},
+  {id:4,type:'Team',title:'Zuständigkeit unklar',diff:5,to:'TP',icon:'twoq',text:'Zwei Teams halten sich für zuständig für die Vorstudie, keines arbeitet.',esc:'Beide Teams warten jetzt demonstrativ aufeinander.',
+   read:'Das Planungsteam und die Werkstatt halten sich beide für die Vorstudie zuständig, seit Dr. Kessler sie „an euch“ gegeben hat. Beide warten auf eine Ansage. Bis dahin arbeitet keiner.',qa:'„Wer hat recht?“ Beide ein bisschen. „Was passiert, wenn wir nichts sagen?“ Sie warten weiter.',opts:[
+    {id:'a',label:'Machtwort: Planung übernimmt',text:'Entschieden. Die Werkstatt hat es gehört.',chips:1,resolve:true,later:{card:102,delay:1},out:'Die Planung freut sich. Die Werkstatt sagt nichts, und das ist das Problem.'},
+    {id:'b',label:'Beide an einen Tisch',text:'Ein Nachmittag Moderation, danach ziehen sie gemeinsam.',chips:2,resolve:true,project:1,nextChips:-1,out:'Nach vier Stunden gibt es eine Aufgabenliste und einen Kuchen. Das Projekt macht einen Schritt. Deine nächste Woche ist schon halb verplant.'},
+    {id:'w',label:'Laufen lassen',text:'Das klärt sich von selbst, sagst du.',chips:1,roll:{diff:5,fail:{}},resolve:true,out:'Du schaust in zwei Tagen wieder nach.'}]},
+  {id:5,type:'Team',title:'Spezialwissen überlastet',diff:4,to:'MA',icon:'folders',text:'Die Person mit dem Spezialwissen ist in drei Projekten gleichzeitig verplant.',esc:'Sie meldet sich für die nächste Woche ab.',
+   read:'Es gibt genau eine Person, die das alte Stellwerk versteht, und sie ist diese Woche in drei Projekten gleichzeitig verplant, zwei davon nicht eure. Ihre Mails werden kürzer.',qa:'„Können wir sie freistellen?“ Nur gegen Widerstand der anderen Bereiche. „Was, wenn sie ausfällt?“ Dann steht das Stellwerk.',opts:[
+    {id:'a',label:'Aus den anderen Projekten rausziehen',text:'Die anderen Bereiche sind nicht begeistert.',chips:1,resolve:true,standing:-1,out:'Zwei Bereichsleiter rufen bei Dr. Kessler an. Er ruft bei dir an.'},
+    {id:'b',label:'Tandem bilden, Wissen übergeben',text:'Dauert, aber danach hängt nichts mehr an einer Person.',chips:2,resolve:true,pair:'MA',nextChips:-1,out:'{MA} sitzt zwei Tage daneben und schreibt mit. Das kostet dich nächste Woche Zeit, aber das Wissen hat jetzt zwei Köpfe.'},
+    {id:'w',label:'Sie schafft das schon',text:'Sie hat es bisher immer geschafft.',chips:1,roll:{diff:5,fail:{later:{card:103,delay:1}}},resolve:true,out:'Sie sagt: „Geht schon.“ Du glaubst ihr.'}]},
+  {id:6,type:'Team',title:'Konflikt in der Schicht',diff:5,to:'TB',icon:'quarrel',text:'Zwei Fahrer:innen weigern sich, gemeinsam Dienst zu tun.',esc:'Der Streit ist jetzt Thema im ganzen Depot.',
+   read:'Zwei Fahrer:innen der Spätschicht reden nicht mehr miteinander, seit einem Streit um einen Dienstwechsel. Jetzt weigern sich beide, am selben Tag Dienst zu tun. Der Plan hält das nicht aus.',qa:'„Worum ging es?“ Offiziell um einen Dienstwechsel. „Und inoffiziell?“ Das weiß das ganze Depot, nur du nicht.',opts:[
+    {id:'a',label:'Trennen: andere Dienste',text:'Schnell gelöst, aber alle reden darüber.',chips:1,resolve:true,later:{card:104,delay:1},out:'Die beiden sehen sich nicht mehr. Der Rest redet umso mehr.'},
+    {id:'b',label:'Klärungsgespräch zu dritt',text:'Eine Stunde, in der niemand gern sitzt, und die dich den Tag kostet.',chips:2,resolve:true,endRound:true,out:'Nach einer Stunde Schweigen sagt einer von beiden den ersten ganzen Satz. Dein Tag ist danach vorbei.'},
+    {id:'w',label:'Anweisung: Ihr fahrt zusammen',text:'Dienst ist Dienst.',chips:1,roll:{diff:5,fail:{standing:-1}},resolve:true,out:'Du schickst die Anweisung per Mail.'}]},
+  {id:7,type:'Politik',title:'Prioritätenverschiebung',diff:6,to:'BL',icon:'warn',text:'Dr. Kessler will bis Freitag einen Zwischenstand zur Vorstudie, der nicht eingeplant war.',esc:'Die Nachfrage kommt jetzt direkt aus dem Vorstandsbüro.',
+   read:'Eine Mail von Dr. Kessler, zwei Zeilen: „Ich brauche bis Freitag einen Zwischenstand zur Vorstudie für die Vorstandssitzung. Zehn Folien reichen.“ Der Zwischenstand war nie eingeplant.',qa:'„Was will er sehen?“ Fortschritt. „Können wir absagen?“ Könnt ihr. Einmal.',opts:[
+    {id:'a',label:'Zwischenstand liefern',text:'Ihr nehmt die Zeit aus der Vorstudie selbst.',chips:1,resolve:true,project:-1,out:'Die Folien sind am Freitag fertig. Die Vorstudie ist eine Woche zurück.'},
+    {id:'b',label:'Termin verhandeln',text:'Zwei Telefonate, ein Kompromiss, und ein Gefallen, den du schuldest.',chips:2,resolve:true,nextChips:-1,out:'Dr. Kessler gibt dir eine Woche mehr. Dafür sitzt du nächste Woche in seinem Lenkungskreis.'},
+    {id:'w',label:'Schöner Foliensatz',text:'Viel Form, wenig Inhalt.',chips:1,roll:{diff:6,fail:{standing:-1}},resolve:true,out:'Die Folien sind bunt.'}]},
+  {id:8,type:'Politik',title:'Süd greift zu',diff:5,to:'BL',icon:'grab',text:'Frau Brandt beansprucht das Thema der Vorstudie für Süd.',esc:'Es gibt ein Meeting dazu, ohne euch.',
+   read:'Frau Brandt aus Süd hat Dr. Kessler ein Papier geschickt: „Depot der Zukunft, ein Vorschlag aus Süd.“ Es liest sich wie eure Vorstudie, nur schneller. Sie hat es dir in Kopie geschickt, mit freundlichen Grüßen.',qa:'„Darf sie das?“ Ja. „Weiß der Vorstand, dass das unser Thema ist?“ Er weiß, wer zuerst liefert.',opts:[
+    {id:'a',label:'Thema teilen',text:'Gemeinsame Vorstudie, halbe Kontrolle.',chips:1,resolve:true,project:-1,out:'Frau Brandt ist sehr freundlich. Ein Kapitel der Vorstudie gehört jetzt Süd.'},
+    {id:'b',label:'Vorstand einschalten',text:'Man merkt sich, wer eskaliert.',chips:2,resolve:true,standing:-1,out:'Dr. Kessler entscheidet für euch. Beim Rausgehen sagt er: „Das hätte ich gern nicht entscheiden müssen.“'},
+    {id:'w',label:'Direkt konfrontieren',text:'Ein Gespräch unter vier Augen.',chips:1,roll:{diff:5,fail:{standing:-2}},resolve:true,out:'Du gehst rüber nach Süd. Frau Brandt hat Kaffee gekocht.'}]},
+  {id:9,type:'Politik',title:'Zahlen in der Presse',diff:5,to:'BL',icon:'paper',text:'Ein Artikel über Pünktlichkeitswerte nennt euer Fachgebiet.',esc:'Die Kommunikation will bis heute Abend eine Stellungnahme.',
+   read:'Die Lokalzeitung hat die Pünktlichkeitswerte des Quartals, Linie für Linie. Eure beiden Linien stehen unten. Die Überschrift nennt euren Betriebshof beim Namen. Die Unternehmenskommunikation hat schon angerufen.',qa:'„Stimmen die Zahlen?“ Ja. „Gibt es Gründe?“ Gute sogar. Sie stehen nicht im Artikel.',opts:[
+    {id:'a',label:'Fehler eingestehen',text:'Kurze, ehrliche Stellungnahme.',chips:1,resolve:true,standing:-1,out:'Die Zeitung druckt deinen Satz. Dr. Kessler liest ihn beim Frühstück.'},
+    {id:'b',label:'Zahlen aufbereiten und erklären',text:'Der Kontext stimmt die Geschichte, und kostet dich die Nacht.',chips:2,resolve:true,endRound:true,out:'Um zwei Uhr nachts ist die Stellungnahme fertig. Sie ist gut. Du bist es nicht mehr.'},
+    {id:'w',label:'Aussitzen',text:'Morgen ist es eine alte Zeitung.',chips:1,roll:{diff:5,fail:{standing:-2}},resolve:true,out:'Du antwortest nicht.'}]},
+  {id:10,type:'Chance',title:'Freie Kapazität in Süd',diff:4,to:'MA',icon:'bridge',text:'Süd hat diese Woche Luft und bietet Unterstützung an.',gain:'Projekt +1',win:'Die Kapazität aus Süd bringt das Projekt voran!',esc:'Das Angebot verfällt.',
+   read:'Frau Brandt lässt ausrichten, Süd habe diese Woche zwei Leute frei, und ob ihr Hilfe bei der Vorstudie brauchen könnt. Das Angebot ist echt. Es ist auch nicht umsonst.',qa:'„Was will sie dafür?“ Nichts, sagt sie. „Und wirklich?“ Mitreden, irgendwann.',opts:[
+    {id:'a',label:'Sauber einbinden',text:'Briefing, Aufgabenpaket, Ansprechpartner. Und Süd hat einen Fuß in der Tür.',chips:2,resolve:true,project:1,nachbar:true,out:'Die beiden aus Süd arbeiten gut. Sie berichten auch nach Süd.'},
+    {id:'w',label:'Einfach machen lassen',text:'Die werden schon wissen, was zu tun ist.',chips:1,roll:{diff:4,fail:{}},resolve:true,project:1,out:'Ihr schickt ihnen den Ordner.'}]},
+  {id:11,type:'Chance',title:'Besuch aus dem Vorstand',diff:5,to:'BL',icon:'visitor',text:'Dr. Kessler will sich die Vorstudie zeigen lassen.',gain:'Vertrauen +2',win:'Dr. Kessler ist beeindruckt!',esc:'Der Termin wird abgesagt.',
+   read:'Dr. Kessler kommt Donnerstag persönlich auf den Betriebshof. Er will die Vorstudie sehen und, wie er sagt, „ein Gefühl für den Ort bekommen“. Er bringt seine Assistentin mit.',qa:'„Wie lange bleibt er?“ Eine Stunde. „Was erwartet er?“ Dass ihr wisst, was ihr tut.',opts:[
+    {id:'a',label:'Vorbereiten wie eine Prüfung',text:'Probelauf, Zahlen, Rundgang. Die Woche ist damit durch.',chips:2,resolve:true,standing:2,endRound:true,out:'Dr. Kessler bleibt zwei Stunden statt einer. Beim Gehen sagt er: „Weiter so.“'},
+    {id:'w',label:'Spontan zeigen',text:'Authentisch, sagst du.',chips:1,roll:{diff:5,fail:{standing:-1}},resolve:true,standing:2,out:'Ihr geht einfach los.'}]},
+  {id:12,type:'Chance',title:'Erfahrene Kollegin zurück',diff:4,to:'TP',icon:'door',text:'Eine Kollegin kommt früher aus der Elternzeit zurück und kennt das Thema.',gain:'Alle +1 Chip',win:'Verstärkung! Alle bekommen einen Chip.',esc:'Sie wird einem anderen Projekt zugeteilt.',
+   read:'Die Kollegin, die vor zwei Jahren das Depot-Konzept geschrieben hat, kommt drei Monate früher aus der Elternzeit zurück. Die Personalabteilung hat noch keine Stelle für sie. Süd hat schon gefragt.',qa:'„Kann sie sofort anfangen?“ Wenn ihr schnell seid. „Will sie zu uns?“ Sie will arbeiten.',opts:[
+    {id:'a',label:'Stelle sichern',text:'Du gehst durch die Personalabteilung, bevor Süd es tut. Das kostet dich den Tag.',chips:2,resolve:true,chipsAll:1,endRound:true,out:'Drei Unterschriften, ein Telefonat mit Süd, das kurz war. Sie fängt Montag an.'},
+    {id:'w',label:'Mündlich zusagen',text:'Formalien später.',chips:1,roll:{diff:4,fail:{}},resolve:true,chipsAll:1,out:'Ihr gebt euch die Hand.'}]},
+  {id:13,type:'Störung',title:'Signalstörung im Berufsverkehr',diff:5,to:'TB',icon:'signal',text:'Die Stellwerkstechnik meldet Fehler, auf zwei Abschnitten fahren die Züge auf Sicht.',esc:'Der Rückstau reicht bis in die Innenstadt.',
+   read:'7:50 Uhr, Berufsverkehr. Das Stellwerk meldet Fehler auf zwei Abschnitten, die Signale fallen auf Rot. Die Züge fahren auf Sicht, Schrittgeschwindigkeit, und hinter jedem Zug wird die Lücke größer.',qa:'„Was sagt die Technik?“ Vielleicht ein Reset, vielleicht eine Platine. „Wie lange?“ Bei einem Reset zehn Minuten. Sonst der Tag.',opts:[
+    {id:'a',label:'Betriebsleitung übernimmt den Funk',text:'Du sitzt den Vormittag in der Leitstelle.',chips:2,resolve:true,endRound:true,out:'Vier Stunden Funk. Die Züge kommen durch. Du nicht mehr zu viel anderem.'},
+    {id:'b',label:'Takt ausdünnen und ankündigen',text:'Weniger Züge, aber verlässlich.',chips:1,resolve:true,standing:-1,out:'Jede zweite Fahrt fällt aus, angekündigt. Die Fahrgäste sind sauer, aber informiert. Dr. Kessler liest es in der Zeitung.'},
+    {id:'w',label:'Reset vom Tisch aus',text:'Die Technik sagt, ein Neustart reicht meistens.',chips:1,roll:{diff:5,fail:{escalateNow:true}},resolve:true,out:'Jemand drückt den Knopf.'}]},
+  {id:14,type:'Störung',title:'Unwetterwarnung',diff:4,to:'MA',icon:'storm',text:'Für die Nacht ist Sturm angesagt, Äste auf den Gleisen sind sicher.',esc:'Drei Linien stehen bis in den Vormittag.',
+   read:'Der Wetterdienst warnt für die Nacht vor Sturm, Stufe drei. Entlang der Nordstrecke stehen alte Pappeln. Beim letzten Sturm lagen drei davon auf den Gleisen, bis mittags.',qa:'„Wie sicher ist die Warnung?“ So sicher wie Wetter. „Was kostet Bereitschaft?“ Leute, die nachts wach sind.',opts:[
+    {id:'a',label:'Bereitschaft aufstocken',text:'Zwei Trupps mehr, Material vorgelagert, und morgen fehlen sie.',chips:2,resolve:true,nextChips:-1,out:'Um drei Uhr nachts fällt die erste Pappel. Um vier ist die Strecke frei. Die Trupps schlafen den Tag.'},
+    {id:'b',label:'{MA} übernimmt die Nacht',text:'Freiwillig, sagt {MA}.',chips:1,payer:'MA',resolve:true,noPair:'MA',out:'{MA} sitzt mit Thermoskanne im Bereitschaftswagen. Es wird eine lange Nacht.'},
+    {id:'w',label:'Wird schon nicht so schlimm',text:'Die Warnungen sind oft übertrieben.',chips:1,roll:{diff:4,fail:{standing:-2}},resolve:true,out:'Ihr geht schlafen.'}]},
+  {id:15,type:'Team',title:'Kündigung im Leitstand',diff:5,to:'TB',icon:'chair',text:'Ein erfahrener Disponent geht zum Monatsende.',esc:'Die Nachtschichten sind nicht mehr besetzt.',
+   read:'Der Disponent mit den meisten Nachtschichten kündigt zum Monatsende, ein privater Grund, kein Streit. Die Nachtschichten im Leitstand hängen an ihm. Eine Nachbesetzung dauert normalerweise vier Monate.',qa:'„Kann man ihn halten?“ Nein, er zieht weg. „Wer kann Nacht?“ Zwei Leute, beide schon am Limit.',opts:[
+    {id:'a',label:'Nachbesetzung aus Süd',text:'Frau Brandt leiht jemanden aus, nicht umsonst.',chips:1,resolve:true,nachbar:true,out:'Ab Montag sitzt ein Disponent aus Süd im Leitstand. Er ist gut. Er grüßt von Frau Brandt.'},
+    {id:'b',label:'Intern ausbilden',text:'Jemand aus dem Team wächst rein, langsam.',chips:2,resolve:true,later:{card:105,delay:1},out:'Ein Fahrer will in den Leitstand. Er kann es lernen. Es wird dauern.'},
+    {id:'w',label:'Ausschreiben und warten',text:'Vielleicht meldet sich schnell jemand.',chips:1,roll:{diff:5,fail:{}},resolve:true,out:'Die Anzeige ist online.'}]},
+  {id:16,type:'Team',title:'Betriebsrat fragt nach Überstunden',diff:5,to:'BL',icon:'scales',text:'Der Betriebsrat will die Überstundenliste des Quartals sehen.',esc:'Es gibt eine förmliche Beschwerde.',
+   read:'Der Betriebsratsvorsitzende steht mit einem Zettel in deiner Tür. Er will die Überstundenliste des Quartals, bis Freitag, schriftlich. Er lächelt dabei. Die Liste ist nicht schön.',qa:'„Ist das sein Recht?“ Ja. „Wie schlimm ist die Liste?“ Zwei Leute über dem Limit, seit Monaten.',opts:[
+    {id:'a',label:'Zahlen offenlegen',text:'Die Liste ist nicht schön.',chips:1,resolve:true,standing:-1,out:'Der Betriebsrat bedankt sich. Die Liste geht an die Personalabteilung, und von dort weiter nach oben.'},
+    {id:'b',label:'Gespräch mit Betriebsrat und Team',text:'Ursachen statt Zahlen, und eine Zusage, die dich bindet.',chips:2,resolve:true,nextChips:-1,out:'Nach dem Gespräch gibt es einen Plan für weniger Überstunden. Du hast versprochen, ihn selbst zu überwachen.'},
+    {id:'w',label:'Formal korrekt antworten',text:'Alles im Rahmen, steht im Brief.',chips:1,roll:{diff:5,fail:{later:{card:104,delay:1}}},resolve:true,out:'Der Brief ist juristisch einwandfrei.'}]},
+  {id:17,type:'Team',title:'Die Neue wird ausgegrenzt',diff:5,to:'MA',icon:'alone',text:'Die neue Kollegin in der Schicht sitzt in der Pause allein.',esc:'Sie hat sich krankgemeldet.',
+   read:'Seit sechs Wochen ist eine neue Fahrerin in der Spätschicht. Sie fährt gut. In der Pause sitzt sie allein, im Gruppenchat wird sie nicht erwähnt, beim Dienstwechsel bekommt sie die schlechten Touren. Niemand hat etwas gegen sie, sagen alle.',qa:'„Hat sie sich beschwert?“ Nein. „Woher weißt du es dann?“ Du hast hingeschaut.',opts:[
+    {id:'a',label:'{MA} nimmt sie unter die Fittiche',text:'Pausen, Fahrten, Fragen: {MA} ist dran.',chips:1,payer:'MA',resolve:true,noPair:'MA',out:'{MA} setzt sich in der Pause zu ihr. Beim dritten Mal setzen sich andere dazu.'},
+    {id:'b',label:'Teamrunde: Rollen klären',text:'Unangenehm, wirksam, und du bist den Nachmittag los.',chips:2,resolve:true,endRound:true,out:'Eine Stunde Schweigen, dann sagt jemand, was alle denken. Danach ist es besser. Der Nachmittag ist weg.'},
+    {id:'w',label:'Das renkt sich ein',text:'Jeder war mal neu.',chips:1,roll:{diff:5,fail:{later:{card:106,delay:1}}},resolve:true,out:'Du wartest.'}]},
+  {id:18,type:'Politik',title:'Zentrale will Kennzahlen täglich',diff:5,to:'BL',icon:'chart',text:'Ab sofort täglich ein Report, Vorlage anbei.',esc:'Die Zentrale fragt, warum nichts kommt.',
+   read:'Eine Mail aus der Konzernzentrale, an alle Fachgebiete: Ab sofort täglich bis 9 Uhr ein Kennzahlenreport, Vorlage anbei, vierzehn Felder. Die Vorlage ist für Busbetriebe gemacht.',qa:'„Wer liest das?“ Ein Controller. „Was passiert, wenn wir nicht liefern?“ Eine Erinnerung. Dann eine zweite.',opts:[
+    {id:'a',label:'Liefern, Assistenz abstellen',text:'Jemand tippt ab jetzt jeden Morgen Zahlen.',chips:1,resolve:true,nextChips:-1,out:'Jeden Morgen um halb neun sitzt jemand an der Vorlage. Die Zahlen stimmen. Die Zeit fehlt woanders.'},
+    {id:'b',label:'Auf wöchentlich hochverhandeln',text:'Zwei Termine, gute Argumente, und die Zentrale merkt sich den Namen.',chips:2,resolve:true,standing:-1,out:'Wöchentlich reicht, sagt die Zentrale schließlich. Dr. Kessler hört, dass Nord-Ost „Diskussionsbedarf“ hatte.'},
+    {id:'w',label:'Ignorieren',text:'Das versandet, denkst du.',chips:1,roll:{diff:6,fail:{standing:-2}},resolve:true,out:'Die Mail bleibt ungelesen.'}]},
+  {id:19,type:'Chance',title:'Interview-Anfrage Fachzeitschrift',diff:5,to:'BL',icon:'mic',text:'Eine Fachzeitschrift will über euer Fachgebiet berichten.',gain:'Vertrauen +1, Projekt +1',win:'Der Artikel erscheint, und die Vorstudie steht drin.',esc:'Die Redaktion nimmt einen anderen Bereich.',
+   read:'„Der Nahverkehr“ plant ein Heft über Betriebshöfe im Umbruch. Die Redakteurin hat von eurer Vorstudie gehört und will ein Interview, nächste Woche, mit Fotos. Dr. Kessler liest das Heft.',qa:'„Dürfen wir das?“ Mit Freigabe der Kommunikation. „Was, wenn es schiefgeht?“ Dann steht es gedruckt.',opts:[
+    {id:'a',label:'Vorbereitet antworten',text:'Kernbotschaften, Freigabe, Fotos. Die Woche ist voll damit.',chips:2,resolve:true,standing:1,project:1,endRound:true,out:'Das Interview ist gut. Die Vorstudie steht auf Seite 12, mit Foto. Die Woche ist trotzdem vorbei.'},
+    {id:'w',label:'Spontan zusagen',text:'Du redest gern.',chips:1,roll:{diff:5,fail:{standing:-1}},resolve:true,standing:1,project:1,out:'Die Redakteurin kommt am Mittwoch.'}]},
+  {id:20,type:'Chance',title:'Innovationsfonds ausgeschrieben',diff:5,to:'TP',icon:'fund',text:'Die Konzernzentrale fördert Vorstudien, Frist in zwei Wochen.',gain:'Projekt +2',win:'Der Antrag ist durch, das Projekt hat Rückenwind.',esc:'Frist verpasst.',
+   read:'Die Zentrale schreibt einen Innovationsfonds aus: Vorstudien zur Depot-Modernisierung werden gefördert. Frist in zwei Wochen, zwölf Seiten Antrag. Süd hat sich schon beworben, hört man.',qa:'„Wie groß ist die Chance?“ Gut, wenn der Antrag gut ist. „Wer schreibt ihn?“ Das ist die Frage.',opts:[
+    {id:'a',label:'Antrag schreiben',text:'Zwei Abende, eine gute Chance, und zwei Abende weniger für alles andere.',chips:2,resolve:true,project:2,nextChips:-1,out:'Der Antrag geht um 23:58 Uhr raus. Drei Wochen später kommt die Zusage.'},
+    {id:'w',label:'Kurzantrag',text:'Eine Seite, Daumen drücken.',chips:1,roll:{diff:5,fail:{}},resolve:true,project:1,out:'Eine Seite, ein Klick.'}]},
+  {id:21,type:'Störung',title:'Drei Züge in der Werkstatt',diff:5,to:'TB',icon:'wrench',text:'Fahrzeugmangel: Die Reserve ist aufgebraucht.',esc:'Im Berufsverkehr fallen Fahrten aus.',
+   read:'Drei Züge stehen gleichzeitig in der Werkstatt, zwei mit Radschäden, einer mit einem Kurzschluss. Die Reserve ist aufgebraucht. Ab morgen fehlen im Berufsverkehr zwei Umläufe.',qa:'„Wann sind die Züge zurück?“ Einer Donnerstag, die anderen nächste Woche. „Hat Süd Reserve?“ Süd hat immer Reserve.',opts:[
+    {id:'a',label:'Reserve aus Süd',text:'Zwei Züge geliehen, Rückgabe unklar.',chips:1,resolve:true,nachbar:true,out:'Zwei Züge mit dem Logo von Süd fahren auf euren Linien. Alle sehen es.'},
+    {id:'b',label:'Umlauf neu planen',text:'Mit weniger Fahrzeugen den vollen Takt halten. Die Planer sind danach durch.',chips:2,resolve:true,nextChips:-1,out:'Der neue Umlauf hält. Die Planung hat zwei Nächte durchgearbeitet und nimmt nächste Woche frei.'},
+    {id:'w',label:'Fahren, bis es knallt',text:'Die Werkstatt wird schon fertig.',chips:1,roll:{diff:4,fail:{later:{card:107,delay:1}}},resolve:true,out:'Ihr fahrt mit dem, was da ist.'}]},
+  {id:22,type:'Team',title:'Zwei wollen in die Vorstudie',diff:5,to:'TP',icon:'arrows',text:'Zwei Teammitglieder wollen raus aus dem Betrieb und rein ins Projekt.',esc:'Beide fahren Dienst nach Vorschrift.',
+   read:'Zwei aus der Planung stehen in der Tür: Sie wollen in die Vorstudie, Vollzeit, ab sofort. Beide sind gut. Beide fehlen dann im Betrieb. Und beide haben gehört, dass die andere auch gefragt hat.',qa:'„Brauchen wir sie im Projekt?“ Mindestens eine. „Und im Betrieb?“ Beide.',opts:[
+    {id:'a',label:'Beide reinholen',text:'Das Projekt freut sich, der Betrieb wird dünn.',chips:1,resolve:true,project:1,standing:-1,out:'Die Vorstudie bekommt zwei kluge Köpfe. Die Planung im Betrieb arbeitet ab jetzt zu zweit statt zu viert.'},
+    {id:'b',label:'Eine Person, klar begründet',text:'Ein Gespräch, in dem jemand enttäuscht wird, und das dich Kraft kostet.',chips:2,resolve:true,nextChips:-1,out:'Eine geht ins Projekt, eine bleibt. Die, die bleibt, sagt: „Verstehe ich.“ Sie meint es nicht so.'},
+    {id:'w',label:'Entscheidung vertagen',text:'Nächste Woche, versprochen.',chips:1,roll:{diff:5,fail:{}},resolve:true,out:'Ihr vertagt.'}]},
+];
+const FOLLOW = [
+  {id:101,type:'Störung',title:'Erschöpfte Schicht',diff:5,to:'TB',icon:'tired',text:'Die Überstunden vom Oberleitungsschaden fordern ihren Preis.',esc:'Zwei Fahrer:innen fallen länger aus.',
+   read:'Die Überstunden vom Oberleitungsschaden sind nicht vergessen. Drei Krankmeldungen in der Frühschicht, kurze Zündschnüre im Pausenraum, ein Fahrer hat am Steuer geweint. Das Team ist leer.',qa:'„Ist das unsere Schuld?“ Ja. „Was hilft?“ Zeit, die ihr nicht habt.',opts:[
+    {id:'a',label:'Freizeitausgleich',text:'Alle bekommen ihre Stunden zurück, jetzt, und der Plan wird dünn.',chips:2,resolve:true,nextChips:-1,out:'Eine Woche lang fährt die Frühschicht mit Mindestbesetzung. Es geht gerade so.'},
+    {id:'b',label:'Durchhalten',text:'Noch zwei Wochen, dann wird es ruhiger.',chips:1,resolve:true,standing:-1,out:'Die Schicht hält durch. Der Betriebsrat schreibt an Dr. Kessler.'},
+    {id:'w',label:'Motivationsrede',text:'Kaffee und Kuchen im Pausenraum.',chips:1,roll:{diff:5,fail:{standing:-1}},resolve:true,out:'Du stellst dich in den Pausenraum.'}]},
+  {id:102,type:'Team',title:'Werkstatt zieht sich zurück',diff:5,to:'TP',icon:'doorclose',text:'Nach dem Machtwort liefert die Werkstatt nur noch das Nötigste.',esc:'Die Werkstatt hat die Mitarbeit an der Vorstudie offiziell beendet.',
+   read:'Seit dem Machtwort liefert die Werkstatt nur noch, was im Auftrag steht. Mails werden kurz, Termine werden abgesagt, das Wissen über die Hallen bleibt in der Halle.',qa:'„Sind sie beleidigt?“ Sie sind übergangen worden. „Brauchen wir sie?“ Für das Depot-Kapitel: ja.',opts:[
+    {id:'a',label:'Zurückholen',text:'Du gehst hin und hörst dir alles an. Das dauert.',chips:2,resolve:true,endRound:true,out:'Zwei Stunden in der Halle, der Meister redet, du hörst zu. Am Ende sagt er: „Na gut.“'},
+    {id:'b',label:'Ohne sie weiter',text:'Das Projekt verliert Wissen.',chips:1,resolve:true,project:-1,out:'Das Depot-Kapitel wird vom Schreibtisch aus geschrieben. Man merkt es.'},
+    {id:'w',label:'Mail an alle',text:'Appell an den Teamgeist.',chips:1,roll:{diff:5,fail:{project:-1}},resolve:true,out:'Die Mail hat drei Absätze.'}]},
+  {id:103,type:'Störung',title:'Ausfall Spezialwissen',diff:6,to:'MA',icon:'puzzle',text:'Die Person mit dem Spezialwissen ist ausgefallen, niemand kennt das Stellwerk.',esc:'Ein Teilsystem steht still.',
+   read:'Sie hat es nicht geschafft. Krankmeldung, sechs Wochen, Diagnose nicht euer Thema. Das alte Stellwerk meldet einen Fehler, und niemand im Haus weiß, was die Meldung bedeutet.',qa:'„Gibt es eine Doku?“ Eine, von 2019, unvollständig. „Der Hersteller?“ Existiert nicht mehr.',opts:[
+    {id:'a',label:'Externe holen',text:'Teuer, schnell, fremd, und der Vorstand fragt, warum ihr das nicht selbst könnt.',chips:2,resolve:true,standing:-1,out:'Ein Ingenieurbüro kommt am Dienstag. Die Rechnung geht nach oben.'},
+    {id:'b',label:'Projekt pausieren',text:'Die Vorstudie wartet, bis jemand sich eingearbeitet hat.',chips:1,resolve:true,project:-1,out:'Zwei Leute aus dem Projekt lesen die Doku von 2019.'},
+    {id:'w',label:'Handbuch und Hoffnung',text:'Es gibt eine Doku von 2019.',chips:1,roll:{diff:6,fail:{standing:-1}},resolve:true,out:'Ihr blättert.'}]},
+  {id:104,type:'Politik',title:'Gerücht im Depot',diff:5,to:'BL',icon:'bubbles',text:'Im Depot heißt es, die Bereichsleitung habe die Kontrolle verloren.',esc:'Das Gerücht hat Dr. Kessler erreicht.',
+   read:'Im Depot wird geredet: Die Bereichsleitung wisse nicht, was in den Schichten los ist, die Vorstudie sei wichtiger als die Leute. Niemand sagt es dir ins Gesicht. Die Assistentin von Dr. Kessler hat es schon gehört.',qa:'„Wer streut das?“ Niemand streut. Es wächst. „Stimmt es?“ Ein bisschen.',opts:[
+    {id:'a',label:'Offen ansprechen',text:'Du stellst dich in die Kantine.',chips:1,resolve:true,standing:-1,out:'Du sagst, was du gehört hast, und fragst, was dran ist. Es wird still. Dann redet jemand. Dr. Kessler hört von der „Krisensitzung“.'},
+    {id:'b',label:'Rundgang und Gespräche',text:'Drei Tage, viele Einzelgespräche, kaum Schreibtisch.',chips:2,resolve:true,endRound:true,out:'Drei Tage Pausenräume, Werkstatt, Leitstand. Am Ende weißt du mehr als vorher. Der Schreibtisch ist voll.'},
+    {id:'w',label:'Aussitzen',text:'Gerüchte sterben von allein.',chips:1,roll:{diff:5,fail:{standing:-1}},resolve:true,out:'Du sagst nichts.'}]},
+  {id:105,type:'Team',title:'Einarbeitung frisst Zeit',diff:4,to:'TB',icon:'clockman',text:'Der neue Disponent braucht jemanden an seiner Seite.',esc:'Fehler in der Disposition, zwei Ausfälle.',
+   read:'Der Fahrer, der in den Leitstand wechselt, lernt schnell, aber der Leitstand verzeiht keine Fehler. Er braucht jemanden neben sich, drei Wochen lang, in jeder Schicht.',qa:'„Wer kann das?“ Die, die schon zu viel machen. „Was, wenn niemand?“ Dann lernt er an echten Fehlern.',opts:[
+    {id:'a',label:'{MA} wird Pate',text:'{MA} erklärt, wie der Laden läuft.',chips:1,payer:'MA',resolve:true,noPair:'MA',out:'{MA} sitzt neben ihm, drei Wochen, und erklärt jede Entscheidung zweimal.'},
+    {id:'b',label:'Selbst einarbeiten',text:'Du sitzt daneben, und sonst nirgends.',chips:2,resolve:true,endRound:true,out:'Du bist im Leitstand. Alles andere wartet.'},
+    {id:'w',label:'Learning by doing',text:'Er wird es schon merken.',chips:1,roll:{diff:4,fail:{standing:-1}},resolve:true,out:'Er sitzt allein am Pult.'}]},
+  {id:106,type:'Team',title:'Die Neue kündigt',diff:6,to:'MA',icon:'letter',text:'Die neue Kollegin hat die Kündigung auf dem Tisch.',esc:'Sie ist weg, die Schicht ist unterbesetzt.',
+   read:'Die neue Fahrerin hat gekündigt, Probezeit, zwei Wochen Frist. In der Begründung steht nichts. Sie fährt weiter gut, bis zum letzten Tag, und sitzt in der Pause allein.',qa:'„Kann man sie umstimmen?“ Vielleicht. „Will sie das?“ Sie will gefragt werden.',opts:[
+    {id:'a',label:'Halten: Gespräch und Zusage',text:'Du versprichst, dass sich etwas ändert, und meinst es. Das bindet dich.',chips:2,resolve:true,nextChips:-1,out:'Sie zieht die Kündigung zurück. Du hast versprochen, selbst hinzuschauen. Das wirst du jetzt müssen.'},
+    {id:'b',label:'Gehen lassen',text:'Manche passen nicht.',chips:1,resolve:true,standing:-1,out:'Sie geht. Die Schicht fährt mit einer Person weniger, und Dr. Kessler fragt nach der Fluktuation.'},
+    {id:'w',label:'Prämie anbieten',text:'Geld hilft, manchmal.',chips:1,roll:{diff:6,fail:{standing:-1}},resolve:true,out:'Du nennst eine Zahl.'}]},
+  {id:107,type:'Störung',title:'Zug mit Fahrgästen im Tunnel',diff:6,to:'TB',icon:'tunnel',text:'Ein Zug ist liegen geblieben, 200 Fahrgäste, kein Licht.',esc:'Bilder aus dem Tunnel sind in den Nachrichten.',
+   read:'Es hat geknallt. Ein Zug, der nicht in die Werkstatt durfte, steht im Tunnel unter dem Fluss, 200 Fahrgäste, Notlicht, kein Handyempfang. Die ersten Fotos sind trotzdem schon draußen.',qa:'„Gefahr für die Leute?“ Nein, nur Dunkelheit und Wut. „Wie lange bis zum Schleppzug?“ Vierzig Minuten.',opts:[
+    {id:'a',label:'Evakuierung, alle Mann',text:'Alles, was Beine hat, in den Tunnel.',chips:3,resolve:true,endRound:true,out:'Nach zwanzig Minuten gehen die Fahrgäste zu Fuß mit Taschenlampen zur Station. Sie klatschen sogar. Das Fachgebiet ist den Tag über leer.'},
+    {id:'b',label:'Warten auf den Schleppzug',text:'Vierzig Minuten im Dunkeln.',chips:1,resolve:true,standing:-2,out:'Vierzig Minuten. Die Fotos aus dem Tunnel laufen am Abend in den Nachrichten.'},
+    {id:'w',label:'Fahrer versucht Neustart',text:'Manchmal geht es wieder.',chips:1,roll:{diff:6,fail:{standing:-2}},resolve:true,out:'Der Fahrer dreht den Schlüssel.'}]},
+  {id:108,type:'Team',title:'Nacharbeit an der Vorstudie',diff:5,to:'TP',icon:'eraser',text:'Der schnelle Abschnitt von neulich hält der Prüfung nicht stand.',esc:'Der Fehler ist Dr. Kessler aufgefallen.',
+   read:'Das Kapitel, das ihr schnell geschrieben habt, ist durch die Fachprüfung gefallen: falsche Annahmen bei den Hallenmaßen, eine Tabelle aus dem alten Konzept. Es muss neu, bevor es jemand im Vorstand liest.',qa:'„Wie viel ist falsch?“ Genug. „Hat es schon jemand gesehen?“ Noch nicht.',opts:[
+    {id:'a',label:'Nacharbeiten',text:'Diesmal gründlich, und diese Woche nichts anderes.',chips:2,resolve:true,endRound:true,out:'Das Kapitel wird neu geschrieben. Es ist jetzt gut. Die Woche ist vorbei.'},
+    {id:'b',label:'So lassen',text:'Ein Kapitel fliegt raus.',chips:1,resolve:true,project:-1,out:'Das Kapitel wird gestrichen. Die Vorstudie ist dünner.'},
+    {id:'w',label:'Fußnote',text:'Eine Einschränkung im Kleingedruckten.',chips:1,roll:{diff:5,fail:{project:-1}},resolve:true,out:'Ihr setzt eine Fußnote.'}]},
+  {id:109,type:'Politik',title:'Süd will mitreden',diff:5,to:'TP',icon:'point',text:'Frau Brandt erinnert an ihre Hilfe und will jetzt in der Vorstudie mitentscheiden.',esc:'Süd präsentiert eure Vorstudie als gemeinsame.',
+   read:'Frau Brandt ruft an, freundlich wie immer. Süd habe ja geholfen, und jetzt wolle man gern „die Perspektive von Süd“ in der Vorstudie sehen. Ein Kapitel, ein Logo, ein Name auf dem Deckblatt.',qa:'„Hat sie ein Recht darauf?“ Kein formales. „Kann sie uns schaden?“ Sie kann bei Dr. Kessler anrufen.',opts:[
+    {id:'a',label:'Mitreden lassen',text:'Ein Kapitel geht in fremde Hände.',chips:1,resolve:true,project:-1,out:'Das Deckblatt hat jetzt zwei Logos.'},
+    {id:'b',label:'Freundlich abgrenzen',text:'Dank ja, Mitsprache nein.',chips:2,resolve:true,standing:-1,out:'Frau Brandt sagt: „Natürlich.“ Am Abend telefoniert sie mit Dr. Kessler.'},
+    {id:'w',label:'Gegenangebot',text:'Ihr helft Süd beim nächsten Mal.',chips:1,roll:{diff:5,fail:{project:-1}},resolve:true,out:'Du bietest einen Tausch an.'}]},
+];
+const ALL_CARDS=[...EVENTS,...FOLLOW];
+const CARD=id=>ALL_CARDS.find(c=>c.id===id);
+const SEEDED_EVENTS=[8,10];
+const PROJECT_OPTS=[
+  {id:'g',label:'Gründlich',text:'Sauber recherchiert, sauber geschrieben, und sonst diese Woche nichts.',chips:2,project:1,endRound:true,out:'Ein Kapitel steht. Du hast es ganz geschrieben, und sonst nichts.'},
+  {id:'s',label:'Schnell',text:'Erst mal etwas Vorzeigbares.',chips:1,project:1,later:{card:108,delay:2},out:'Zehn Seiten in zwei Tagen. Sie sehen gut aus.'},
+  {id:'n',label:'Süd einbinden',text:'Die haben Leute und Interesse.',chips:1,project:1,nachbar:true,out:'Zwei Leute aus Süd schreiben mit. Frau Brandt bekommt den Entwurf in Kopie.'},
+  {id:'w',label:'Wagnis',text:'Du setzt auf eine Idee, die entweder trägt oder nicht.',chips:1,project:1,roll:{project:true,fail:{}},out:'Du schreibst die Idee auf und zeigst sie herum.'},
+];
+const CALL_QUESTIONS=['Warum stehen noch Karten offen, obwohl Sie vier Leute haben?','Wer hat entschieden, die Störung liegen zu lassen?','Wie weit ist die Vorstudie, in einem Satz?','Was wusste Ihr Team, das Sie mir nicht gesagt haben?','Warum habe ich das von Frau Brandt erfahren?','Was ist Ihr Plan, falls das nächste Woche wieder passiert?','Wen in Ihrem Team haben Sie diese Woche überfordert?','Was hätten Sie anders gemacht?','Warum sehe ich keinen Fortschritt bei der Vorstudie?','Ich höre, bei Ihnen fahren Züge aus Süd. Stimmt das?'];
+const DEFAULT_SETTINGS={mode:'dilemma',dice:'d6',chips:3,standingStart:6,standingMax:10,projectTarget:8,rounds:4,diffMin:4,diffMax:6,strengths:true,turnTimer:true,turnSec:60,timeoutMode:'hard',
+  events:'2,3,3,4',escPen:2,callFail:true,critOnce:true,helpB:2,bereit:5,pd:'4,5,7',wagnisPlus:1,
+  puffer:true,overtime:true,stillstand:true,prio:true};
+
+// ---------- Zustand ----------
+let S=null;
+let UI={act:null,lastRoll:null,peek:null,timerId:null,turnEnd:null,call:null,refl:null,flashQ:[],flashBusy:false,secretOpen:false,focus:null};
+let setupSettings={...DEFAULT_SETTINGS};
+let setupPlayers=[{name:'Anna',strength:'gelassenheit'},{name:'Murat',strength:'mut'},{name:'Lena',strength:'weitblick'},{name:'Jonas',strength:'naehe'}];
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const P=key=>S.players.find(p=>p.key===key);
+const fill=t=>String(t).replace(/\{MA\}/g,(S&&P('MA')||{}).name||'Mitarbeitende:r');
+const two=()=>S.settings.dice==='2d6';
+const dil=()=>S.settings.mode==='dilemma';
+const callThreshold=()=>two()?7:4;
+const eventsFor=round=>{const a=String(S.settings.events).split(',').map(x=>+x||1);return a[Math.min(round,a.length)-1]||1};
+function projectDiff(){const pd=String(S.settings.pd).split(',').map(x=>+x);const i=S.project<3?0:S.project<6?1:2;const v=(pd[i]||[4,5,7][i])+(dil()?(S.settings.wagnisPlus||0):0);return two()?v+3:v}
+const wagDiff=e=>e.diff+(dil()?(S.settings.wagnisPlus||0):0);
+const bereitDiff=()=>two()?S.settings.bereit+3:S.settings.bereit;
+function pSuccess(diff,bonus){const need=diff-bonus;if(!two()){if(need<=1)return 1;if(need>6)return 0;return (7-need)/6}let c=0;for(let i=1;i<=6;i++)for(let j=1;j<=6;j++)if(i+j>=need)c++;return c/36}
+const pct=x=>Math.round(x*100)+' %';
+const projectPhaseName=()=>S.project<3?'Anlaufphase':S.project<6?'Kernarbeit':'Abschluss';
+const openStoerungen=()=>S.open.filter(e=>e.type==='Störung').length;
+const SIDE={standing:'Betrieb',project:'Projekt'};
+const sideCount=s=>S.players.filter(p=>p.side===s).length;
+const helpVal=h=>(S.settings.helpB||1)+(h.strength==='naehe'?1:0);
+function mkCard(c){return {...c,protected:false}}
+function buildDeck(){
+  const rest=shuffle(EVENTS.filter(e=>!SEEDED_EVENTS.includes(e.id))).map(mkCard);
+  const seeded=shuffle(EVENTS.filter(e=>SEEDED_EVENTS.includes(e.id))).map(mkCard);
+  return [...shuffle([...seeded,rest.shift()]),...rest];
+}
+function mapDifficulty(deck,s){deck.forEach(e=>{const t=(e.diff-4)/2;e.diff=Math.round(s.diffMin+t*(s.diffMax-s.diffMin))})}
+function newState(settings,players){
+  const deck=buildDeck();mapDifficulty(deck,settings);
+  return {settings:{...settings},round:1,phase:'event',standing:settings.standingStart,project:0,restructuring:false,restructuringRound:null,over:false,won:null,
+    players:players.map((p,i)=>({...ROLES[i],name:p.name,strength:p.strength,portrait:p.portrait||PORTRAITS[i].id,chips:settings.chips,abilityUsed:false,strengthUsed:false,lernUsed:false,helpUsed:false,extraChips:0,paired:0,passed:false,left:false,side:null,rolled:false,noPair:false,erschoepfung:0,overtimeUsed:false,debt:0,out:false})),
+    deck,discard:[],open:[],lern:[],log:[],stats:{rolls:0,ones:0,sixes:0,fails:0,succ:0,timeouts:0,wagnis:0,sicher:0},projectHist:[0],eventDone:false,turn:null,waitReroll:false,lastAddressed:null,
+    scheduled:[],nachbarDebt:0,critUsed:false,puffer:0,prio:null,standingActed:false,projectActed:false,projectAtStart:0};
+}
+function roll(){const d=two()?[1+Math.floor(Math.random()*6),1+Math.floor(Math.random()*6)]:[1+Math.floor(Math.random()*6)];return{d,total:d.reduce((a,b)=>a+b,0),crit:d.every(x=>x===6),fumble:d.every(x=>x===1)}}
+
+// ---------- Protokoll ----------
+function L(k,a,t,h){S.log.push({k,a,t,h:h||null})}
+const nm=key=>{const p=P(key);return `<span class="nm" style="color:var(${p.color})">${esc(p.name)}</span>`};
+const logRound=n=>L('round',null,`Runde ${n}`);
+const logPhase=t=>L('phase',null,t);
+const logNarr=t=>L('narr','dm',`Spielleitung: ${fill(t)}`,`<b>Spielleitung:</b> ${esc(fill(t))}`);
+const logSys=t=>L('sys',null,fill(t));
+const logRef=t=>L('ref',null,t);
+const logAct=(key,t)=>L('act',key,`${P(key).name}: ${fill(t)}`,`${nm(key)}: ${esc(fill(t))}`);
+function logTrack(what,from,to){const up=to>from;L('track'+(up?' up':' down'),null,`${what==='Standing'?'Vertrauen':what} ${up?'steigt':'sinkt'} auf ${to}.`)}
+function logRoll(key,parts,total,diff,ok,label){
+  const txt=parts.map((p,i)=>(i?' + ':'')+p.v+(p.l?' '+p.l:'')).join('').replace(/\+ -/g,'− ');
+  L('roll',key,`${P(key).name}: ${label||'Wurf'} ${txt} = ${total} gegen ${diff} – ${ok?'Erfolg':'Fehlschlag'}`,
+    `${nm(key)}: ${esc(label||'Wurf')} <span class="calc">${esc(txt)} =</span> <b>${total}</b> <span class="calc">gegen ${diff}</span> – <span class="${ok?'ok':'fail'}">${ok?'Erfolg':'Fehlschlag'}</span>`);
+}
+
+// ---------- Einblendungen ----------
+function flash(text,kind,ms){UI.flashQ.push({text:fill(text),kind:kind||'',ms:ms||1400});while(UI.flashQ.length>3){const i=UI.flashQ.findIndex(f=>f.kind!=='round');if(i<0)break;UI.flashQ.splice(i,1)}if(!UI.flashBusy)nextFlash()}
+function nextFlash(){const f=$('flash'),d=f.firstElementChild;const it=UI.flashQ.shift();if(!it){UI.flashBusy=false;f.hidden=true;return}UI.flashBusy=true;f.hidden=true;void d.offsetWidth;d.textContent=it.text;d.className=it.kind;d.style.setProperty('--dur',it.ms+'ms');f.hidden=false;setTimeout(nextFlash,it.ms)}
+
+// ---------- Mechanik ----------
+function setStanding(v){
+  const from=S.standing;S.standing=Math.max(0,Math.min(S.settings.standingMax,v));
+  if(S.standing!==from){logTrack('Standing',from,S.standing);const d=S.standing-from;flash(d>0?`Das Vertrauen des Vorstands steigt! +${d}`:`Das Vertrauen des Vorstands sinkt! ${d}`,d>0?'good':'bad')}
+  if(S.standing===0&&!S.restructuring&&!S.over){S.restructuring=true;S.restructuringRound=S.round;logNarr(`Dr. Kessler hat genug gesehen. Der Vorstand übernimmt ${SCENARIO.bereich}, kommissarisch über ${SCENARIO.nachbar}. Es folgt eine letzte Runde mit einem Chip weniger pro Person.`);flash('Der Vorstand übernimmt euer Fachgebiet!','bad',2600)}
+}
+function setProject(v){
+  const from=S.project;S.project=Math.max(0,Math.min(S.settings.projectTarget,v));
+  if(S.project!==from){logTrack('Projekt',from,S.project);const d=S.project-from;flash(d>0?(S.project>=S.settings.projectTarget?'Das Projekt ist fertig!':`Das Projekt kommt voran! +${d}`):`Das Projekt fällt zurück! ${d}`,d>0?'good':'bad')}
+}
+function drawEvent(reason,card){
+  let e;
+  if(card){e=mkCard(card);mapDifficulty([e],S.settings)}
+  else{if(!S.deck.length){S.deck=shuffle(S.discard);S.discard=[];logSys('Ereignisstapel neu gemischt.')}if(!S.deck.length){logSys('Keine Ereigniskarten mehr.');return null}e=S.deck.shift()}
+  if(e.id===8)e.diff+=S.nachbarDebt;
+  S.open.push(e);
+  L('sys',null,`Ereignis${reason?' ('+reason+')':''}: ${e.title} [${e.type}, ${e.diff}], an ${P(e.to).name}.`,`Ereignis${reason?' ('+esc(reason)+')':''}: <b>${esc(e.title)}</b> <span class="calc">[${e.type}, ${e.diff}]</span>, an ${nm(e.to)}.`);
+  logNarr(e.text);
+  if(!reason){S.lastAddressed=e.to;UI.focus=e.id}else if(reason==='Patzer')flash(`Neues Ereignis: ${e.title}`,'bad');
+  return e;
+}
+function drawRound(){
+  if(S.settings.prio){S.prio=Math.random()<.5?'standing':'project';const t=S.prio==='standing'?`${SCENARIO.vorstand} ruft an: „Diese Woche zählt der Betrieb. Ich will keine Schlagzeilen.“ Liegengebliebene Karten kosten diese Woche 3 Vertrauen.`:`${SCENARIO.vorstand} ruft an: „Diese Woche will ich Fortschritt bei der Vorstudie sehen.“ Ohne Projektfortschritt kostet die Woche Vertrauen, Projektstillstand kostet doppelt.`;logNarr(t);flash(`Priorität der Woche: ${SIDE[S.prio]}`,'',2000)}
+  S.projectAtStart=S.project;S.standingActed=false;S.projectActed=false;
+  const n=eventsFor(S.round);
+  for(let i=0;i<n;i++){const e=drawEvent(i?'weitere Karte':null);if(e&&i)flash(`Und noch etwas: ${e.title}`,'bad',1500)}
+  const due=S.scheduled.filter(x=>x.round<=S.round);S.scheduled=S.scheduled.filter(x=>x.round>S.round);
+  due.forEach(x=>{const e=drawEvent('Folge von früher',CARD(x.card));if(e)flash(`Die Rechnung von früher: ${e.title}`,'bad',1800)});
+  S.eventDone=true;
+}
+function schedule(cardId,delay){const r=S.round+delay;S.scheduled.push({round:r,card:cardId});logSys(`Folge: „${CARD(cardId).title}“ kommt in Runde ${r}.`)}
+function resolveEvent(e,byKey,byText){
+  S.open=S.open.filter(x=>x!==e);if(e.id<100)S.discard.push(e);
+  L('act',byKey,`${P(byKey).name}: „${e.title}“ erledigt${byText?' ('+byText+')':''}.`,`${nm(byKey)}: <b>„${esc(e.title)}“ erledigt</b>${byText?' ('+esc(byText)+')':''}.`);
+  if(!dil()&&e.bonus){if(e.win)flash(e.win,'good');if(e.bonus.project)setProject(S.project+e.bonus.project);if(e.bonus.standing)setStanding(S.standing+e.bonus.standing);if(e.bonus.chips){S.players.forEach(p=>p.chips+=e.bonus.chips);logSys(`Alle erhalten ${e.bonus.chips} Chip.`)}}
+}
+function afterRoll(p,r){
+  if(r.crit){S.stats.sixes++;if(S.settings.critOnce&&S.critUsed){logSys('Glanzwurf, aber das Standing ist diese Runde schon gestiegen.')}else{S.critUsed=true;logNarr(`${p.name}, erzähl, was so gut lief.`);flash(`Glanzleistung! ${p.name}, erzähl, was so gut lief.`,'good');setStanding(S.standing+1)}}
+  if(r.fumble){S.stats.ones++;logSys('Patzer! Zweites Ereignis.');flash('Patzer! Ein zweites Ereignis bricht herein.','bad');drawEvent('Patzer')}
+}
+function mods(p,opt,parts){
+  let b=0;
+  if(opt.reason){b+=1;parts.push({v:1,l:'Begründung'})}
+  (opt.helpers||[]).forEach(k=>{const h=P(k);if(!h||h.chips<1||h.side!==p.side||h.noPair)return;h.chips--;h.paired++;const v=helpVal(h);b+=v;parts.push({v,l:h.name})});
+  if((opt.helpers||[]).length)p.paired++;
+  if(opt.lern&&!p.lernUsed){const k=S.lern.find(x=>!x.used);if(k){k.used=true;p.lernUsed=true;b+=1;parts.push({v:1,l:'Lernkarte'})}}
+  return b;
+}
+// Konsequenzen einer Option in Worten
+function consText(o,ctx){
+  const t=[];
+  if(o.resolve&&!ctx?.project)t.push('erledigt');
+  if(o.project)t.push(`Projekt ${o.project>0?'+':''}${o.project}`);
+  if(o.standing)t.push(`Vertrauen ${o.standing>0?'+':''}${o.standing}`);
+  if(o.chipsAll)t.push(`alle +${o.chipsAll} Chip`);
+  if(o.later)t.push(`„${CARD(o.later.card).title}“ kommt in Runde ${S.round+o.later.delay}`);
+  if(o.nachbar)t.push('ihr schuldet dem Nachbarbereich etwas');
+  if(o.noPair)t.push(`${P(o.noPair).name} fällt diese Runde als Helfer aus`);
+  if(o.endRound)t.push('danach bist du fertig für die Runde');
+  if(o.nextChips)t.push(`nächste Runde ${o.nextChips} Chip`);
+  if(o.pair)t.push(`zählt für ${P(o.pair).name} als „zu zweit“`);
+  if(o.escalateNow)t.push('Karte eskaliert sofort');
+  return t.join(' · ');
+}
+function applyEffects(p,o,e,label){
+  if(o.standing)setStanding(S.standing+o.standing);
+  if(o.project)setProject(S.project+o.project);
+  if(o.chipsAll){S.players.forEach(x=>x.chips+=o.chipsAll);logSys(`Alle erhalten ${o.chipsAll} Chip.`)}
+  if(o.later)schedule(o.later.card,o.later.delay);
+  if(o.nachbar){S.nachbarDebt++;const c8=S.open.find(x=>x.id===8);if(c8)c8.diff++;logSys(`Der Nachbarbereich merkt sich das (${S.nachbarDebt}×).`);if(!S.deck.some(x=>x.id===8)&&!c8)schedule(109,1)}
+  if(o.noPair&&!(p.strength==='naehe')){const t=P(o.noPair);t.noPair=true;logSys(`${t.name} ist diese Runde gebunden und kann nicht helfen.`)}
+  if(o.endRound){p.endRound=true;logSys(`${p.name} ist danach für diese Runde fertig.`)}
+  if(o.nextChips){p.extraChips+=o.nextChips;logSys(`${p.name} hat nächste Runde ${o.nextChips} Chip.`)}
+  if(o.pair){const t=P(o.pair);t.paired++;p.paired++}
+  if(o.escalateNow&&e){e.diff++;logSys(`„${e.title}“ eskaliert sofort. Jetzt ${e.diff}.`);flash(`„${e.title}“ eskaliert sofort!`,'bad');setStanding(S.standing-(S.settings.escPen||1))}
+  if(o.resolve&&e&&S.open.includes(e)){if(e.win&&dil())flash(e.win,'good');resolveEvent(e,p.key,label)}
+}
+// Kosten einer Option (nach Lernkarte/Helfer) und wer zahlt
+function optCost(p,o,a){
+  let cost=o.chips||1;const payer=o.payer&&o.payer!==p.key?P(o.payer):p;
+  if(a?.lern&&!p.lernUsed&&cost>=2&&!o.roll)cost--;
+  const helper=(a?.helpers||[])[0]?P(a.helpers[0]):null;
+  const helperPays=!o.roll&&helper&&helper.chips>0&&helper.side===p.side&&!helper.noPair&&cost>=2?1:0;
+  return {cost,payer,helperPays,helper,payerCost:cost-helperPays};
+}
+function optAvailable(p,o,a){const c=optCost(p,o,a);return c.payer.chips>=c.payerCost&&(!o.payer||o.payer===p.key||!P(o.payer).noPair||true)}
+
+// ---------- Ansage ----------
+function startCommit(){
+  S.phase='commit';logPhase('Ansage');S.players.forEach(p=>{p.side=null;p.rolled=false;p.passed=false;p.noPair=false;p.endRound=false});S.critUsed=false;
+  const i=S.players.findIndex(p=>p.key===S.lastAddressed);S.turn=i>=0?i:0;
+  logSys(`${S.players[S.turn].name} ist adressiert und sagt zuerst an.`);startTurnTimer();
+}
+function chooseSide(p,side,auto){
+  if(S.phase!=='commit'||S.players[S.turn]!==p||p.side)return;
+  stopTurnTimer();p.side=side;
+  L('act',p.key,`${p.name}: setzt auf ${side==='standing'?'den Betrieb':'das Projekt'}${auto?' (Zeit abgelaufen)':''}.`,`${nm(p.key)}: setzt auf <b>${side==='standing'?'den Betrieb':'das Projekt'}</b>${auto?' <span class="fail">(Zeit abgelaufen)</span>':''}.`);
+  let g=0;do{S.turn=(S.turn+1)%S.players.length}while(S.players[S.turn].side&&g++<4);
+  if(S.players.every(x=>x.side)){flash(`Betrieb ${sideCount('standing')} · Projekt ${sideCount('project')}`,'',1600);startPlay()}else startTurnTimer();
+  render();
+}
+function commitTimeout(){const p=S.players[S.turn];S.stats.timeouts++;chooseSide(p,sideCount('standing')<=sideCount('project')?'standing':'project',true)}
+
+// ---------- Zugreihenfolge ----------
+function startPlay(){S.phase='play';logPhase('Spielphase');S.players.forEach(p=>p.passed=false);const i=S.players.findIndex(p=>p.key===S.lastAddressed);S.turn=i>=0?i:0;S.waitReroll=false;beginTurn()}
+const playOver=()=>S.players.every(p=>p.passed||p.chips<1);
+function beginTurn(){
+  if(playOver()){endPlay();return}
+  let g=0;while((S.players[S.turn].chips<1||S.players[S.turn].passed)&&g++<8){if(S.players[S.turn].chips<1)S.players[S.turn].passed=true;S.turn=(S.turn+1)%S.players.length}
+  if(playOver()){endPlay();return}
+  UI.act=null;UI.lastRoll=null;S.waitReroll=false;UI.secretOpen=false;startTurnTimer();
+}
+function advanceTurn(){const p=S.players[S.turn];if(p.endRound){p.passed=true;p.endRound=false}S.turn=(S.turn+1)%S.players.length;beginTurn()}
+function passTurn(){const p=S.players[S.turn];if(!p.rolled&&p.chips>0)return;p.passed=true;logAct(p.key,'ist fertig für diese Runde.');stopTurnTimer();advanceTurn();render()}
+function turnTimeout(){
+  const p=S.players[S.turn];S.stats.timeouts++;
+  if(S.settings.timeoutMode==='hard'&&p.chips>0){p.chips--;L('act',p.key,`${p.name}: zögert zu lange. Chip verloren.`,`${nm(p.key)}: zögert zu lange. <span class="fail">Chip verloren.</span>`);flash(`Zu lange gezögert! ${p.name} verliert einen Chip.`,'bad')}
+  else{p.passed=true;L('act',p.key,`${p.name}: zögert zu lange. Zug verfällt.`,`${nm(p.key)}: zögert zu lange. <span class="fail">Zug verfällt.</span>`);flash(`Zu lange gezögert! ${p.name}s Zug verfällt.`,'bad')}
+  advanceTurn();render();
+}
+function endPlay(){stopTurnTimer();S.turn=null;S.phase='escalation';UI.act=null;logSys('Spielphase beendet.')}
+const timed=()=>S.phase==='play'||S.phase==='commit';
+function startTurnTimer(){stopTurnTimer();if(!S.settings.turnTimer)return;UI.turnEnd=Date.now()+(S.phase==='commit'?Math.min(30,S.settings.turnSec):S.settings.turnSec)*1000;UI.timerId=setInterval(()=>{if(!S||!timed()||S.turn===null){stopTurnTimer();return}if(Date.now()>=UI.turnEnd){stopTurnTimer();if(S.phase==='commit')commitTimeout();else turnTimeout()}else renderTimer()},200);renderTimer()}
+function stopTurnTimer(){if(UI.timerId){clearInterval(UI.timerId);UI.timerId=null}UI.turnEnd=null}
+function renderTimer(){
+  const el=$('timer');if(!el)return;
+  if(!timed()||!S.settings.turnTimer){el.textContent=timed()?'∞':'';el.className='timer off';$('stage').classList.remove('crit');return}
+  if(!UI.turnEnd){el.textContent='';return}
+  const ms=Math.max(0,UI.turnEnd-Date.now()),s=Math.ceil(ms/1000),f=ms/(S.settings.turnSec*1000);const crit=s<=10;
+  el.textContent=s;el.className='timer num'+(crit?' critt':f<.5?' warnt':'');$('stage').classList.toggle('crit',crit);
+}
+// ---------- Aktionen ----------
+function wagnisRoll(p,opt,diff,label,base,baseLabel){
+  const parts=[];const r=roll();S.stats.rolls++;S.stats.wagnis++;parts.push({v:r.d.join('+'),l:null});let b=0;
+  if(base){b+=base;parts.push({v:base,l:baseLabel||'Schwerpunkt'})}
+  b+=mods(p,opt,parts);
+  const total=r.total+b,ok=total>=diff;
+  logRoll(p.key,parts,total,diff,ok,label);
+  if(ok)S.stats.succ++;else S.stats.fails++;
+  return {r,total,ok,bonus:b};
+}
+function doAction(p,kind,opt={}){
+  if(S.phase!=='play'||S.over||S.players[S.turn]!==p)return;
+  stopTurnTimer();let ends=false;
+  // --- Dilemma-Modus: Option auf einer Ereigniskarte ---
+  if(kind==='opt'){
+    const e=S.open.find(x=>x.id===opt.eventId);const o=e&&e.opts.find(x=>x.id===opt.optId);if(!e||!o||p.side!=='standing')return;
+    const c=optCost(p,o,opt);if(c.payer.chips<c.payerCost)return;
+    c.payer.chips-=c.payerCost;if(c.helperPays){c.helper.chips-=1;c.helper.paired++;p.paired++}
+    if(opt.lern&&!p.lernUsed&&(o.chips||1)>=2&&!o.roll){const k=S.lern.find(x=>!x.used);if(k){k.used=true;p.lernUsed=true;logSys('Lernkarte eingesetzt: ein Chip gespart.')}}
+    p.rolled=true;S.standingActed=true;
+    const who=c.payer!==p?` (${c.payer.name} zahlt)`:c.helperPays?` (zu zweit mit ${c.helper.name})`:'';
+    logAct(p.key,`${o.label}${who}: ${o.text}`);
+    if(o.roll){
+      const base=(FOCUS_MATCH[p.focus].includes(e.type)||(p.abilityKey==='standby'&&e.type==='Störung'))?2:0;
+      const wd=wagDiff(e);const w=wagnisRoll(p,opt,wd,'Wagnis',base);
+      UI.lastRoll={e:e.id,r:w.r,total:w.total,ok:w.ok,bonus:w.bonus,optId:o.id};
+      if(w.ok){flash(`${w.total} gegen ${wd}: Das Wagnis geht auf!`,'good');applyEffects(p,o,e,o.label)}
+      else{flash(`${w.total} gegen ${wd}: Das Wagnis geht schief.`,'bad');applyEffects(p,{...o.roll.fail},e,null);if(!o.roll.fail.escalateNow)logSys(`„${e.title}“ bleibt liegen.`)}
+      afterRoll(p,w.r);
+      if(!w.ok&&p.strength==='mut'&&!p.strengthUsed&&p.chips>0&&S.open.includes(e)){S.waitReroll=true;UI.act=null;render();return}
+    } else {S.stats.sicher++;flash(`${o.label}: ${consText(o)||'erledigt'}`,'');applyEffects(p,o,e,o.label)}
+    if(o.out)logNarr(o.out);
+    ends=true;
+  }
+  // --- Dilemma-Modus: Projektoption ---
+  if(kind==='popt'){
+    const o=PROJECT_OPTS.find(x=>x.id===opt.optId);if(!o||p.side!=='project')return;
+    const abschluss=S.project>=6;const oo={...o,chips:o.id==='g'&&abschluss?3:o.chips};
+    const c=optCost(p,oo,opt);if(c.payer.chips<c.payerCost)return;
+    p.chips-=c.payerCost;if(c.helperPays){c.helper.chips-=1;c.helper.paired++;p.paired++}
+    if(opt.lern&&!p.lernUsed&&oo.chips>=2&&!o.roll){const k=S.lern.find(x=>!x.used);if(k){k.used=true;p.lernUsed=true;logSys('Lernkarte eingesetzt: ein Chip gespart.')}}
+    p.rolled=true;S.projectActed=true;
+    logAct(p.key,`arbeitet am Projekt, ${o.label.toLowerCase()}${c.helperPays?' (zu zweit mit '+c.helper.name+')':''}: ${o.text}`);
+    if(o.roll){
+      const diff=projectDiff();const st=openStoerungen();const base=(p.focus==='Projekt'?2:0)-st;
+      const w=wagnisRoll(p,opt,diff,'Projektwagnis',base,p.focus==='Projekt'?'Schwerpunkt':'');
+      if(st)logSys(`${st} offene Störung${st>1?'en':''} bremsen das Projekt (−${st}).`);
+      UI.lastRoll={e:null,r:w.r,total:w.total,ok:w.ok,bonus:w.bonus,optId:'w'};
+      if(w.ok){flash(`${w.total} gegen ${diff}: Die Idee trägt!`,'good');setProject(S.project+1)}else flash(`${w.total} gegen ${diff}: Die Idee trägt nicht. Chip weg.`,'bad');
+      afterRoll(p,w.r);
+      if(!w.ok&&p.strength==='mut'&&!p.strengthUsed&&p.chips>0){S.waitReroll=true;UI.act=null;render();return}
+    } else {S.stats.sicher++;applyEffects(p,{...o,resolve:false},null,null)}
+    if(o.out)logNarr(o.out);
+    ends=true;
+  }
+  // --- Würfelmodus ---
+  if(kind==='attack'){
+    const e=S.open.find(x=>x.id===opt.eventId);if(!e||p.chips<1||p.side!=='standing')return;
+    p.chips--;p.rolled=true;S.standingActed=true;
+    const base=(FOCUS_MATCH[p.focus].includes(e.type)||(p.abilityKey==='standby'&&e.type==='Störung'))?2:0;
+    logAct(p.key,`packt „${e.title}“ an${opt.helpers?.length?', zu zweit mit '+opt.helpers.map(k=>P(k).name).join(', '):''}${opt.reason?', begründet':''}.`);
+    const w=wagnisRoll(p,opt,e.diff,'Wurf',base);
+    UI.lastRoll={e:e.id,r:w.r,total:w.total,ok:w.ok,bonus:w.bonus};
+    flash(w.ok?`${w.total} gegen ${e.diff}: Geschafft! „${e.title}“ ist erledigt.`:`${w.total} gegen ${e.diff}: Daneben! Chip verloren.`,w.ok?'good':'bad');
+    if(w.ok)resolveEvent(e,p.key);else logSys(`Chip verloren, „${e.title}“ bleibt liegen.`);
+    afterRoll(p,w.r);
+    if(!w.ok&&p.strength==='mut'&&!p.strengthUsed&&p.chips>0&&S.open.includes(e)){S.waitReroll=true;UI.act=null;render();return}
+    ends=true;
+  }
+  if(kind==='bereit'){
+    if(p.chips<1||p.side!=='standing'||S.open.length)return;
+    p.chips--;p.rolled=true;S.standingActed=true;const diff=bereitDiff();
+    logAct(p.key,'hält den Betrieb am Laufen (Bereitschaft).');
+    const w=wagnisRoll(p,opt,diff,'Bereitschaft',0);
+    flash(w.ok?`${w.total} gegen ${diff}: Der Laden läuft, Dr. Kessler merkt es.`:`${w.total} gegen ${diff}: Routine. Niemand merkt etwas.`,w.ok?'good':'');
+    if(w.ok)setStanding(S.standing+1);
+    afterRoll(p,w.r);ends=true;
+  }
+  if(kind==='project'){
+    if(p.chips<1||p.side!=='project')return;const diff=projectDiff();
+    p.chips--;p.rolled=true;S.projectActed=true;const st=openStoerungen();const base=(p.focus==='Projekt'?2:0)-st;
+    logAct(p.key,`arbeitet am Projekt (${projectPhaseName()})${opt.helpers?.length?', zu zweit mit '+opt.helpers.map(k=>P(k).name).join(', '):''}.`);
+    const w=wagnisRoll(p,opt,diff,'Projektwurf',base,p.focus==='Projekt'?'Schwerpunkt':'');
+    flash(w.ok?`${w.total} gegen ${diff}: Das Projekt macht einen Schritt!`:`${w.total} gegen ${diff}: Daneben! Chip verloren.`,w.ok?'good':'bad');
+    if(w.ok)setProject(S.project+1);
+    afterRoll(p,w.r);ends=true;
+  }
+  if(kind==='reroll'){
+    const lr=UI.lastRoll;if(!lr)return;const e=lr.e?S.open.find(x=>x.id===lr.e):null;if(lr.e&&!e)return;if(p.chips<1)return;
+    p.chips--;p.strengthUsed=true;const r=roll();S.stats.rolls++;const b=lr.bonus+1;const diff=e?(dil()?wagDiff(e):e.diff):projectDiff();const total=r.total+b,ok=total>=diff;
+    logAct(p.key,'legt nach (Mut).');logRoll(p.key,[{v:r.d.join('+'),l:null},{v:b,l:'wie zuvor +1'}],total,diff,ok,'Nachwurf');
+    flash(ok?`Nachwurf ${total} gegen ${diff}: Geschafft!`:`Nachwurf ${total} gegen ${diff}: Wieder daneben.`,ok?'good':'bad');
+    if(ok){S.stats.succ++;if(e){const o=dil()?e.opts.find(x=>x.id===lr.optId):null;if(o)applyEffects(p,o,e,o.label+' (Nachwurf)');else resolveEvent(e,p.key,'Nachwurf')}else setProject(S.project+1)}else S.stats.fails++;
+    afterRoll(p,r);S.waitReroll=false;ends=true;
+  }
+  if(kind==='keep'){S.waitReroll=false;ends=true}
+  if(kind==='puffer'){if(!S.settings.puffer||S.puffer<1)return;S.puffer--;p.chips++;logAct(p.key,'nimmt einen Chip aus dem gemeinsamen Puffer.');flash(`${p.name} nimmt sich Zeit aus dem Puffer.`,'')}
+  if(kind==='overtime'){if(!S.settings.overtime||p.overtimeUsed||p.chips>0)return;p.chips++;p.debt=1;p.erschoepfung++;p.overtimeUsed=true;logAct(p.key,`macht Überstunden (Erschöpfung ${p.erschoepfung}/3). Nächste Woche ein Chip weniger.`);flash(p.erschoepfung>=3?`${p.name} macht Überstunden. Nächste Woche fällt ${p.name} aus.`:`${p.name} macht Überstunden. Nächste Woche fehlt die Zeit.`,p.erschoepfung>=2?'bad':'')}
+  if(kind==='ability'){
+    if(p.abilityKey==='help'){const e=S.open.find(x=>x.id===opt.eventId);if(!e||p.chips<1||p.helpUsed||p.side!=='standing')return;p.chips--;p.helpUsed=true;p.rolled=true;e.diff=Math.max(1,e.diff-1);logAct(p.key,`holt Hilfe von außen. „${e.title}“ jetzt ${e.diff}.`);flash(`Hilfe von außen! „${e.title}“ wird leichter.`,'good');ends=true}
+    if(p.abilityKey==='solve'){const e=S.open.find(x=>x.id===opt.eventId);if(!e||e.type!=='Störung'||p.chips<2||p.abilityUsed||p.side!=='standing')return;p.chips-=2;p.abilityUsed=true;p.rolled=true;S.standingActed=true;flash(`${p.name} zieht „${e.title}“ durch!`,'good');resolveEvent(e,p.key,'Fähigkeit, ohne Nebenwirkung');ends=true}
+    if(p.abilityKey==='push'){if(p.chips<2||p.abilityUsed||p.side!=='project')return;p.chips-=2;p.abilityUsed=true;p.rolled=true;S.projectActed=true;logAct(p.key,'setzt den Projektschub ein.');setProject(S.project+3);ends=true}
+  }
+  if(kind==='strength'){
+    if(p.strength==='weitblick'&&!p.strengthUsed){p.strengthUsed=true;const t=S.deck[0];UI.peek=t?`${t.title} (${t.type}, ${t.diff}): ${t.text}`:'Der Stapel ist leer.';logAct(p.key,'sieht die oberste Ereigniskarte an (Weitblick).')}
+    if(p.strength==='fuehrung'&&!p.strengthUsed){const t=P(opt.target);if(!t||p.chips<1)return;p.chips--;t.chips++;p.strengthUsed=true;p.rolled=true;logAct(p.key,`gibt einen Chip an ${t.name} (Führung).`);flash(`${p.name} gibt ${t.name} einen Chip.`,'');ends=true}
+    if(p.strength==='gelassenheit'&&!p.strengthUsed){const e=S.open.find(x=>x.id===opt.eventId);if(!e)return;S.open.forEach(x=>x.protected=false);e.protected=true;p.strengthUsed=true;logAct(p.key,`bleibt gelassen: „${e.title}“ darf heute liegen bleiben.`);flash(`${p.name} bleibt gelassen. „${e.title}“ kostet kein Standing.`,'')}
+  }
+  UI.act=null;
+  if(ends)advanceTurn();else if(S.phase==='play')startTurnTimer();
+  render();
+}
+function escalate(){
+  logPhase('Eskalation');
+  const pen=(S.settings.escPen||1)+(S.prio==='standing'?1:0);
+  if(!S.open.length)logNarr('Nichts offen. Ein ruhiger Abend im Fachgebiet.');
+  const keep=[];
+  S.open.forEach(e=>{
+    if(e.type==='Chance'){if(e.id<100)S.discard.push(e);logSys(`Chance „${e.title}“ ungenutzt.`);logNarr(e.esc);return}
+    e.diff++;
+    if(e.protected){e.protected=false;logSys(`„${e.title}“ bleibt liegen, ohne Standing-Verlust. Jetzt ${e.diff}.`);flash(`„${e.title}“ bleibt liegen, ihr bleibt gelassen.`,'')}
+    else{logSys(`„${e.title}“ eskaliert. Jetzt ${e.diff}.`);flash(`„${e.title}“ eskaliert! Es wird schwerer.`,'bad');setStanding(S.standing-pen)}
+    logNarr(e.esc);keep.push(e);
+  });
+  S.open=keep;
+  if(S.settings.stillstand){
+    if(!S.projectActed){const d=S.prio==='project'?2:1;logNarr('Niemand hat diese Woche an der Vorstudie gearbeitet. Was liegen bleibt, veraltet.');flash('Stillstand: Niemand war am Projekt.','bad');setProject(S.project-d)}
+    if(!S.standingActed){const d=S.prio==='standing'?2:1;logNarr('Niemand hat sich diese Woche um den Betrieb gekümmert. Das Depot merkt es, der Vorstand auch.');flash('Stillstand: Niemand war im Betrieb.','bad');setStanding(S.standing-d)}
+  }
+  if(S.prio==='project'&&S.project<=S.projectAtStart){logNarr(`${SCENARIO.vorstand} wollte Fortschritt sehen. Es gab keinen.`);flash('Keine Fortschritte, wo der Vorstand hingeschaut hat.','bad');setStanding(S.standing-1)}S.phase='call';UI.call={q:pickQuestion(),done:false};logPhase('Vorstands-Call');render();
+}
+function pickQuestion(){
+  const qs=CALL_QUESTIONS.filter(q=>!(q.startsWith('Warum stehen')&&!S.open.length)&&!(q.startsWith('Wer hat entschieden')&&!S.open.some(e=>e.type==='Störung'))&&!(q.includes('Nachbarbereich')&&!S.nachbarDebt));
+  return qs[Math.floor(Math.random()*qs.length)]||CALL_QUESTIONS[2];
+}
+function callAnswer(){
+  if(UI.call.done)return;logNarr(`Vorstand: „${UI.call.q}“`);
+  const bl=S.players[0],r=roll();S.stats.rolls++;const ok=r.total>=callThreshold();
+  logAct(bl.key,'antwortet dem Vorstand.');logRoll(bl.key,[{v:r.d.join('+'),l:null}],r.total,callThreshold(),ok,'Überzeugungswurf');
+  flash(ok?'Der Vorstand ist überzeugt!':'Der Vorstand ist nicht überzeugt.',ok?'good':'bad');if(ok)setStanding(S.standing+1);else if(S.settings.callFail)setStanding(S.standing-1);
+  UI.call.done=true;render();
+}
+function callObject(key){
+  if(UI.call.done)return;logNarr(`Vorstand: „${UI.call.q}“`);const p=P(key);
+  logAct(key,'widerspricht der Bereichsleitung offen vor dem Vorstand.');flash(`${p.name} widerspricht offen vor dem Vorstand!`,'bad');
+  setStanding(S.standing-1);p.extraChips++;logSys(`${p.name} bekommt nächste Runde einen Chip extra.`);flash(`${p.name} bekommt nächste Runde einen Chip extra.`,'good');
+  UI.call.done=true;render();
+}
+const lastRound=()=>(S.restructuring&&S.round>S.restructuringRound)||S.round>=S.settings.rounds;
+function finishReflection(cards){
+  const n=S.players.some(p=>p.strength==='sinn')?2:1;
+  cards.slice(0,n).filter(t=>t.trim()).forEach(t=>{S.lern.push({text:t.trim(),used:false});logRef(`Lernkarte: „${t.trim()}“`)});
+  S.projectHist.push(S.project);
+  if(lastRound()){endGame();return}
+  if(S.settings.puffer){const left=S.players.reduce((a,p)=>a+p.chips,0);const add=Math.min(2-S.puffer,Math.floor(left/2));if(add>0){S.puffer+=add;logSys(`${left} Chips blieben übrig: ${add} Puffer-Chip${add>1?'s':''} in die gemeinsame Schale (jetzt ${S.puffer}).`);flash(`Übrige Zeit wird Puffer: ${S.puffer} in der Schale.`,'good')}}
+  S.round++;S.phase='event';S.eventDone=false;UI.focus=null;
+  S.players.forEach(p=>{p.out=false;if(p.erschoepfung>=3){p.out=true;p.erschoepfung=0;logSys(`${p.name} ist erschöpft und fällt diese Runde aus.`);flash(`${p.name} fällt diese Runde aus: erschöpft.`,'bad',2200)}p.chips=p.out?0:Math.max(0,S.settings.chips+p.extraChips-p.debt-(S.restructuring?1:0));p.debt=0;p.extraChips=0;p.strengthUsed=false;p.lernUsed=false;p.helpUsed=false;p.passed=false;p.side=null;p.rolled=false;p.noPair=false;p.endRound=false;p.overtimeUsed=false});
+  const ma=P('MA');if(S.round===4&&ma&&ma.paired<2){ma.left=true;ma.chips=Math.max(0,ma.chips-(S.settings.chips-1));logSys(`${ma.name} nimmt das Angebot aus dem Nachbarbereich an: nur noch ein Chip.`);flash(`${ma.name} wechselt in den Nachbarbereich!`,'bad',2600)}
+  logRound(S.round);logNarr(`Zurück ins Fachgebiet. Es ist wieder Dienstag.${S.restructuring?' Die Umstrukturierung läuft.':''}`);flash(`Runde ${S.round}`,'round',2200);render();
+}
+function endGame(){
+  S.over=true;S.phase='end';stopTurnTimer();S.won=S.project>=S.settings.projectTarget&&S.standing>0;
+  logPhase('Spielende');logSys(`Projekt ${S.project}/${S.settings.projectTarget}, Standing ${S.standing}. ${S.won?'Teamziel erreicht.':'Teamziel verfehlt.'}`);
+  flash(S.won?'Teamziel erreicht!':'Teamziel verfehlt.',S.won?'good':'bad',3000);render();
+}
+function next(){
+  if(S.over)return;
+  if(S.phase==='event'){if(!S.eventDone)drawRound();startCommit()}
+  else if(S.phase==='commit'){S.players.forEach(p=>{if(!p.side)p.side='standing'});stopTurnTimer();startPlay()}
+  else if(S.phase==='play')endPlay();
+  else if(S.phase==='escalation'){escalate();return}
+  else if(S.phase==='call'){if(!UI.call.done)logSys('Vorstands-Call übersprungen.');S.phase='reflection';UI.refl=['',''];logPhase('Reflexion');logNarr('Pause im Fachgebiet.')}
+  render();
+}
+
+// ---------- Rendering ----------
+const PORT=id=>PORTRAITS.find(x=>x.id===id)||PORTRAITS[0];
+const pf=(p,cls)=>`<div class="pf ${cls||''}">${portraitSVG(PORT(p.portrait),150)}</div>`;
+function render(){
+  if(!S){showSetup();return}
+  renderHud();renderEvents();renderStage();renderTeam();renderLog();renderTimer();
+  try{localStorage.setItem('planspiel-state',JSON.stringify(S))}catch(e){}
+}
+function renderHud(){
+  const st=S.settings;const pips=(n,max,low)=>Array.from({length:max},(_,i)=>`<i class="pip ${i<n?'on':''} ${low&&i<n&&n<=3?'low':''}"></i>`).join('');
+  const ph={event:'Ereignis',commit:'Ansage',play:'Spielphase',escalation:'Eskalation',call:'Vorstands-Call',reflection:'Reflexion',end:'Ende'}[S.phase];
+  const tally=(S.phase==='commit'||S.phase==='play')?` · Betrieb ${sideCount('standing')} / Projekt ${sideCount('project')}`:'';
+  const prio=S.prio&&S.phase!=='end'?` · Priorität: ${SIDE[S.prio]}`:'';
+  $('hud').innerHTML=`<div class="stamp">Runde ${S.round}<small>von ${S.settings.rounds} · ${ph}${tally}${prio}</small></div>
+    <div class="meter standing"><div class="lab"><span>Vertrauen des Vorstands</span><span class="num">${S.standing}</span></div><div class="pips">${pips(S.standing,st.standingMax,true)}</div></div>
+    <div class="meter proj"><div class="lab"><span>Projekt „Vorstudie“ · ${projectPhaseName()}</span><span class="num">${S.project}/${st.projectTarget}</span></div><div class="pips">${pips(S.project,st.projectTarget)}</div></div>
+    <div id="timer" class="clock"><i id="hand"></i><b id="tnum"></b></div>
+    <button class="gear" id="btn-gear" title="Einstellungen">⚙</button>`;
+  $('btn-gear').addEventListener('click',showSettings);
+}
+function renderTimer(){
+  const el=$('timer'),nb=$('tnum'),hand=$('hand');if(!el)return;
+  if(!timed()||!S.settings.turnTimer){nb.textContent=timed()?'∞':'';el.className='clock off';hand.style.transform='rotate(180deg)';$('stage').classList.remove('crit');return}
+  if(!UI.turnEnd){nb.textContent='';return}
+  const ms=Math.max(0,UI.turnEnd-Date.now()),s=Math.ceil(ms/1000),f=ms/(S.settings.turnSec*1000);const crit=s<=10;
+  nb.textContent=s;el.className='clock'+(crit?' critt':'');hand.style.transform=`rotate(${180+(1-f)*360}deg)`;$('stage').classList.toggle('crit',crit);
+}
+function renderEvents(){
+  const el=$('evs');
+  if(!S.open.length){el.innerHTML='<div class="empty">Tisch frei.</div>';return}
+  const picking=UI.act&&['attack','help','solve','gelassenheit'].includes(UI.act.kind);
+  const focusId=UI.act&&(UI.act.eventId||null);
+  el.innerHTML=S.open.map(e=>{
+    const ok=!picking||(UI.act.kind==='solve'?e.type==='Störung':UI.act.kind==='gelassenheit'?e.type!=='Chance':true);
+    const pen=(S.settings.escPen||1)+(S.prio==='standing'?1:0);
+    return `<div class="ev ${picking&&ok?'pick':''} ${focusId===e.id?'sel':''}" data-ev="${e.id}" style="${picking&&!ok?'opacity:.4':''}">
+      ${iconSVG(e.icon,56)}<div class="t">${esc(e.title)}</div><div class="diff num">${dil()?wagDiff(e):e.diff}<small>${dil()?'Wagnis':'Hürde'}</small></div>
+      <div class="x">${esc(fill(e.text))}</div>
+      <div class="m">${e.type} · an ${esc(P(e.to).name)}${e.gain?' · <span class="prot">bei Erfolg: '+esc(e.gain)+'</span>':''}${e.id>=100?' · Folge von früher':''}${e.protected?' · <span class="prot">darf liegen bleiben</span>':''}${e.type!=='Chance'?` · liegen lassen: Vertrauen −${pen}`:''}</div></div>`}).join('');
+  if(picking)el.querySelectorAll('.ev.pick').forEach(c=>c.addEventListener('click',()=>{UI.act.eventId=+c.dataset.ev;if(UI.act.kind==='attack')UI.act.id='attack:'+UI.act.eventId;render()}));
+}
+function chipsHtml(p){return `<div class="chips">${Array.from({length:Math.max(p.chips,S.settings.chips)},(_,k)=>`<div class="chip ${k<p.chips?'':'off'}"></div>`).join('')}</div>`}
+function dmBox(e){return `<div class="dmbox"><div class="h">Spielleitung liest vor</div><div class="r">${esc(fill(e.read||e.text))}</div>${e.qa?`<div class="q">Rückfragen: ${esc(fill(e.qa))}</div>`:''}</div>`}
+function renderStage(){
+  const el=$('stage');
+  if(S.over){el.style.setProperty('--pc','var(--ink)');el.innerHTML=renderEnd();return}
+  if(S.phase==='play'&&S.turn!==null){const p=S.players[S.turn];el.style.setProperty('--pc',`var(${p.color})`);el.innerHTML=renderPlayerStage(p);bindStage(p);return}
+  if(S.phase==='commit'&&S.turn!==null){
+    const p=S.players[S.turn];el.style.setProperty('--pc',`var(${p.color})`);
+    const n=S.open.filter(e=>e.type!=='Chance').length;const pen=(S.settings.escPen||1)+(S.prio==='standing'?1:0);
+    el.innerHTML=`<div class="who">${pf(p)}<div><div class="nm">${esc(p.name)}</div><div class="rl">${esc(p.role)} · Ansage</div></div>${chipsHtml(p)}</div><div class="body">
+      ${S.prio?`<div class="prompt narr">${SCENARIO.vorstand} will diese Woche vor allem: ${SIDE[S.prio]}.</div>`:''}
+      <div class="prompt">Worauf setzt du diese Woche?</div>
+      <div class="sides">
+        <button class="side st" id="c-standing"><span class="big">Betrieb</span><span>Störungen, Team, Politik: ${S.open.length} Karte${S.open.length===1?'':'n'} auf dem Tisch${n?`, ${n} kosten je ${pen} Vertrauen, wenn sie liegen bleiben`:''}</span><span class="muted">bisher ${sideCount('standing')}${S.settings.stillstand&&!sideCount('standing')?' · ohne Betrieb: Vertrauen −'+(S.prio==='standing'?2:1):''}</span></button>
+        <button class="side pr" id="c-project"><span class="big">Projekt</span><span>Die Vorstudie voranbringen · ${projectPhaseName()}${dil()?(S.project>=6?' · Abschluss kostet 3 Chips':''):', Hürde '+projectDiff()}${openStoerungen()?`, ${openStoerungen()} Störung${openStoerungen()>1?'en':''} bremsen`:''}</span><span class="muted">bisher ${sideCount('project')}${S.settings.stillstand&&!sideCount('project')?' · ohne Projekt: Projekt −'+(S.prio==='project'?2:1):''}</span></button>
+      </div>
+      <div class="muted">Die Ansage gilt für die ganze Woche. Mindestens eine Handlung ist Pflicht.</div></div>`;
+    $('c-standing').addEventListener('click',()=>chooseSide(p,'standing'));
+    $('c-project').addEventListener('click',()=>chooseSide(p,'project'));
+    return;
+  }
+  el.style.setProperty('--pc','var(--ink)');
+  let h=`<div class="who"><div><div class="nm" style="font-size:32px">Spielleitung</div><div class="rl">${{event:'Ereignis',escalation:'Eskalation',call:'Vorstands-Call',reflection:'Reflexion'}[S.phase]}</div></div></div><div class="body">`;
+  if(S.phase==='event'){
+    const n=eventsFor(S.round);const due=S.scheduled.filter(x=>x.round<=S.round).length;
+    if(S.eventDone){
+      h+=S.open.map(e=>`<div class="row" style="align-items:start;gap:12px">${iconSVG(e.icon,56)}<div style="flex:1;min-width:0"><div style="font-weight:800;font-size:18px">${esc(e.title)} <span class="muted" style="font-weight:600;font-size:13px">· an ${esc(P(e.to).name)}</span></div>${dmBox(e)}</div></div>`).join('');
+      const first=S.open.find(x=>x.id===UI.focus)||S.open[0];
+      h+=`<div class="row"><button class="big primary" id="s-next">Zur Ansage</button><span class="muted">${esc(P(first.to).name)} sagt zuerst an.</span></div>`;
+    } else {
+      h+=S.round===1?`<div class="dmbox"><div class="h">Spielleitung liest vor</div><div class="r">${esc(SCENARIO.intro)}</div></div>`:'';
+      h+=`<div class="prompt">Woche ${S.round}: ${n} Ereignis${n>1?'se':''}${due?` und ${due} Folge${due>1?'n':''} von früher`:''}. Zieh und erzähl.</div><div class="row"><button class="big primary" id="s-draw">Ziehen</button></div><div class="muted">Stapel ${S.deck.length} · Ablage ${S.discard.length}${S.nachbarDebt?` · Schuld bei Süd: ${S.nachbarDebt}`:''}</div>`;
+    }
+  }
+  if(S.phase==='escalation'){
+    const n=S.open.filter(e=>e.type!=='Chance').length,pr=S.open.filter(e=>e.protected).length,pen=(S.settings.escPen||1)+(S.prio==='standing'?1:0);
+    const still=[];if(S.settings.stillstand){if(!S.projectActed)still.push('niemand war am Projekt');if(!S.standingActed)still.push('niemand war im Betrieb')}
+    h+=`<div class="prompt">Die Woche ist um. ${n?`${n} Karte${n>1?'n':''} bleib${n>1?'en':'t'} liegen: Vertrauen fällt um ${Math.max(0,n-pr)*pen}.`:'Nichts liegt mehr auf dem Tisch.'}${still.length?` Und: ${still.join(', ')}.`:''}</div>
+      ${S.open.filter(e=>e.type!=='Chance'&&!e.protected).map(e=>`<div class="prompt narr">„${esc(e.title)}“: ${esc(fill(e.esc))}</div>`).join('')}
+      <div class="row"><button class="big primary" id="s-next">Eskalation</button></div>`;
+  }
+  if(S.phase==='call'){
+    h+=`<div class="prompt narr">${SCENARIO.vorstand} ruft an.</div><textarea id="s-q" ${UI.call.done?'disabled':''}>${esc(UI.call.q)}</textarea>`;
+    if(!UI.call.done)h+=`<div class="row"><button class="big primary" id="s-answer" style="color:var(${S.players[0].color})">${esc(S.players[0].name)} antwortet</button><span class="muted">oder Widerspruch:</span>${S.players.slice(1).map(p=>`<button data-obj="${p.key}" style="color:var(${p.color});font-weight:800">${esc(p.name)}</button>`).join('')}</div>`;
+    h+=`<div class="row"><button class="${UI.call.done?'big primary':'ghost'}" id="s-next">${UI.call.done?'Zur Reflexion':'Überspringen'}</button></div>`;
+  }
+  if(S.phase==='reflection'){
+    const twoL=S.players.some(p=>p.strength==='sinn');
+    h+=`<div class="prompt narr">Pause im Fachgebiet. Chips bleiben liegen.</div><ol class="qs"><li>Welche Entscheidung war die schwerste, und wer hat sie getroffen?</li><li>Was wusste jemand, das die anderen nicht wussten? Hat er es gesagt?</li><li>Was machen wir nächste Woche anders?</li>${S.settings.strengths?'<li>Wo hat deine Stärke geholfen, wo hat sie dich verleitet?</li>':''}</ol>
+      <textarea id="r1" placeholder="Lernkarte: ein Satz">${esc(UI.refl?.[0]||'')}</textarea>${twoL?`<textarea id="r2" placeholder="Zweite Lernkarte (Sinn)">${esc(UI.refl?.[1]||'')}</textarea>`:''}
+      <div class="row"><button class="big primary" id="s-refl">${lastRound()?'Spiel beenden':'Zurück ins Fachgebiet'}</button></div>`;
+  }
+  el.innerHTML=h+'</div>';
+  $('s-draw')?.addEventListener('click',()=>{drawRound();render()});
+  $('s-next')?.addEventListener('click',next);
+  $('s-answer')?.addEventListener('click',()=>{UI.call.q=$('s-q').value;callAnswer()});
+  el.querySelectorAll('[data-obj]').forEach(b=>b.addEventListener('click',()=>{UI.call.q=$('s-q').value;callObject(b.dataset.obj)}));
+  $('s-q')?.addEventListener('input',e=>UI.call.q=e.target.value);
+  $('s-refl')?.addEventListener('click',()=>finishReflection([$('r1').value,$('r2')?.value||'']));
+  $('r1')?.addEventListener('input',e=>{UI.refl=UI.refl||['',''];UI.refl[0]=e.target.value});
+  $('r2')?.addEventListener('input',e=>{UI.refl=UI.refl||['',''];UI.refl[1]=e.target.value});
+}
+function renderPlayerStage(p){
+  const st=STRENGTHS[p.strength];
+  let h=`<div class="who">${pf(p)}<div><div class="nm">${esc(p.name)}</div><div class="rl">${esc(p.role)} · ${p.focus}${p.erschoepfung?` · Erschöpfung ${p.erschoepfung}/3`:''}</div></div><span class="sidetag ${p.side==='standing'?'st':'pr'}">${SIDE[p.side]||''}</span>${chipsHtml(p)}</div><div class="body">`;
+  h+=`<div class="facts mini"><span><b>Fähigkeit</b> ${esc(p.ability)}${p.abilityUsed?' (verbraucht)':''}</span>${S.settings.strengths&&st?`<span><b>${esc(st.name)}</b> ${esc(st.effect)}${p.strengthUsed&&st.active?' (genutzt)':''}</span>`:''}<button class="ghost small" id="s-secret">${UI.secretOpen?'Verdeckte Seite zu':'Verdeckte Seite'}</button></div>`;
+  if(UI.secretOpen)h+=`<div class="secretbox"><b>Geheimes Ziel:</b> ${esc(fill(p.goal))}<br><b>Geheiminfo:</b> ${esc(fill(p.info))}</div>`;
+  if(UI.peek)h+=`<div class="opts"><b>Weitblick:</b> ${esc(UI.peek)} <button class="ghost small" id="s-peek">ok</button></div>`;
+  if(S.waitReroll){
+    const e=UI.lastRoll.e?S.open.find(x=>x.id===UI.lastRoll.e):null;const diff=e?(dil()?wagDiff(e):e.diff):projectDiff();
+    h+=`<div class="result fail">${UI.lastRoll.total} gegen ${diff} – daneben</div><div class="prompt">Mut: nachlegen? Ein Chip, Nachwurf mit +1 · Chance ${pct(pSuccess(diff,UI.lastRoll.bonus+1))}</div><div class="acts"><button class="primary" id="s-reroll">Nachlegen</button><button id="s-keep">Dabei belassen</button></div>`;
+    return h+'</div>';
+  }
+  h+=`<div class="optlabel">Deine Optionen${p.rolled?'':' · mindestens eine Handlung'}</div><div class="optgrid">`;
+  for(const o of options(p)){
+    const sel=UI.act&&UI.act.id===o.id;
+    const chance=o.diff?pSuccess(o.diff,o.base+(sel?extraBonus(p):0)):null;
+    h+=`<div class="optc ${o.cls||''} ${sel?'sel':''} ${o.disabled?'dis':''}" data-o="${o.id}">
+      <div class="oh"><div style="display:flex;gap:10px;align-items:center;min-width:0">${o.icon?iconSVG(o.icon,44):''}<div><div class="ot">${esc(o.title)}</div><div class="os">${esc(fill(o.sub))}</div></div></div>${chance!==null?`<div class="oc ${chance>=.66?'hi':chance>=.4?'mid':'lo'}">${pct(chance)}<small>Hürde ${o.diff}${o.base?(o.base>0?' · +':' · ')+o.base:''}</small></div>`:`<div class="oc nc">${esc(o.cost||'')}</div>`}</div>
+      ${o.ok?`<div class="oe"><span class="g">${esc(o.ok)}</span>${o.fail?` · <span class="r">${esc(o.fail)}</span>`:''}</div>`:''}
+      ${sel?renderSel(p,o):''}</div>`;
+  }
+  return h+`</div></div>`;
+}
+function extraBonus(p){const a=UI.act;if(!a)return 0;return (a.reason?1:0)+(a.lern?1:0)+a.helpers.reduce((s,k)=>s+helpVal(P(k)),0)}
+function options(p){
+  const o=[];const st=STRENGTHS[p.strength];const c=p.chips;
+  if(p.side==='standing'){
+    S.open.forEach(e=>{
+      if(dil()){
+        const cheapest=Math.min(...e.opts.map(x=>x.chips||1));const pen=(S.settings.escPen||1)+(S.prio==='standing'?1:0);
+        o.push({id:'ev:'+e.id,kind:'event',eventId:e.id,icon:e.icon,title:e.title,sub:`${e.type} · ${e.opts.length} Wege${e.type!=='Chance'?' · liegen lassen kostet '+pen+' Vertrauen':' · verfällt sonst'}`,cost:`ab ${cheapest} Chip`,cls:'t-'+e.type,disabled:c<1&&!e.opts.some(x=>x.payer&&x.payer!==p.key&&P(x.payer).chips>0)});
+      } else {
+        const base=(FOCUS_MATCH[p.focus].includes(e.type)||(p.abilityKey==='standby'&&e.type==='Störung'))?2:0;
+        o.push({id:'attack:'+e.id,kind:'attack',eventId:e.id,icon:e.icon,title:'Anpacken',sub:e.title,diff:e.diff,base,cost:'1 Chip',ok:e.gain?'Karte weg, '+e.gain:'Karte weg',fail:'Chip weg, Karte bleibt',cls:'t-'+e.type,disabled:c<1});
+      }});
+    if(!S.open.length)o.push({id:'bereit',kind:'bereit',title:'Bereitschaft',sub:'Tisch frei: den Betrieb am Laufen halten',diff:bereitDiff(),base:0,ok:'Vertrauen +1',fail:'Chip weg, nichts passiert',disabled:c<1});
+    if(p.abilityKey==='help'&&!p.helpUsed)o.push({id:'help',kind:'help',title:'Hilfe von außen',sub:'Fähigkeit · ein Wagnis wird um 1 leichter',cost:'1 Chip',ok:'Wagnis-Hürde −1',disabled:c<1||!S.open.length});
+    if(p.abilityKey==='solve'&&!p.abilityUsed)o.push({id:'solve',kind:'solve',title:'Störung durchziehen',sub:'Fähigkeit · einmal pro Spiel, der einzige saubere Weg',cost:'2 Chips',ok:'Störung weg, keine Nebenwirkung',disabled:c<2||!S.open.some(e=>e.type==='Störung')});
+  } else {
+    const stn=openStoerungen();
+    if(dil())o.push({id:'proj',kind:'projectD',title:'Projekt',sub:`${projectPhaseName()} · 4 Wege${S.project>=6?' · gründlich kostet jetzt 3 Chips':''}${stn?` · ${stn} offene Störung${stn>1?'en':''} bremsen das Wagnis`:''}`,cost:'ab 1 Chip',cls:'t-Chance',disabled:c<1});
+    else o.push({id:'project',kind:'project',title:'Projekt',sub:projectPhaseName()+(stn?` · ${stn} offene Störung${stn>1?'en':''} bremsen`:''),diff:projectDiff(),base:(p.focus==='Projekt'?2:0)-stn,cost:'1 Chip',ok:'Projekt +1',fail:'Chip weg',cls:'t-Chance',disabled:c<1});
+    if(p.abilityKey==='push'&&!p.abilityUsed)o.push({id:'push',kind:'push',title:'Projektschub',sub:'Fähigkeit · einmal pro Spiel, der einzige saubere Weg',cost:'2 Chips',ok:'Projekt +3',disabled:c<2});
+  }
+  if(S.settings.strengths&&st&&st.active&&!p.strengthUsed){
+    if(p.strength==='weitblick')o.push({id:'weitblick',kind:'weitblick',title:'Weitblick',sub:'Stärke · oberste Ereigniskarte ansehen',cost:'kein Zug',ok:'Du weißt, was kommt'});
+    if(p.strength==='fuehrung')o.push({id:'fuehrung',kind:'fuehrung',title:'Führung',sub:'Stärke · einen Chip weitergeben',cost:'1 Chip, ist ein Zug',ok:'Jemand anderes hat einen Zug mehr',disabled:c<1});
+    if(p.strength==='gelassenheit')o.push({id:'gelassenheit',kind:'gelassenheit',title:'Gelassenheit',sub:'Stärke · eine Karte darf heute liegen bleiben',cost:'kein Zug',ok:'Kein Vertrauensverlust für diese Karte',disabled:!S.open.some(e=>e.type!=='Chance')});
+  }
+  if(S.settings.puffer&&S.puffer>0)o.push({id:'puffer',kind:'puffer',title:'Puffer nehmen',sub:`Gemeinsame Schale · ${S.puffer} Chip${S.puffer>1?'s':''} übrig`,cost:'kein Zug',ok:'+1 Chip für dich'});
+  if(S.settings.overtime&&c<1&&!p.overtimeUsed)o.push({id:'overtime',kind:'overtime',title:'Überstunden',sub:`Noch einen Chip aus der nächsten Woche holen · Erschöpfung ${p.erschoepfung}/3`,cost:'kein Zug',ok:'+1 Chip jetzt',fail:'nächste Woche ein Chip weniger'+(p.erschoepfung>=2?', danach fällst du aus':'')});
+  o.push({id:'pass',kind:'pass',title:'Fertig',sub:p.rolled||c<1?'Keine weiteren Züge in dieser Woche':'Erst mindestens einmal handeln',cost:c>0?`${c} Chip${c>1?'s':''} bleiben übrig`:'',ok:c>0&&S.settings.puffer?'Übrige Zeit wird Puffer fürs Team':'',cls:'pass',disabled:!p.rolled&&c>0});
+  return o;
+}
+function modRow(p,a,withHelpers,hasLern,extra){
+  const helpers=S.players.filter(h=>h.key!==p.key&&h.side===p.side&&!h.noPair&&!h.out);
+  return `<div class="opts">${a.wag?`<label><input type="checkbox" id="o-reason" ${a.reason?'checked':''}> Begründet +1</label>`:''}${hasLern?`<label><input type="checkbox" id="o-lern" ${a.lern?'checked':''}> Lernkarte ${a.wag?'+1':'(1 Chip sparen)'}</label>`:''}
+    <span class="muted">Zu zweit:</span>${helpers.length?helpers.map(h=>`<label><input type="radio" name="helper" data-h="${h.key}" ${a.helpers.includes(h.key)?'checked':''} ${h.chips<1?'disabled':''}> <span style="color:var(${h.color})">${esc(h.name)}</span> ${a.wag?'+'+helpVal(h):'zahlt 1 Chip'}</label>`).join('')+`<label><input type="radio" name="helper" data-h="" ${!a.helpers.length?'checked':''}> allein</label>`:'<span class="muted">niemand auf deiner Seite</span>'}${extra||''}</div>`;
+}
+function renderSel(p,o){
+  const a=UI.act;const hasLern=S.lern.some(k=>!k.used)&&!p.lernUsed;
+  if(o.kind==='event'||o.kind==='projectD'){
+    const e=o.kind==='event'?S.open.find(x=>x.id===o.eventId):null;
+    const list=o.kind==='event'?e.opts:PROJECT_OPTS.map(x=>({...x,chips:x.id==='g'&&S.project>=6?3:x.chips}));
+    const base=o.kind==='event'?((FOCUS_MATCH[p.focus].includes(e.type)||(p.abilityKey==='standby'&&e.type==='Störung'))?2:0):(p.focus==='Projekt'?2:0)-openStoerungen();
+    const diff=o.kind==='event'?wagDiff(e):projectDiff();
+    const rows=list.map(x=>{
+      const c=optCost(p,x,a);const avail=c.payer.chips>=c.payerCost&&!(c.payer!==p&&c.payer.out);
+      const wag=!!x.roll;const ch=wag?pSuccess(diff,base+extraBonus(p)):null;
+      const costTxt=c.payer!==p?`${c.cost} Chip von ${c.payer.name}`:`${c.payerCost} Chip${c.payerCost===1?'':'s'}${c.helperPays?' + 1 von '+c.helper.name:''}`;
+      const cons=wag?`<span class="w">Wagnis: Wurf ≥ ${diff}${base?(base>0?' (+':' (')+base+')':''} → ${pct(ch)}</span> · bei Erfolg: <span class="g">${esc(consText({...x,roll:null},{project:o.kind==='projectD'})||'erledigt')}</span>${Object.keys(x.roll.fail||{}).length?` · bei Fehlschlag: <span class="r">${esc(consText(x.roll.fail)||'nichts')}</span>`:' · bei Fehlschlag: <span class="r">Chip weg, Karte bleibt</span>'}`
+        :`<span class="g">${esc(consText(x,{project:o.kind==='projectD'})||'erledigt')}</span>`;
+      return `<div class="orow ${wag?'wag':''} ${avail?'':'dis'}"><div><div class="ol">${esc(fill(x.label))}${wag?'<small>Wagnis</small>':''}</div><div class="ox">${esc(fill(x.text))}</div><div class="oce">${cons}</div></div><div class="ocost">${costTxt}<small>${wag?'riskant':'sicher'}</small></div><button class="small ${wag?'':'primary'}" data-opt="${x.id}" ${avail?'':'disabled'}>Wählen</button></div>`;
+    }).join('');
+    return `${e?dmBox(e):''}<div class="orows">${rows}</div>${modRow(p,{...a,wag:true},true,hasLern)}<div class="acts"><button class="ghost" id="o-cancel">Zurück</button></div>`;
+  }
+  if(o.diff){
+    const bonus=o.base+extraBonus(p);
+    return modRow(p,{...a,wag:true},true,hasLern,`<span class="sum num">${bonus>=0?'+':''}${bonus} gegen ${o.diff} → ${pct(pSuccess(o.diff,bonus))}</span>`)+`<div class="acts"><button class="primary" id="o-go">Würfeln</button><button class="ghost" id="o-cancel">Abbrechen</button></div>`;
+  }
+  if(o.kind==='help'||o.kind==='solve'||o.kind==='gelassenheit'){
+    const list=S.open.filter(e=>o.kind==='solve'?e.type==='Störung':o.kind==='gelassenheit'?e.type!=='Chance':true);
+    return `<div class="opts"><span class="muted">Welche Karte?</span>${list.map(e=>`<button class="small ${a.eventId===e.id?'primary':''}" data-pick="${e.id}">${esc(e.title)}</button>`).join('')}</div>
+      <div class="acts"><button class="primary" id="o-go" ${a.eventId?'':'disabled'}>Einsetzen</button><button class="ghost" id="o-cancel">Abbrechen</button></div>`;
+  }
+  if(o.kind==='fuehrung')return `<div class="opts"><span class="muted">An wen?</span>${S.players.filter(h=>h.key!==p.key).map(h=>`<button class="small" data-t="${h.key}" style="color:var(${h.color})">${esc(h.name)}</button>`).join('')}<button class="ghost small" id="o-cancel">Abbrechen</button></div>`;
+  if(o.kind==='push')return `<div class="acts"><button class="primary" id="o-go">Projektschub einsetzen</button><button class="ghost" id="o-cancel">Abbrechen</button></div>`;
+  if(o.kind==='puffer')return `<div class="acts"><button class="primary" id="o-go">Chip nehmen</button><button class="ghost" id="o-cancel">Abbrechen</button></div>`;
+  if(o.kind==='overtime')return `<div class="prompt">Du holst dir Zeit aus der nächsten Woche. Das merkt man.</div><div class="acts"><button class="primary" id="o-go">Überstunden machen</button><button class="ghost" id="o-cancel">Abbrechen</button></div>`;
+  if(o.kind==='pass')return `<div class="acts"><button class="primary" id="o-go">Fertig für diese Woche</button><button class="ghost" id="o-cancel">Doch nicht</button></div>`;
+  return '';
+}
+function bindStage(p){
+  const el=$('stage');
+  $('s-secret')?.addEventListener('click',()=>{UI.secretOpen=!UI.secretOpen;render()});
+  $('s-peek')?.addEventListener('click',()=>{UI.peek=null;render()});
+  $('s-reroll')?.addEventListener('click',()=>doAction(p,'reroll'));
+  $('s-keep')?.addEventListener('click',()=>doAction(p,'keep'));
+  el.querySelectorAll('.optc:not(.dis)').forEach(c=>c.addEventListener('click',e=>{
+    if(e.target.closest('.opts,.acts,.orows,.dmbox,button,label,input'))return;
+    const o=options(p).find(x=>x.id===c.dataset.o);if(!o)return;
+    if(o.kind==='weitblick'){doAction(p,'strength');return}
+    UI.act={id:o.id,kind:o.kind,eventId:o.eventId||null,reason:false,lern:false,helpers:[]};render();
+  }));
+  const a=UI.act;if(!a)return;
+  $('o-reason')?.addEventListener('change',e=>{a.reason=e.target.checked;render()});
+  $('o-lern')?.addEventListener('change',e=>{a.lern=e.target.checked;render()});
+  el.querySelectorAll('[data-h]').forEach(c=>c.addEventListener('change',()=>{const k=c.dataset.h;a.helpers=k?[k]:[];render()}));
+  el.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>{a.eventId=+b.dataset.pick;render()}));
+  el.querySelectorAll('[data-t]').forEach(b=>b.addEventListener('click',()=>doAction(p,'strength',{target:b.dataset.t})));
+  el.querySelectorAll('[data-opt]').forEach(b=>b.addEventListener('click',()=>{const opt={optId:b.dataset.opt,eventId:a.eventId,reason:a.reason,lern:a.lern,helpers:a.helpers};if(a.kind==='event')doAction(p,'opt',opt);else doAction(p,'popt',opt)}));
+  $('o-cancel')?.addEventListener('click',()=>{UI.act=null;render()});
+  $('o-go')?.addEventListener('click',()=>{
+    const opt={eventId:a.eventId,reason:a.reason,lern:a.lern,helpers:a.helpers};
+    if(a.kind==='attack')doAction(p,'attack',opt);
+    else if(a.kind==='project')doAction(p,'project',opt);
+    else if(a.kind==='bereit')doAction(p,'bereit',opt);
+    else if(a.kind==='help'||a.kind==='solve'||a.kind==='push')doAction(p,'ability',{eventId:a.eventId});
+    else if(a.kind==='gelassenheit')doAction(p,'strength',{eventId:a.eventId});
+    else if(a.kind==='puffer')doAction(p,'puffer');
+    else if(a.kind==='overtime')doAction(p,'overtime');
+    else if(a.kind==='pass')passTurn();
+  });
+}
+function renderTeam(){
+  $('team').innerHTML=S.players.map((p,i)=>{
+    const st=STRENGTHS[p.strength];const active=(S.phase==='play'||S.phase==='commit')&&S.turn===i;
+    return `<div class="tm ${active?'active':''} ${S.phase==='play'&&p.passed&&!active?'passed':''}" style="--pc:var(${p.color})" title="${esc(p.role)}">
+      ${pf(p)}<div class="r1"><span class="n">${esc(p.name)}</span><span class="rl">${esc(p.role)}</span></div>
+      <div class="r2">${p.side&&(S.phase==='commit'||S.phase==='play')?`<span class="sidetag ${p.side==='standing'?'st':'pr'}">${SIDE[p.side]}</span>`:''}${active?'<span class="tag">'+(S.phase==='commit'?'sagt an':'am Zug')+'</span>':S.phase==='play'&&p.passed?'<span class="tag">fertig</span>':''}${p.noPair?'<span class="tag">gebunden</span>':''}${p.out?'<span class="tag">erschöpft</span>':''}${p.left?'<span class="tag">gewechselt</span>':''}${p.erschoepfung?`<span class="tag">Ü${p.erschoepfung}</span>`:''}${S.settings.strengths&&st?`<span>${esc(st.name)}</span>`:''}${p.extraChips||p.debt?`<span>${(p.extraChips-p.debt)>0?'+':''}${p.extraChips-p.debt} nächste Woche</span>`:''}${chipsHtml(p)}</div></div>`}).join('');
+  $('puffer').innerHTML=S.settings.puffer?`<span>Puffer:</span>${Array.from({length:2},(_,k)=>`<div class="chip ${k<S.puffer?'puf':'off'}" style="width:16px;height:16px"></div>`).join('')}<span class="muted">übrige Zeit des Teams</span>`:'';
+  const sched=S.scheduled.length?`<div style="margin-top:8px">Angekündigt: ${S.scheduled.map(x=>`<span class="k">R${x.round}: ${esc(CARD(x.card).title)}</span>`).join('')}</div>`:'';
+  $('lk').innerHTML=(S.lern.length?`Lernkarten: ${S.lern.map(k=>`<span class="k ${k.used?'used':''}">${esc(k.text)}</span>`).join('')}`:'')+sched+(S.nachbarDebt?`<div style="margin-top:6px">Schuld bei Süd: ${S.nachbarDebt}</div>`:'');
+}
+function renderLog(){
+  const el=$('log');const atBottom=el.scrollHeight-el.scrollTop-el.clientHeight<40||!el.dataset.f;
+  el.innerHTML=S.log.map(l=>`<div class="l ${l.k}">${l.h||esc(l.t)}</div>`).join('');el.dataset.f='1';if(atBottom)el.scrollTop=el.scrollHeight;
+}
+function goalHint(p){
+  if(p.key==='MA')return `${p.paired}× zu zweit${p.left?', gewechselt':''}`;
+  if(p.key==='TP'){let s=0;for(let i=1;i<S.projectHist.length;i++)if(S.projectHist[i]===S.projectHist[i-1])s++;return s?`Projekt stand ${s}× still`:'nie stehen geblieben'}
+  if(p.key==='BL')return 'Vertrauensverlauf im Protokoll';return 'siehe Protokoll';
+}
+function renderEnd(){
+  const st=S.stats;
+  return `<div class="who"><div><div class="nm" style="color:var(${S.won?'--good':'--crit'})">${S.won?'Teamziel erreicht':'Teamziel verfehlt'}</div><div class="rl">Nach Woche ${S.round}</div></div></div><div class="body">
+    <div class="tiles"><div class="tile"><div class="v num">${S.project}/${S.settings.projectTarget}</div><div class="k">Projekt</div></div><div class="tile"><div class="v num">${S.standing}</div><div class="k">Vertrauen</div></div><div class="tile"><div class="v num">${st.sicher}</div><div class="k">sichere Wege</div></div><div class="tile"><div class="v num">${st.wagnis}</div><div class="k">Wagnisse</div></div><div class="tile"><div class="v num">${st.succ+st.fails?Math.round(100*st.succ/(st.succ+st.fails)):0}%</div><div class="k">Würfe ok</div></div><div class="tile"><div class="v num">${S.nachbarDebt}</div><div class="k">Schuld bei Süd</div></div><div class="tile"><div class="v num">${st.timeouts}</div><div class="k">Zeit abgelaufen</div></div></div>
+    <div class="prompt">Verdeckte Seiten auf den Tisch. Wer hat sein Ziel geschafft, wer hat es geopfert, wer hat geschwiegen?</div>
+    <table class="rev">${S.players.map(p=>`<tr><td style="color:var(${p.color});font-weight:800;white-space:nowrap">${esc(p.name)}</td><td>${esc(fill(p.goal))}<div class="muted">${esc(fill(p.info))}</div></td><td class="muted" style="white-space:nowrap">${goalHint(p)}</td></tr>`).join('')}</table>
+    <div class="muted">Wo hast du etwas getan, weil es Punkte brachte, das du im echten Fachgebiet nie tun würdest?</div>
+    <div class="row"><button class="big primary" id="s-new">Neues Spiel</button><button id="s-copy">Protokoll kopieren</button></div></div>`;
+}
+document.addEventListener('click',e=>{if(e.target.id==='s-new')resetGame();if(e.target.id==='s-copy')copyLog(e.target)});
+
+// ---------- Overlay: Setup & Einstellungen ----------
+function settingsHtml(s){
+  return `<div class="grid">
+    <label>Spielmodus<select id="s-mode"><option value="dilemma" ${s.mode==='dilemma'?'selected':''}>Dilemma: Optionen mit Kosten, Würfel nur als Wagnis</option><option value="wuerfel" ${s.mode==='wuerfel'?'selected':''}>Würfel: jede Karte ist eine Hürde</option></select></label>
+    <label>Würfel<select id="s-dice"><option value="d6" ${s.dice==='d6'?'selected':''}>W6 · Hürden 4–6</option><option value="2d6" ${s.dice==='2d6'?'selected':''}>2W6 · Hürden 7–9</option></select></label>
+    <label>Chips pro Runde<input id="s-chips" type="number" min="1" max="6" value="${s.chips}"></label>
+    <label>Runden<input id="s-rounds" type="number" min="2" max="8" value="${s.rounds}"></label>
+    <label>Vertrauen Start<input id="s-standing" type="number" min="1" max="10" value="${s.standingStart}"></label>
+    <label>Vertrauen Max<input id="s-standingmax" type="number" min="5" max="15" value="${s.standingMax}"></label>
+    <label>Projektziel<input id="s-project" type="number" min="3" max="15" value="${s.projectTarget}"></label>
+    <label>Hürde min<input id="s-diffmin" type="number" min="2" max="12" value="${s.diffMin}"></label>
+    <label>Hürde max<input id="s-diffmax" type="number" min="2" max="12" value="${s.diffMax}"></label>
+    <label>Ereignisse pro Runde<input id="s-events" value="${esc(s.events)}" placeholder="2,3,3,4"></label>
+    <label>Projekt-Hürden (Wagnis)<input id="s-pd" value="${esc(s.pd)}" placeholder="4,5,7"></label>
+    <label>Vertrauensverlust je liegengebliebener Karte<input id="s-escpen" type="number" min="1" max="3" value="${s.escPen}"></label>
+    <label>Wagnis-Aufschlag (Dilemma)<input id="s-wagplus" type="number" min="0" max="3" value="${s.wagnisPlus}"></label>
+    <label>Bereitschaft-Hürde<input id="s-bereit" type="number" min="2" max="6" value="${s.bereit}"></label>
+    <label>Helfer-Bonus (Wagnis)<input id="s-helpb" type="number" min="1" max="3" value="${s.helpB}"></label>
+    <label>Sekunden pro Zug<input id="s-turnsec" type="number" min="5" max="180" value="${s.turnSec}"></label>
+    <label>Zeit abgelaufen<select id="s-timeout"><option value="hard" ${s.timeoutMode==='hard'?'selected':''}>Chip verloren</option><option value="mild" ${s.timeoutMode==='mild'?'selected':''}>Zug verfällt</option></select></label>
+    <label class="ck"><input id="s-puffer" type="checkbox" ${s.puffer?'checked':''}> Puffer (übrige Chips werden Teamzeit)</label>
+    <label class="ck"><input id="s-overtime" type="checkbox" ${s.overtime?'checked':''}> Überstunden erlaubt</label>
+    <label class="ck"><input id="s-stillstand" type="checkbox" ${s.stillstand?'checked':''}> Stillstand kostet</label>
+    <label class="ck"><input id="s-prio" type="checkbox" ${s.prio?'checked':''}> Priorität der Woche</label>
+    <label class="ck"><input id="s-callfail" type="checkbox" ${s.callFail?'checked':''}> Call-Fehlschlag kostet Vertrauen</label>
+    <label class="ck"><input id="s-critonce" type="checkbox" ${s.critOnce?'checked':''}> Glanzwurf nur 1×/Runde</label>
+    <label class="ck"><input id="s-turntimer" type="checkbox" ${s.turnTimer?'checked':''}> Zugtimer</label>
+    <label class="ck"><input id="s-strengths" type="checkbox" ${s.strengths?'checked':''}> Stärkenkarten</label></div>`;
+}
+function readSettings(){
+  const g=id=>$(id);const s={...DEFAULT_SETTINGS,...setupSettings};if(!g('s-dice'))return s;
+  s.mode=g('s-mode').value;s.dice=g('s-dice').value;s.chips=+g('s-chips').value;s.rounds=+g('s-rounds').value;s.standingStart=+g('s-standing').value;s.standingMax=+g('s-standingmax').value;s.projectTarget=+g('s-project').value;
+  s.diffMin=+g('s-diffmin').value;s.diffMax=+g('s-diffmax').value;s.turnSec=+g('s-turnsec').value;s.timeoutMode=g('s-timeout').value;s.turnTimer=g('s-turntimer').checked;s.strengths=g('s-strengths').checked;
+  s.events=g('s-events').value||'2,3,3,4';s.pd=g('s-pd').value||'4,5,7';s.escPen=+g('s-escpen').value||1;s.bereit=+g('s-bereit').value||5;s.helpB=+g('s-helpb').value||1;s.callFail=g('s-callfail').checked;s.critOnce=g('s-critonce').checked;s.wagnisPlus=+g('s-wagplus').value||0;s.puffer=g('s-puffer').checked;s.overtime=g('s-overtime').checked;s.stillstand=g('s-stillstand').checked;s.prio=g('s-prio').checked;return s;
+}
+function bindDice(){$('s-dice')?.addEventListener('change',e=>{if(e.target.value==='2d6'){$('s-diffmin').value=7;$('s-diffmax').value=9}else{$('s-diffmin').value=4;$('s-diffmax').value=6}})}
+function simHtml(){return `<details><summary>Balancing: Auto-Sim</summary><div class="row" style="margin-top:8px"><label class="muted">Partien <input id="sim-n" type="number" value="500" min="10" max="5000" style="width:80px"></label>
+  <select id="sim-strat"><option value="sicher">Dilemma: immer der sichere, teure Weg</option><option value="billig">Dilemma: immer der billige Weg, Nebenwirkungen egal</option><option value="wagnis">Dilemma: immer Wagnis</option><option value="mix">Dilemma: sicher wenn möglich, sonst billig</option><option value="klug">Dilemma: klug (Wagnis bei ≥ 67 %, billig wenn verkraftbar, sonst sicher)</option><option value="coop">Würfel: kooperativ</option><option value="solo">Würfel: Alleingänge</option><option value="project">Würfel: Projektfokus</option></select><button class="primary" id="btn-sim">Simulieren</button></div><div id="simres" class="tiles sim"></div></details>`}
+function bindSim(){$('btn-sim')?.addEventListener('click',()=>{const s=readSettings();const strat=$('sim-strat').value;s.mode=['coop','solo','project'].includes(strat)?'wuerfel':'dilemma';const r=simulate(Math.max(10,Math.min(5000,+$('sim-n').value||500)),strat,s);const pct=x=>Math.round(100*x/r.games)+'%';
+  $('simres').innerHTML=`<div class="tile"><div class="v">${pct(r.won)}</div><div class="k">Teamziel</div></div><div class="tile"><div class="v">${pct(r.projectReached)}</div><div class="k">Projekt voll</div></div><div class="tile"><div class="v">${pct(r.lostStanding)}</div><div class="k">Standing 0</div></div><div class="tile"><div class="v num">${r.avgProject.toFixed(1)}</div><div class="k">Ø Projekt</div></div><div class="tile"><div class="v num">${r.avgStanding.toFixed(1)}</div><div class="k">Ø Standing</div></div><div class="tile"><div class="v num">${(r.follow/r.games).toFixed(1)}</div><div class="k">Folgekarten/Partie</div></div><div class="tile"><div class="v num">${(r.rolls/r.games).toFixed(0)}</div><div class="k">Würfe/Partie</div></div>`})}
+function showSetup(){
+  const ov=$('ov');ov.hidden=false;$('app').style.visibility='hidden';
+  ov.innerHTML=`<div class="box"><h1>Planspiel Hot-Seat</h1><div class="muted">Vier Rollen, eine Spielleitung, ein Bildschirm. Figur wählen, Namen eintragen, Stärke wählen, los. Regelstand v2.5.</div>
+    <div class="scen">${esc(SCENARIO.intro)}</div>
+    <div class="seats">${ROLES.map((r,i)=>{const sp=setupPlayers[i];sp.portrait=sp.portrait||PORTRAITS[i].id;return `<div class="seat" style="--pc:var(${r.color})"><div class="r">${r.role}</div>
+      <div class="pick"><div class="pf" id="pf-${i}">${portraitSVG(PORT(sp.portrait),150)}</div><div><input data-n="${i}" value="${esc(sp.name)}" aria-label="Name" style="width:120px"><div class="muted" style="font-size:12px" id="pl-${i}">${esc(PORT(sp.portrait).line)}</div></div></div>
+      <div class="pgrid" data-pg="${i}">${PORTRAITS.map(pt=>`<div class="pp ${sp.portrait===pt.id?'on':''}" data-pid="${pt.id}" title="${esc(pt.name)}: ${esc(pt.line)}">${portraitSVG(pt,44)}</div>`).join('')}</div>
+      <select data-s="${i}" aria-label="Stärke">${Object.entries(STRENGTHS).map(([k,v])=>`<option value="${k}" ${sp.strength===k?'selected':''}>${v.name}</option>`).join('')}</select>
+      <div class="muted" style="font-size:12px" id="sd-${i}">${STRENGTHS[sp.strength].effect}</div></div>`}).join('')}</div>
+    <details><summary>Regeln anpassen</summary><div style="margin-top:8px">${settingsHtml({...DEFAULT_SETTINGS,...setupSettings})}</div></details>${simHtml()}
+    <div class="row"><button class="big primary" id="btn-start">Spiel starten</button>${hasSaved()?'<button id="btn-resume">Spielstand fortsetzen</button>':''}</div></div>`;
+  ov.querySelectorAll('[data-n]').forEach(i=>i.addEventListener('input',e=>setupPlayers[+i.dataset.n].name=e.target.value));
+  ov.querySelectorAll('.pgrid').forEach(g=>g.querySelectorAll('.pp').forEach(pp=>pp.addEventListener('click',()=>{const i=+g.dataset.pg;const pt=PORT(pp.dataset.pid);setupPlayers[i].portrait=pt.id;if(!ov.querySelector(`[data-n="${i}"]`).value||PORTRAITS.some(x=>x.name===ov.querySelector(`[data-n="${i}"]`).value)){setupPlayers[i].name=pt.name;ov.querySelector(`[data-n="${i}"]`).value=pt.name}$('pf-'+i).innerHTML=portraitSVG(pt,150);$('pl-'+i).textContent=pt.line;g.querySelectorAll('.pp').forEach(x=>x.classList.toggle('on',x.dataset.pid===pt.id))})));
+  ov.querySelectorAll('[data-s]').forEach(i=>i.addEventListener('change',e=>{setupPlayers[+i.dataset.s].strength=e.target.value;$('sd-'+i.dataset.s).textContent=STRENGTHS[e.target.value].effect}));
+  bindDice();bindSim();
+  $('btn-start').addEventListener('click',startGame);
+  $('btn-resume')?.addEventListener('click',()=>{try{S=JSON.parse(localStorage.getItem('planspiel-state'));migrate();UI.call=UI.call||{q:CALL_QUESTIONS[0],done:false};closeOverlay();if(timed()&&S.turn!==null)startTurnTimer();render()}catch(e){}});
+}
+function showSettings(){
+  const ov=$('ov');ov.hidden=false;
+  ov.innerHTML=`<div class="box"><h1>Einstellungen</h1><div class="muted">Regeländerungen gelten ab dem nächsten Spiel. Regelstand v2.4.</div>${settingsHtml({...DEFAULT_SETTINGS,...(S?S.settings:setupSettings)})}${simHtml()}
+    <div class="row"><button class="primary" id="btn-apply">Übernehmen</button><button id="btn-copy">Protokoll kopieren</button><button id="btn-new">Neues Spiel</button><button class="ghost" id="btn-close">Schließen</button></div></div>`;
+  bindDice();bindSim();
+  $('btn-apply').addEventListener('click',()=>{setupSettings=readSettings();closeOverlay()});
+  $('btn-copy').addEventListener('click',e=>copyLog(e.target));
+  $('btn-new').addEventListener('click',()=>{setupSettings=readSettings();resetGame()});
+  $('btn-close').addEventListener('click',closeOverlay);
+  ov.addEventListener('click',e=>{if(e.target===ov)closeOverlay()},{once:true});
+}
+function closeOverlay(){$('ov').hidden=true;$('app').style.visibility=''}
+function hasSaved(){try{const s=JSON.parse(localStorage.getItem('planspiel-state')||'null');return s&&!s.over&&s.scheduled}catch(e){return false}}
+function migrate(){if(S){S.settings={...DEFAULT_SETTINGS,...S.settings};S.puffer=S.puffer||0;S.players.forEach((p,i)=>{p.portrait=p.portrait||PORTRAITS[i].id;p.erschoepfung=p.erschoepfung||0;p.debt=p.debt||0});S.scheduled=S.scheduled||[];S.nachbarDebt=S.nachbarDebt||0;S.stats.wagnis=S.stats.wagnis||0;S.stats.sicher=S.stats.sicher||0;if(S.restructuring&&S.restructuringRound==null)S.restructuringRound=S.round;S.open.forEach(e=>{if(!e.opts)e.opts=CARD(e.id)?.opts||[]});S.deck.forEach(e=>{if(!e.opts)e.opts=CARD(e.id)?.opts||[]})}}
+function startGame(){
+  setupSettings=readSettings();S=newState(setupSettings,setupPlayers);
+  UI={...UI,act:null,lastRoll:null,peek:null,timerId:null,turnEnd:null,call:{q:CALL_QUESTIONS[0],done:false},refl:['',''],flashQ:[],flashBusy:false,secretOpen:false,focus:null};
+  logRound(1);logNarr(SCENARIO.intro);
+  logSys(`Am Tisch: ${S.players.map(p=>`${p.name} (${p.role}${S.settings.strengths?', '+STRENGTHS[p.strength].name:''})`).join(', ')}. Modus: ${dil()?'Dilemma':'Würfel'}.`);logPhase('Ereignis');
+  closeOverlay();flash('Runde 1','round',2200);render();
+}
+function resetGame(){stopTurnTimer();if(S){setupPlayers=S.players.map(p=>({name:p.name,strength:p.strength,portrait:p.portrait}))}S=null;try{localStorage.removeItem('planspiel-state')}catch(e){}render()}
+function copyLog(btn){
+  if(!S)return;const txt=S.log.map(l=>l.k==='round'?`\n=== ${l.t} ===`:l.k==='phase'?`--- ${l.t} ---`:l.t).join('\n');
+  const done=()=>{const t=btn.textContent;btn.textContent='Kopiert';setTimeout(()=>btn.textContent=t,1500)};
+  const fb=()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){}document.body.removeChild(ta)};
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(txt).then(done).catch(fb);else fb();
+}
+
+// ---------- Auto-Sim (beide Modi) ----------
+function simulate(n,strat,s){
+  const res={games:n,won:0,lostStanding:0,avgProject:0,avgStanding:0,rolls:0,ones:0,succ:0,fails:0,projectReached:0,follow:0};
+  const tw=s.dice==='2d6';const d6=()=>1+Math.floor(Math.random()*6);
+  const rollFn=()=>{const d=tw?[d6(),d6()]:[d6()];return{t:d.reduce((a,b)=>a+b,0),f:d.every(x=>x===1),c:d.every(x=>x===6)}};
+  const thr=tw?7:4;const ev=String(s.events).split(',').map(x=>+x||1);const pdA=String(s.pd).split(',').map(x=>+x);const pd=pr=>(pdA[pr<3?0:pr<6?1:2]||[4,5,7][pr<3?0:pr<6?1:2])+(tw?3:0);const bereit=s.bereit+(tw?3:0);
+  const dm=s.mode==='dilemma';const wp=dm?(s.wagnisPlus||0):0;
+  for(let g=0;g<n;g++){
+    let deck=buildDeck();mapDifficulty(deck,s);let discard=[],open=[],standing=s.standingStart,project=0,restr=false,sched=[],debt=0;
+    const draw=(card)=>{let e;if(card){e=mkCard(card);mapDifficulty([e],s);res.follow++}else{if(!deck.length){deck=shuffle(discard);discard=[]}if(!deck.length)return;e=deck.shift()}if(e.id===8)e.diff+=debt;open.push(e)};
+    const pl=ROLES.map(r=>({...r,chips:s.chips,extra:0}));
+    const setSt=v=>{standing=Math.max(0,Math.min(s.standingMax,v))};const setPr=v=>{project=Math.max(0,Math.min(s.projectTarget,v))};
+    for(let round=1;round<=s.rounds;round++){
+      for(let k=0;k<(ev[Math.min(round,ev.length)-1]||1);k++)draw();
+      sched.filter(x=>x.round<=round).forEach(x=>draw(CARD(x.card)));sched=sched.filter(x=>x.round>round);
+      const heavy=open.filter(e=>e.type!=='Chance').length;const pAtStart=project;
+      pl.forEach(p=>{p.side=strat==='project'?(p.focus==='Projekt'||heavy<3?'project':'standing'):(p.focus==='Projekt'?'project':p.focus==='Team'&&heavy<2?'project':'standing');p.noPair=false;p.done=false});
+      let critUsed=false,acted=true;
+      const crit=()=>{if(!s.critOnce||!critUsed){setSt(standing+1);critUsed=true}};
+      const after=r=>{if(r.c)crit();if(r.f){res.ones++;draw()}};
+      const applyFx=(p,o,e)=>{if(o.standing)setSt(standing+o.standing);if(o.project)setPr(project+o.project);if(o.chipsAll)pl.forEach(x=>x.chips+=o.chipsAll);if(o.later)sched.push({round:round+o.later.delay,card:o.later.card});if(o.nachbar){debt++;const c8=open.find(x=>x.id===8);if(c8)c8.diff++;if(!deck.some(x=>x.id===8)&&!c8)sched.push({round:round+1,card:109})}if(o.noPair&&p.strength!=='naehe'){const t=pl.find(x=>x.key===o.noPair);if(t)t.noPair=true}if(o.endRound)p.done=true;if(o.nextChips)p.extra+=o.nextChips;if(o.escalateNow&&e){e.diff++;setSt(standing-(s.escPen||1))}if(o.resolve&&e&&open.includes(e)){open=open.filter(x=>x!==e);if(e.id<100)discard.push(e)}};
+      while(acted){acted=false;
+        for(const p of pl){
+          if(p.chips<1||p.done)continue;
+          const matchCard=open.find(e=>FOCUS_MATCH[p.focus].includes(e.type)||(p.abilityKey==='standby'&&e.type==='Störung'));
+          const target=p.side==='standing'?(matchCard||open[0]||null):null;
+          const helper=()=>{const h=pl.find(x=>x!==p&&x.chips>0&&x.side===p.side&&!x.noPair);return h};
+          if(dm){
+            if(p.side==='standing'&&!target){p.chips--;acted=true;const r=rollFn();res.rolls++;if(r.t>=bereit)setSt(standing+1);after(r);continue}
+            const e=target;const list=e?e.opts:PROJECT_OPTS.map(x=>({...x,chips:x.id==='g'&&project>=6?3:x.chips}));
+            const cost=o=>o.chips||1;const payerOf=o=>o.payer&&o.payer!==p.key?pl.find(x=>x.key===o.payer):p;
+            const afford=o=>{const py=payerOf(o);if(py!==p)return py.chips>=cost(o);const h=helper();return p.chips+(h&&cost(o)>=2?1:0)>=cost(o)};
+            const det=list.filter(o=>!o.roll&&afford(o)),wag=list.filter(o=>o.roll&&afford(o));
+            let o=null;
+            if(strat==='sicher'){o=det.filter(x=>!x.later&&!x.nachbar&&!x.standing&&!(x.project<0)).sort((a,b)=>cost(b)-cost(a))[0]||det.sort((a,b)=>cost(b)-cost(a))[0]||wag[0]}
+            else if(strat==='billig'){o=det.sort((a,b)=>cost(a)-cost(b))[0]||wag[0]}
+            else if(strat==='wagnis'){o=wag[0]||det[0]}
+            else if(strat==='klug'){
+              const wg=wag[0];const wd=(e?e.diff:pd(project))+wp;const base=e?((FOCUS_MATCH[p.focus].includes(e.type)||(p.abilityKey==='standby'&&e.type==='Störung'))?2:0):(p.focus==='Projekt'?2:0)-open.filter(x=>x.type==='Störung').length;
+              const need=wd-base-1;const ch=tw?0.5:Math.max(0,Math.min(1,(7-need)/6));
+              const cheapOk=det.filter(x=>cost(x)===1&&!x.later&&!(x.project<0)&&(!x.standing||standing>=6)&&(!x.nachbar||debt===0)&&(payerOf(x)===p||!x.noPair||round>3));
+              const safe=det.filter(x=>!x.later&&!x.nachbar&&!x.standing&&!(x.project<0)).sort((a,b)=>cost(b)-cost(a))[0];
+              o=(wg&&ch>=0.67)?wg:(cheapOk[0]||safe||det.sort((a,b)=>cost(a)-cost(b))[0]||wg);
+            }
+            else{o=det.filter(x=>!x.later&&!x.nachbar&&!x.standing&&!(x.project<0)&&(payerOf(x)!==p||p.chips>=cost(x))).sort((a,b)=>cost(b)-cost(a))[0]||det.sort((a,b)=>cost(a)-cost(b))[0]||wag[0]}
+            if(!o){p.done=true;continue}
+            acted=true;const py=payerOf(o);let c=cost(o);
+            if(py!==p){py.chips-=c}else{const h=helper();if(c>=2&&h&&p.chips<c){h.chips--;c--}else if(c>=2&&h&&strat!=='wagnis'){h.chips--;c--}p.chips-=c}
+            if(o.roll){const diff=(e?e.diff:pd(project))+wp;const base=e?((FOCUS_MATCH[p.focus].includes(e.type)||(p.abilityKey==='standby'&&e.type==='Störung'))?2:0):(p.focus==='Projekt'?2:0)-open.filter(x=>x.type==='Störung').length;const r=rollFn();res.rolls++;const ok=r.t+base+1>=diff;if(ok){res.succ++;if(e)applyFx(p,o,e);else setPr(project+1)}else{res.fails++;if(e)applyFx(p,{...o.roll.fail},e)}after(r)}
+            else applyFx(p,e?o:{...o,resolve:false},e);
+            continue;
+          }
+          // Würfelmodus
+          p.chips--;acted=true;let r,ok;
+          if(p.side==='standing'&&!target){r=rollFn();res.rolls++;ok=r.t>=bereit;if(ok)setSt(standing+1)}
+          else if(!target){let b=(p.focus==='Projekt'?2:0)-open.filter(e=>e.type==='Störung').length+(strat!=='solo'?1:0);const h=strat==='coop'?helper():null;if(h){h.chips--;b+=s.helpB||1}r=rollFn();res.rolls++;ok=r.t+b>=pd(project);if(ok){res.succ++;setPr(project+1)}else res.fails++}
+          else{let b=((FOCUS_MATCH[p.focus].includes(target.type)||(p.abilityKey==='standby'&&target.type==='Störung'))?2:0)+(strat!=='solo'?1:0);const h=strat==='coop'?helper():null;if(h){h.chips--;b+=s.helpB||1}r=rollFn();res.rolls++;ok=r.t+b>=target.diff;
+            if(ok){res.succ++;open=open.filter(e=>e!==target);discard.push(target);if(target.bonus){if(target.bonus.project)setPr(project+target.bonus.project);if(target.bonus.standing)setSt(standing+target.bonus.standing);if(target.bonus.chips)pl.forEach(x=>x.chips+=target.bonus.chips)}}else res.fails++}
+          after(r);
+        }}
+      const prio=s.prio?(Math.random()<.5?'standing':'project'):null;const pen=(s.escPen||1)+(prio==='standing'?1:0);
+      const keep=[];open.forEach(e=>{if(e.type==='Chance'){if(e.id<100)discard.push(e);return}setSt(standing-pen);e.diff++;keep.push(e)});open=keep;
+      if(s.stillstand){if(!pl.some(p=>p.side==='project'))setPr(project-(prio==='project'?2:1));if(!pl.some(p=>p.side==='standing'))setSt(standing-(prio==='standing'?2:1))}
+      if(prio==='project'&&project<=pAtStart)setSt(standing-1);
+      const cr=rollFn();res.rolls++;if(cr.t>=thr)setSt(standing+1);else if(s.callFail)setSt(standing-1);
+      if(standing<=0){if(!restr){restr=true;pl.forEach(p=>{p.chips=Math.max(0,s.chips-1+p.extra);p.extra=0});continue}else break}
+      if(restr)break;pl.forEach(p=>{p.chips=Math.max(0,s.chips+p.extra);p.extra=0});
+    }
+    const won=project>=s.projectTarget&&standing>0;if(won)res.won++;if(standing<=0)res.lostStanding++;if(project>=s.projectTarget)res.projectReached++;res.avgProject+=project;res.avgStanding+=standing;
+  }
+  res.avgProject/=n;res.avgStanding/=n;return res;
+}
+
+// ---------- Start ----------
+function boot(data){if(data&&data.S){S=data.S;migrate();UI={...UI,...(data.UI||{}),timerId:null,turnEnd:null,flashQ:[],flashBusy:false};if(timed()&&S.turn!==null)startTurnTimer()}render()}
+try{window.claude?.hot?.snapshot?.(()=>({S,UI:{call:UI.call,refl:UI.refl}}))}catch(e){}
+window.claude?.hot?.ready?window.claude.hot.ready(boot):boot(window.claude?.hot?.data??{});
+</script>
+
+</body>
+</html>
