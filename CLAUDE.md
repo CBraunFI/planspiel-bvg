@@ -1,6 +1,6 @@
 # Planspiel BVG – Hinweise für Claude Code
 
-Statischer Prototyp, keine Build-Schritte. Alles liegt in `index.html` (Simulator), `stilprobe.html` (Stilprobe) und `docs/`.
+Statischer Prototyp, keine Build-Schritte. Der Simulator ist `index.html` mit `css/spiel.css` und den Skripten in `js/` (Daten, Making-of-Texte, Regeln, Ansicht, Auto-Sim, Grafik). Dazu `stilprobe.html` (Stilprobe) und `docs/`. Lokal testen über einen Webserver, z. B. `python -m http.server 8123` (steht auch in `.claude/launch.json`).
 
 ## Veröffentlichen (einmalig)
 
@@ -14,4 +14,4 @@ Statischer Prototyp, keine Build-Schritte. Alles liegt in `index.html` (Simulato
 
 ## Danach
 
-Jede Änderung an `index.html` auf `main` ist nach dem Push live. Der Simulator speichert Spielstände nur im Browser (localStorage), es gibt kein Backend.
+Jede Änderung an `index.html`, `css/` oder `js/` auf `main` ist nach dem Push live. Der Simulator speichert Spielstände nur im Browser (localStorage), es gibt kein Backend.

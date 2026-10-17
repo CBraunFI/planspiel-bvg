@@ -1,6 +1,6 @@
-# Spielleitungs-Heft v1 – Fachgebiet Nord-Ost
+# Spielleitungs-Heft – Fachgebiet Nord-Ost
 
-Stand: 16.10.2026 · Regelstand v2.5 (Dilemma-Modus) · zum Vorlesen und Nachschlagen während des Spiels
+Stand: 17.10.2026 · Regelstand v3.0 · zum Vorlesen und Nachschlagen während des Spiels
 
 ## Szenario (zu Beginn vorlesen)
 
@@ -17,6 +17,25 @@ Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 
 | Teamleitung Projekt | Projektschub: 2 Chips für +3 Projekt, ohne Nebenwirkung (1×/Spiel) | Das Projekt darf nie zwei Runden in Folge stehen bleiben | Frau Brandt will die Vorstudie nach Süd holen. Es gab schon ein Gespräch mit Dr. Kessler |
 | Mitarbeitende:r | Störungsbereitschaft: +2 auf Wagnisse bei Störungen (passiv) | Du hast ein Angebot aus Süd. Du bleibst, wenn du bis Ende Runde 3 zweimal „zu zweit“ gespielt hast. Sonst: Runde 4 nur ein Chip | Flurfunk: Süd hat gerade Kapazität übrig und sucht Aufgaben |
 
+## Eigenart-Karten (12 Stück, W12)
+
+Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit dem W12 aus. Doppelt gewürfelt: nochmal. Jede Eigenart ist eine Stärke, die zu weit geht: Bonus und Malus kommen aus derselben Eigenschaft. In der Reflexion fragt die Spielleitung: Wo hat dir deine Eigenart geholfen, wo hat sie dir geschadet?
+
+| Nr. | Eigenart | Bonus | Malus | Stärke dahinter |
+|---|---|---|---|---|
+| 1 | **Kann nicht Nein sagen** „Klar mach ich das noch.“ | Wenn du hilfst, zählst du +3 statt +2. | Jedes zweite Helfen in einer Woche: ein Strich auf deinem Erschöpfungsmarker. | Hilfsbereitschaft |
+| 2 | **Perfektionist:in** „Das geht noch besser.“ | „Gründlich“ bringt dir Projekt +2, kostet dich aber einen Chip mehr. | „Schnell“ ist für dich gesperrt, und deine Wagnisse sind −1. | Qualitätsbewusstsein |
+| 3 | **Bauchmensch** „Wird schon.“ | Nach einem misslungenen Wagnis darfst du nachlegen: 1 Chip, Nachwurf mit denselben Boni (1× pro Woche). | Deine erste Handlung jeder Woche muss ein Wagnis sein. Und Begründen bringt dir nichts, du entscheidest ja aus dem Bauch. | Mut |
+| 4 | **Flurfunk-Antenne** „Ich hab da was gehört …“ | Du darfst die oberste Ereigniskarte ansehen (1× pro Woche, kostet keinen Zug). | Kommt genau diese Karte und bleibt liegen, kostet sie 1 Vertrauen extra: „Sie wussten es doch!“ | Neugier |
+| 5 | **Die Ruhe selbst** „Abwarten und Tee trinken.“ | Eine Karte darf liegen bleiben, ohne Vertrauen zu kosten (1× pro Woche, kostet keinen Zug). | Diese Karte wird dafür doppelt schwerer: Hürde +2 statt +1. | Gelassenheit |
+| 6 | **Folienkönig:in** „Ich hab da mal was vorbereitet.“ | Im Vorstands-Call darfst du statt der Bereichsleitung antworten, mit +2. | Bei Störungen sind deine Wagnisse −1. Im Leitstand helfen keine Folien. | Begeisterung |
+| 7 | **Delegier-Weltmeister:in** „Kannst du das mal eben übernehmen?“ | Du darfst einen Chip an jemanden weitergeben (1× pro Woche, ist ein Zug). | Sichere Wege auf Karten, die an dich adressiert sind, kosten dich 1 Chip mehr. | Führungsvermögen |
+| 8 | **Feierabend ist heilig** „Um vier ist Schluss.“ | Bleibt dir am Wochenende ein Chip übrig, nimmst du ihn mit in die nächste Woche. | Keine Überstunden, und aus dem Puffer nimmst du nichts. | Besonnenheit |
+| 9 | **Sinnsucher:in** „Aber wozu machen wir das eigentlich?“ | In der Reflexion schreibt ihr zwei Lernkarten statt einer. | Bei Störungen sind deine Wagnisse −1. Im Notfall ist keine Zeit für das Warum. | Sinnstiftung |
+| 10 | **Alter Hase** „Hab ich alles schon gesehen.“ | Bei Folgekarten, den Rechnungen von früher, sind deine Wagnisse +2. | Lernkarten wirken bei dir nicht, und bei Chancen sind deine Wagnisse −1. „Haben wir immer so gemacht.“ | Erfahrung |
+| 11 | **Zahlenmensch** „Haben Sie dafür eine Quelle?“ | Bei Politik-Karten sind deine Wagnisse +1. | Bei Team-Karten sind deine Wagnisse −2. Menschen sind keine Zellen. | Klarsicht |
+| 12 | **Kaffeeküchen-Diplomat:in** „Erst mal einen Kaffee.“ | Bei Team-Karten sind deine Wagnisse +2. | Bei Politik-Karten sind deine Wagnisse −1. Zu nett für die Vorstandsetage. | Menschengespür |
+
 ## Regeln, die die Spielleitung jede Woche ansagt
 
 - **Priorität der Woche:** Zu Beginn jeder Woche ruft Dr. Kessler an und sagt, was zählt: Betrieb oder Projekt. Bei Priorität Betrieb kostet jede liegengebliebene Karte 3 statt 2 Vertrauen. Bei Priorität Projekt kostet Projektstillstand 2 statt 1, und ohne Projektfortschritt sinkt das Vertrauen um 1.
@@ -24,12 +43,26 @@ Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 
 - **Kein sauberer Weg:** Jede Option auf jeder Karte hat einen Preis. Nur die Fähigkeiten der Rollen sind sauber.
 - **Chips sind Führungszeit:** drei pro Woche. Übrige Chips des Teams werden am Wochenende zu Puffer (zwei übrige = ein Puffer-Chip, höchstens zwei in der Schale, jeder darf nehmen). Wer keine Chips mehr hat, darf Überstunden machen: ein Chip jetzt, nächste Woche einer weniger, und ein Strich auf dem Erschöpfungsmarker. Beim dritten Strich fällt die Person eine Woche aus.
 - **Wagnis:** Die Hürde auf der Karte plus 1. Schwerpunkt +2, Begründung +1, Helfer +2, Lernkarte +1. Patzer bei der 1, Glanzwurf bei der 6 (Vertrauen +1, einmal pro Woche).
+- **Die Leisten hängen zusammen:** Erreicht das Projekt die Meilensteine 3 und 6, steigt das Vertrauen einmalig um 1 (Stern auf der Projektleiste umdrehen). Steht das Vertrauen bei 3 oder darunter, ist der Vorstand skeptisch: Projekt-Wagnisse −1, solange das so bleibt.
+- **Jede Karte zeigt ihren Preis:** Unten auf jeder Ereigniskarte steht, was sie kostet, wenn sie liegen bleibt. Wer sie erledigt, verhindert diesen Verlust. Im Simulator zeigt eine gestrichelte Markierung an der Vertrauensleiste die Prognose fürs Wochenende, und beim Überfahren eines Weges zeigt ein grüner Ring, wo ihr damit landet.
+- **Wochenabrechnung:** Nach der Eskalation liest die Spielleitung die Abrechnung vor: jede Bewegung auf einer Leiste mit ihrem Grund. Am echten Tisch führt sie dafür einen Abrechnungsblock.
+
+## Spielmaterial der Brett- und Kartenfassung
+
+- Spielbrett: Wochenleiste (4 Wochen, mit Feldern für verdeckte Folgekarten und dem Telefon-Plättchen für die Priorität), Vertrauensleiste 0 bis 10 (Felder 1 bis 3 rot: Skepsis), Projektleiste 0 bis 8 (Anlauf, Kernarbeit, Abschluss, Sterne bei 3 und 6), Stapel- und Ablagefeld, Süd-Feld, Puffer-Schale
+- Zwei Spielfiguren für die Leisten
+- 22 Ereigniskarten, 9 Folgekarten (eigene Rückseite)
+- Je Person: Tableau, Rollenkarte, Eigenart-Karte, verdeckte Zielkarte, zwei Ansagekarten (Betrieb, Projekt), Erschöpfungsmarker mit drei Feldern
+- 4 Projekt-Aktionskarten (Gründlich, Schnell, Süd einbinden, Wagnis)
+- 12 Eigenart-Karten, ein W12, zwei W6
+- Chips (Führungszeit), Puffer-Chips, Süd-Marker, Plättchen: +1, −1, Schloss, Teetasse, Ohr, Mond
+- Blanko-Lernkarten, Abrechnungsblock, 60-Sekunden-Sanduhr
 
 ## Projektoptionen
 
 | Weg | Kosten | Folge | Ausgang |
 |---|---|---|---|
-| **Gründlich** · Sauber recherchiert, sauber geschrieben, und sonst diese Woche nichts. | 2 Chips (3 im Abschluss ab Projekt 6) | Projekt +1, Handelnde:r danach fertig für die Woche | Ein Kapitel steht. Du hast es ganz geschrieben, und sonst nichts. |
+| **Gründlich** · Sauber recherchiert, sauber geschrieben, und sonst diese Woche nichts. | 2 Chips (3 im Abschluss ab Projekt 6; Perfektionist:in je +1) | Projekt +1 (Perfektionist:in +2), Handelnde:r danach fertig für die Woche | Ein Kapitel steht. Du hast es ganz geschrieben, und sonst nichts. |
 | **Schnell** · Erst mal etwas Vorzeigbares. | 1 Chip | Projekt +1, Folgekarte „Nacharbeit an der Vorstudie“ in 2 Wochen | Zehn Seiten in zwei Tagen. Sie sehen gut aus. |
 | **Süd einbinden** · Die haben Leute und Interesse. | 1 Chip | Projekt +1, Schuld bei Süd | Zwei Leute aus Süd schreiben mit. Frau Brandt bekommt den Entwurf in Kopie. |
 | **Wagnis** · Du setzt auf eine Idee, die entweder trägt oder nicht. | 1 Chip | Wurf gegen Projekt-Hürde 5/6/8 je Phase · Erfolg: Projekt +1 · Fehlschlag: Chip weg | Du schreibst die Idee auf und zeigst sie herum. |
@@ -471,7 +504,7 @@ Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 
 
 ## Vorstands-Call: Fragen von Dr. Kessler
 
-4 Rollen, eine Bereichsleitung antwortet. Fragen nach Spielstand wählen:
+4 Rollen, eine Bereichsleitung antwortet. Wer die Eigenart Folienkönig:in hat, darf stattdessen antworten, mit +2. Überzeugt ab 4 auf dem W6. Fragen nach Spielstand wählen:
 
 - „Warum stehen noch Karten offen, obwohl Sie vier Leute haben?“
 - „Wer hat entschieden, die Störung liegen zu lassen?“
@@ -483,3 +516,355 @@ Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 
 - „Was hätten Sie anders gemacht?“
 - „Warum sehe ich keinen Fortschritt bei der Vorstudie?“
 - „Ich höre, bei Ihnen fahren Züge aus Süd. Stimmt das?“
+
+## Designnotizen (Making-of)
+
+Dieselben Texte erscheinen im Simulator als Making-of-Kommentare. Je Spielelement steht hier, warum es so gebaut ist und wie es am echten Tisch aussieht.
+
+### Willkommen am Tisch
+
+Das Spiel soll sich anfühlen wie eine echte Führungswoche: zu viel auf dem Tisch, zu wenig Zeit, und ein Vorstand, der anruft. Gewinnen könnt ihr nur gemeinsam. Die Vorstudie muss fertig werden (Projekt 8), und das Vertrauen des Vorstands darf nicht auf 0 fallen. Gleichzeitig hat jede Rolle eine verdeckte Seite mit einem eigenen Ziel. Diese Reibung ist Absicht.
+
+*Am echten Tisch:* Jede Person bekommt ein Tableau mit Rollenkarte, Eigenart-Karte, verdeckter Zielkarte und drei Chips. In der Mitte liegt das Spielbrett: links die Wochenleiste, in der Mitte die Leisten für Vertrauen und Projekt, rechts Stapel, Süd-Feld und Puffer-Schale. Die Spielleitung hat den Ereignisstapel und das Spielleitungsheft.
+
+*Für die Spielleitung:* Lies das Szenario langsam vor. Woche 1 ist zum Ankommen, erklär lieber einmal zu viel.
+
+### Die Eigenart-Karten
+
+Früher hießen sie Stärken und gaben nur Vorteile. Jetzt ist jede Eigenart eine Stärke, die zu weit geht: Der Bonus und der Malus kommen aus derselben Eigenschaft. Wer nie Nein sagt, hilft besser und brennt schneller aus. So wird die Reflexionsfrage interessant: Wo hat dir deine Eigenart geholfen, wo hat sie dir geschadet?
+
+*Am echten Tisch:* Zwölf Eigenart-Karten, nummeriert von 1 bis 12. Jede Person wählt eine oder würfelt mit dem W12. Doppelt gewürfelt: nochmal.
+
+### Die Woche beginnt: Ereignisse
+
+Die Woche beginnt nie mit einem leeren Tisch. Die Zahl der Karten steigt (2, 3, 3, 4), damit der Druck wächst, während ihr eingespielter werdet. Jede Karte ist an eine Person adressiert. Das heißt nicht, dass sie zuständig ist, nur, dass sie zuerst angesprochen wird.
+
+*Am echten Tisch:* Die Spielleitung zieht, liest den Vorlesetext und beantwortet Rückfragen mit den Sätzen auf der Karte. Dann legt sie die Karte offen in die Mitte. Oben rechts steht im gestrichelten Würfel die Augenzahl, ab der ein Wagnis gelingt. Unten steht, was die Karte kostet, wenn sie liegen bleibt.
+
+*Für die Spielleitung:* Lass Rückfragen zu, aber verrate nicht, welcher Weg der beste ist. Es gibt keinen.
+
+### Dr. Kessler ruft an
+
+Der Vorstand verschiebt jede Woche ein bisschen die Regeln. Was letzte Woche gelobt wurde, interessiert diese Woche niemanden. Die Priorität zwingt euch, die Ansage neu zu überlegen.
+
+*Am echten Tisch:* Die Spielleitung würfelt: 1 bis 3 Betrieb, 4 bis 6 Projekt. Das Telefon-Plättchen kommt auf die aktuelle Woche der Wochenleiste.
+
+### Die Rechnung von früher
+
+Folgekarten sind unser wichtigstes Werkzeug gegen „billig gelöst und vergessen“. Wer heute den schnellen Weg nimmt, bekommt die Quittung später, und zwar sichtbar. Ihr habt sie auf der Wochenleiste kommen sehen.
+
+*Am echten Tisch:* Folgekarten haben eine eigene Rückseite und liegen verdeckt auf der Wochenleiste, im Feld der Woche, in der sie kommen. Zu Wochenbeginn dreht die Spielleitung sie um.
+
+### Ansage: Betrieb oder Projekt?
+
+Bevor jemand handelt, legt sich jede Person fest: Kümmere ich mich diese Woche um den Betrieb oder um die Vorstudie? Die Ansage gilt die ganze Woche. Das ist die eigentliche Führungsentscheidung des Spiels: Wer macht was, und was bleibt dafür liegen?
+
+*Am echten Tisch:* Jede Person hat zwei Ansagekarten, Betrieb und Projekt, und legt eine davon offen vor sich. Am Tisch läuft dabei eine Sanduhr.
+
+*Für die Spielleitung:* Achte darauf, ob jemand ansagt, ohne zu fragen, was die anderen vorhaben. Das ist Stoff für die Reflexion.
+
+### Eine Ansage liegt
+
+Nur wer auf derselben Seite steht, kann sich gegenseitig helfen. Wer allein aufs Projekt geht, arbeitet allein. Und steht niemand auf einer Seite, kostet das am Wochenende: Stillstand.
+
+*Am echten Tisch:* Die Ansagekarte bleibt die ganze Woche offen liegen. Alle sehen, wer wo steht.
+
+### Spielphase: Chips sind Führungszeit
+
+Drei Chips pro Woche sind drei halbe Tage, an denen ihr wirklich führt statt reagiert. Das ist absichtlich zu wenig. Ihr werdet nicht alles schaffen. Das Spiel fragt: Was lasst ihr liegen, und wer entscheidet das? Fahrt mit der Maus über einen Weg: Die Leisten oben zeigen sofort, wo ihr am Wochenende landet.
+
+*Am echten Tisch:* Chips sind echte Spielsteine. Wer handelt, legt die Chips auf die Karte, die er bearbeitet. Bezahlte Chips gehen am Wochenende zurück in den Vorrat.
+
+### Ein sicherer Weg
+
+Jede Karte hat zwei oder drei Wege, und keiner ist sauber. Der teure Weg kostet Zeit, der billige hat eine Nebenwirkung. Wir wollten keine „richtige Antwort“ auf der Karte, sondern einen Preis, den ihr bewusst bezahlt.
+
+*Am echten Tisch:* Chips auf die Karte, Karte auf den Ablagestapel. Steht eine Nebenwirkung drauf, wird sie sofort ausgeführt: Figur auf der Leiste ziehen, Folgekarte auf die Wochenleiste, Marker aufs Süd-Feld.
+
+### Ein Wagnis: der Würfel entscheidet
+
+Das Wagnis ist der billige Weg ohne festen Preis: ein Chip, dann entscheidet der Würfel. Die Hürde liegt absichtlich so, dass ein Wagnis allein oft schiefgeht. Mit Schwerpunkt, Begründung und Hilfe wird es realistisch. Die Botschaft: Wer etwas riskiert, sollte es nicht allein tun.
+
+*Am echten Tisch:* Ein W6 gegen die Zahl im gestrichelten Würfel auf der Karte. Boni: +2 Schwerpunkt, wenn die Karte zur Rolle passt; +1, wenn du laut begründest; +2 pro Helfer:in; +1 mit einer Lernkarte. Eine 1 ist ein Patzer, eine 6 ein Glanzwurf.
+
+### Jemand anderes bezahlt
+
+Manche Wege kosten nicht die Person, die entscheidet, sondern jemanden aus dem Team. Das ist bequem für dich und teuer für die anderen. Am Tisch soll man das merken: Die andere Person muss ihren Chip selbst rüberschieben.
+
+*Am echten Tisch:* Die zahlende Person legt ihren eigenen Chip auf die Karte. Fragt sie vorher. Oder eben nicht.
+
+### Zu zweit
+
+Helfen ist der stärkste Bonus im Spiel, und er kostet die helfende Person einen eigenen Chip. Unterstützung ist nie gratis. Außerdem zählt jedes „zu zweit“ für ein verdecktes Ziel, das nicht alle kennen.
+
+*Am echten Tisch:* Beide legen einen Chip auf die Karte. Helfen darf nur, wer dieselbe Ansage hat.
+
+### Begründet
+
+Ein Bonus fürs Reden. Wer laut sagt, warum er etwas tut, bekommt +1. Im Prototyp ist das ein Haken. Am echten Tisch entscheidet die Spielleitung, ob das eine Begründung war oder nur ein Satz.
+
+*Am echten Tisch:* Laut sagen, warum. Die Spielleitung nickt oder nicht.
+
+*Für die Spielleitung:* Sei großzügig in Woche 1 und streng ab Woche 3.
+
+### Eine Lernkarte wirkt
+
+Lernkarten schreibt ihr selbst, in der Reflexion. Dass sie danach mechanisch wirken, ist Absicht: Lernen soll sich im Spiel auszahlen, nicht nur im Workshop.
+
+*Am echten Tisch:* Die Lernkarte liegt in der Mitte. Wer sie nutzt, sagt laut, wie der Satz gerade hilft, und dreht sie um. Jede Lernkarte gilt einmal.
+
+### Eine Folgekarte ist unterwegs
+
+Spätfolgen sollen nicht überraschen, sondern drohen. Ihr seht die Karte kommen und könnt euch darauf einstellen, oder ihr verdrängt sie. Beides kennt man aus dem Alltag.
+
+*Am echten Tisch:* Die Spielleitung nimmt die Folgekarte aus dem Folgestapel und legt sie verdeckt auf das Feld der Woche.
+
+### Schuld bei Süd
+
+Süd hilft immer, schnell und freundlich. Jeder Gefallen landet als Marker auf dem Süd-Feld. Die Marker machen „Süd greift zu“ schwerer und bringen irgendwann „Süd will mitreden“ ins Spiel. Abhängigkeit kommt in kleinen, freundlichen Schritten.
+
+*Am echten Tisch:* Einen roten Süd-Marker aufs Süd-Feld legen.
+
+### Gebunden
+
+Wenn eine Person ein Loch stopft, fehlt sie woanders. Das soll man nicht nur lesen, sondern spüren: Ihr Helfer-Bonus fällt diese Woche weg.
+
+*Am echten Tisch:* Ein Schloss-Plättchen auf das Tableau der Person.
+
+### Danach fertig für die Woche
+
+Manche Wege fressen den ganzen Tag. Übrige Chips darfst du nicht mehr nutzen, sie werden am Wochenende Puffer. Damit ist „gründlich“ teurer, als die Chips allein sagen.
+
+*Am echten Tisch:* Ansagekarte umdrehen, Mond-Seite nach oben.
+
+### Die nächste Woche ist schon verplant
+
+Zusagen wirken nach. Wer heute einen Termin verhandelt oder ein Gespräch führt, hat sich für nächste Woche verpflichtet. Das ist der Preis vieler „guter“ Wege.
+
+*Am echten Tisch:* Einen Chip vom Tableau auf das Feld der nächsten Woche legen.
+
+### Die Karte eskaliert sofort
+
+Manche Wagnisse gehen nicht nur schief, sie machen es schlimmer. Wir haben das an Störungen gehängt, bei denen improvisiert wird: Wer an der Oberleitung bastelt, kann sie auch ganz runterholen.
+
+*Am echten Tisch:* Ein +1-Plättchen auf die Karte, die Vertrauensfigur zurückziehen.
+
+### Verstärkung
+
+Die einzige Karte, die Zeit schenkt. Wer sie sichert, entlastet alle.
+
+*Am echten Tisch:* Jede Person nimmt einen Chip aus dem Vorrat.
+
+### Zählt als „zu zweit“
+
+Eine Spur für ein verdecktes Ziel: Wer bis Woche 3 zweimal zu zweit gearbeitet hat, bleibt im Team. Nicht alle wissen davon.
+
+*Am echten Tisch:* Ein Strich auf dem Tableau der Person.
+
+### Projekt: gründlich
+
+Die vier Projektwege spiegeln die Ereigniskarten: Gründlich ist sicher und teuer, schnell erzeugt Nacharbeit, Süd einbinden erzeugt Abhängigkeit, das Wagnis kann scheitern. Im Abschluss, ab Projekt 6, kostet gründlich 3 Chips, weil die letzten Kapitel die schwersten sind.
+
+*Am echten Tisch:* Wer aufs Projekt gesetzt hat, hat vier Aktionskarten vor sich und legt eine aus. Danach geht sie zurück auf die Hand.
+
+### Projekt: schnell
+
+Schnell ist verführerisch: billig und sofort sichtbar. Die Rechnung kommt mit Verzögerung, als Folgekarte auf der Wochenleiste. Genau das wollten wir zeigen.
+
+*Am echten Tisch:* Aktionskarte „Schnell“ auslegen, Folgekarte „Nacharbeit“ zwei Wochen weiter auf die Wochenleiste.
+
+### Projekt: Süd einbinden
+
+Hilfe von außen ist echt und gut. Sie hat einen Preis, der erst später fällig wird: Mitsprache.
+
+*Am echten Tisch:* Aktionskarte auslegen, Süd-Marker aufs Süd-Feld.
+
+### Projekt: ein Wagnis
+
+Das Projekt-Wagnis wird mit jeder Phase schwerer. Offene Störungen bremsen: −1 pro Störung auf dem Tisch. Wer den Betrieb brennen lässt, kann sich nicht konzentrieren. Und ist der Vorstand skeptisch (Vertrauen 3 oder weniger), gibt es noch einmal −1. Hier hängen die beiden Leisten am deutlichsten zusammen.
+
+*Am echten Tisch:* Aktionskarte „Wagnis“, ein W6 gegen die Projekt-Hürde, die auf dem Brett unter der aktuellen Projektphase steht.
+
+### Bereitschaft
+
+Was tut man im Betrieb, wenn gerade nichts brennt? Präsenz zeigen. Das bringt manchmal Vertrauen, meistens nichts. Ein freier Tisch soll nicht „Pause“ heißen.
+
+*Am echten Tisch:* Ein Chip ins Bereitschaftsfeld, ein W6.
+
+### Fähigkeit: Hilfe von außen
+
+Fähigkeiten sind die einzigen sauberen Wege im Spiel, ohne Nebenwirkung. Dafür sind sie selten. Die Bereichsleitung kann Türen öffnen, aber nicht selbst durchgehen.
+
+*Am echten Tisch:* Ein −1-Plättchen auf die Karte.
+
+### Fähigkeit: Störung durchziehen
+
+Einmal pro Spiel darf die Teamleitung Betrieb eine Störung einfach lösen. Die Frage ist, wann: früh, um Ruhe zu haben, oder spät, wenn es wirklich brennt?
+
+*Am echten Tisch:* Die Fähigkeit auf der Rollenkarte mit einem Chip abdecken. Sie ist verbraucht.
+
+### Fähigkeit: Projektschub
+
+Der stärkste Einzelzug im Spiel, einmal pro Spiel. Wer ihn früh spielt, holt vielleicht einen Meilenstein. Wer ihn aufhebt, hat eine Reserve für den Abschluss.
+
+*Am echten Tisch:* Die Fähigkeit auf der Rollenkarte abdecken, Projektfigur drei Felder vor.
+
+### Eigenart: Bauchmensch legt nach
+
+Jede Eigenart ist eine Stärke, die zu weit gehen kann. Der Bauchmensch darf ein misslungenes Wagnis wiederholen, muss aber jede Woche mit einem Wagnis anfangen. Mut hilft, und Mut zwingt.
+
+*Am echten Tisch:* Eigenart-Karte quer drehen: einmal pro Woche genutzt.
+
+### Eigenart: Flurfunk-Antenne
+
+Wissen ist ein Vorteil und eine Verpflichtung. Wer etwas kommen sah und nichts getan hat, muss sich vor dem Vorstand mehr rechtfertigen. Ob du dein Wissen teilst, entscheidest du.
+
+*Am echten Tisch:* Oberste Karte ansehen, verdeckt zurücklegen, ein Ohr-Plättchen drauf.
+
+### Eigenart: Die Ruhe selbst
+
+Gelassenheit schützt das Vertrauen kurzfristig. Das Problem verschwindet aber nicht, es wächst. Wir wollten eine Eigenart, die sich gut anfühlt und trotzdem etwas aufschiebt.
+
+*Am echten Tisch:* Teetassen-Plättchen auf die Karte.
+
+### Eigenart: Delegieren
+
+Delegieren schiebt Zeit dorthin, wo sie gebraucht wird. Der Malus: Was an dich adressiert ist, wird teurer, wenn du es am Ende doch selbst machst.
+
+*Am echten Tisch:* Chip rüberschieben, Eigenart-Karte quer drehen.
+
+### Eigenart: Kann nicht Nein sagen
+
+Hilfsbereitschaft ist der stärkste Bonus im Spiel. Wer nie Nein sagt, brennt aus. Beim dritten Strich fällt die Person eine Woche aus.
+
+*Am echten Tisch:* Strich auf den Erschöpfungsmarker im Tableau.
+
+### Die Eigenart würfelt mit
+
+Eigenarten ändern Würfe je nach Kartentyp. Der Zahlenmensch glänzt bei Politik und tut sich mit Menschen schwer, die Kaffeeküchen-Diplomatin umgekehrt. Wer welche Karte nimmt, wird so zur Teamfrage.
+
+*Am echten Tisch:* Bonus und Malus stehen auf der Eigenart-Karte. Selbst dran denken, die Spielleitung erinnert.
+
+### Puffer
+
+Übrige Zeit verfällt nicht ganz: Zwei übrige Chips des Teams werden am Wochenende ein Puffer-Chip, höchstens zwei liegen in der Schale. Jede Person darf sich bedienen. Wer zuerst nimmt, nimmt ihn den anderen weg.
+
+*Am echten Tisch:* Chip aus der Schale auf dem Brett nehmen.
+
+### Überstunden
+
+Überstunden funktionieren, kurzfristig. Jede ist ein Strich auf dem Erschöpfungsmarker, beim dritten fällt die Person eine Woche aus. Das ist das einzige Element, das direkt an die eigene Kraft geht.
+
+*Am echten Tisch:* Chip nehmen, Strich machen, einen Chip als Schuld auf die nächste Woche legen.
+
+### Fertig für die Woche
+
+Fertig sagen ist eine echte Entscheidung. Übrige Zeit geht nicht verloren, sie wird Puffer fürs Team.
+
+*Am echten Tisch:* Ansagekarte umdrehen, übrige Chips in die Mitte.
+
+### Zu lange gezögert
+
+Die Uhr steht für den Betrieb, der nicht wartet. Wer zu lange überlegt, verliert Zeit, die er gar nicht hatte.
+
+*Am echten Tisch:* Eine 60-Sekunden-Sanduhr. Ist sie durch, ist ein Chip weg.
+
+### Glanzwurf!
+
+Eine 6 belohnt nicht nur mit Vertrauen, sondern mit einer Bühne. Die Person erzählt in einem Satz, was gelungen ist. Nur einmal pro Woche, damit das Glück nicht das Spiel entscheidet.
+
+*Am echten Tisch:* Vertrauensfigur ein Feld vor.
+
+*Für die Spielleitung:* Frag nach: „Was genau hast du gemacht?“
+
+### Patzer
+
+Wer würfelt, kann auch neue Probleme auslösen. Der Patzer sorgt dafür, dass Wagnisse nie ganz harmlos sind.
+
+*Am echten Tisch:* Die Spielleitung zieht sofort eine Karte und liest sie vor.
+
+### Meilenstein: das Projekt zahlt aufs Vertrauen ein
+
+In früheren Fassungen liefen die beiden Leisten fast getrennt. Jetzt hängen sie zusammen: Die Meilensteine bei 3 und 6 bringen einmalig Vertrauen. Fortschritt, den der Vorstand sieht, ist Kapital.
+
+*Am echten Tisch:* Auf der Projektleiste liegen zwei Sterne. Erreicht die Projektfigur einen Stern, rückt die Vertrauensfigur eins vor, und der Stern wird umgedreht.
+
+### Der Vorstand wird skeptisch
+
+Die andere Richtung der Kopplung: Wird der Vorstand misstrauisch, bekommt die Vorstudie weniger Rückendeckung. Wer den Betrieb vernachlässigt, verliert also auch im Projekt.
+
+*Am echten Tisch:* Die Felder 1 bis 3 der Vertrauensleiste sind rot. Steht die Figur dort, gilt −1 auf Projekt-Wagnisse.
+
+### Übernahme
+
+Wir lassen das Spiel nicht sofort enden. Eine letzte Woche unter fremder Leitung ist ein stärkeres Bild als „Game Over“.
+
+*Am echten Tisch:* Das Süd-Logo-Plättchen auf das Brett. Alle legen einen Chip zurück.
+
+### Wochenende
+
+Bis hierhin war alles Entscheidung, jetzt kommt die Wirkung. Liegengebliebenes kostet nicht sofort, sondern dann, wenn man nichts mehr tun kann. Die Prognose an der Vertrauensleiste hat euch die ganze Woche gezeigt, was kommt.
+
+*Am echten Tisch:* Die Spielleitung geht die offenen Karten von links nach rechts durch: Hürde +1, Vertrauensfigur zurück.
+
+### Stillstand
+
+Eine Seite ganz zu ignorieren ist bequem, und es kostet. Stillstand im Projekt kostet Projektfortschritt, Stillstand im Betrieb kostet Vertrauen.
+
+*Am echten Tisch:* Die Spielleitung prüft die Ansagekarten: Liegt keine auf einer Seite, zieht sie die Figur zurück.
+
+### Die Wochenabrechnung
+
+Jede Bewegung auf den Leisten hat einen Grund, und der steht auf dem Zettel. Das ist unsere Antwort auf „Warum ist das Vertrauen gefallen?“: Hier steht es, Zeile für Zeile.
+
+*Am echten Tisch:* Die Spielleitung führt einen Abrechnungsblock: pro Woche eine Spalte, jede Bewegung auf einer Leiste ein Strich mit Stichwort.
+
+*Für die Spielleitung:* Lies die Abrechnung laut vor. Das ist der beste Einstieg in den Vorstands-Call.
+
+### Vorstands-Call
+
+Der Call ist das Rollenspiel-Herz des Spiels. Die Frage passt zum Spielstand. Gewürfelt wird erst, nachdem gesprochen wurde. Wer widerspricht, kostet das Team Vertrauen und bekommt selbst einen Chip extra. Loyalität und Ehrlichkeit stehen gegeneinander.
+
+*Am echten Tisch:* Die Spielleitung spielt Dr. Kessler. Ernst bleiben, nachhaken.
+
+*Für die Spielleitung:* Stell eine Nachfrage, bevor gewürfelt wird.
+
+### Die Antwort
+
+Wir würfeln, damit eine gute Antwort keine Garantie ist, und eine schwache kein Untergang. Das Gespräch zählt mehr als die Zahl.
+
+*Am echten Tisch:* Ein W6, ab 4 überzeugt.
+
+### Widerspruch
+
+Widerspruch vor dem Vorstand schadet dem Team und stärkt die Person. Ehrlichkeit soll sich nicht automatisch lohnen, und Schweigen auch nicht.
+
+*Am echten Tisch:* Die widersprechende Person legt einen Chip auf das Feld der nächsten Woche.
+
+### Reflexion
+
+Die Pause ist Teil des Spiels, keine Unterbrechung. Was ihr hier aufschreibt, wirkt in der nächsten Woche als Bonus. Und die Fragen zielen auf das, was im Spiel unsichtbar war: Wer wusste was?
+
+*Am echten Tisch:* Blanko-Lernkarten und ein Stift. Ein Satz pro Karte.
+
+*Für die Spielleitung:* Nicht zu lange, fünf Minuten reichen. Die Frage nach der Eigenart nicht vergessen.
+
+### Neue Woche
+
+Zeit wird jede Woche neu verteilt, aber nicht gleich: Zusagen, Überstunden und Widerspruch aus der Vorwoche wirken nach.
+
+*Am echten Tisch:* Chips zurück aufs Tableau, Ansagekarten auf die Hand, Wochenmarker ein Feld weiter.
+
+### Die verdeckte Seite
+
+Jede Rolle hat ein Ziel, das die anderen nicht kennen, und eine Information, die sie nicht haben. Niemand muss lügen. Aber niemand muss alles sagen. Am Ende kommen alle verdeckten Seiten auf den Tisch.
+
+*Am echten Tisch:* Die Zielkarte liegt verdeckt am Tableau. Nur selbst ansehen.
+
+### Spielende
+
+Das Spiel endet nicht mit Punkten, sondern mit den verdeckten Seiten. Das eigentliche Ergebnis ist das Gespräch danach: Wer hat sein Ziel geopfert, und war das richtig?
+
+*Am echten Tisch:* Alle drehen ihre Zielkarte um. Die Spielleitung liest die wichtigsten Zeilen der Abrechnungen vor.
+
+*Für die Spielleitung:* Die letzte Frage auf dem Bildschirm ist die wichtigste.
