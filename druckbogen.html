@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planspiel Druckbogen</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap">
+<link rel="stylesheet" href="css/spiel.css">
+<link rel="stylesheet" href="css/druckbogen.css">
+</head>
+<body class="druck">
+<header class="tb">
+  <div class="tb-t"><b>Druckbogen</b> <span class="muted">Brett- und Kartenfassung · Regelstand v3.0 · <a href="index.html">zum Simulator</a></span></div>
+  <div class="tb-o" id="secs"></div>
+  <div class="tb-o">
+    <label><input type="checkbox" id="opt-backs" checked> Rückseiten (beidseitig, lange Kante)</label>
+    <label><input type="checkbox" id="opt-marks" checked> Schneidemarken</label>
+    <label>Brett <select id="opt-brett"><option value="a3">A3 quer</option><option value="a4">A4 quer (71 %)</option></select></label>
+    <span class="muted" id="count"></span>
+    <button class="primary small" id="btn-print">Drucken</button>
+  </div>
+  <div class="tb-h muted">Im Druckdialog: Ränder „Keine“, Skalierung 100 %, Hintergrundgrafiken an.</div>
+</header>
+<main id="sheets"></main>
+<script src="js/grafik.js"></script>
+<script src="js/daten.js"></script>
+<script src="js/druckbogen.js"></script>
+</body>
+</html>

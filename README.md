@@ -10,6 +10,9 @@ Entwicklungsstand des Planspiels für das JUMP-Programm (SYNK / Leada). Die digi
   - `js/ansicht.js` – Brett, Karten, Bühne, Aufbau und Einstellungen
   - `js/sim.js` – Auto-Sim
   - `js/grafik.js` – Portraits, Piktogramme, Würfel, Symbole
+- `druckbogen.html` – Druckbogen für den Papier-Prototyp der Brett- und Kartenfassung, erzeugt aus denselben Daten wie der Simulator: alle 31 Ereignis- und Folgekarten mit Optionen, Kosten und Wirkungs-Symbolen, Rückseiten (gespiegelt für beidseitigen Druck), 12 Eigenart-Karten, Rollen- und verdeckte Zielkarten, Projekt-Aktionskarten, Ansagekarten, Blanko-Lernkarten, Fragekarten für den Vorstands-Call, Spielhilfen, Tableaus, Spielbrett (A3 quer oder verkleinert A4 quer), Plättchen und Spielfiguren, Abrechnungsblock, Würfel zum Basteln (2 × W6, Prioritätswürfel, W12), Schachtel-Etikett und Inventar. Im Simulator führt der Button „Druckvorlagen“ in der Kopfleiste und auf dem Startbildschirm dorthin. A4 mit Schneidemarken. Oben lassen sich Bereiche, Rückseiten und Brettformat wählen, dann „Drucken“ (Ränder „Keine“, Skalierung 100 %, Hintergrundgrafiken an). Voreinstellung per Adresse, z. B. `druckbogen.html?brett=a4&rueck=0&nur=ev,kc`.
+  - `css/druckbogen.css` – Druckmaße und `@media print`
+  - `js/druckbogen.js` – baut alle Bögen aus `js/daten.js` und `js/grafik.js`
 - `stilprobe.html` – Stilprobe für Oberfläche, Portraits und Piktogramme.
 - `docs/Spielleitungsheft_v1.md` – Szenario, Rollen, Eigenarten, Regeln, Spielmaterial, alle 31 Karten mit Vorlesetexten, Designnotizen.
 
