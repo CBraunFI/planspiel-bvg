@@ -7,25 +7,25 @@ const SZENARIEN=[
    rollen:['Bereichsleitung','Teamleitung Betrieb','Teamleitung Projekt','Mitarbeitende:r'],
    karten:[{type:'Störung',title:'Oberleitungsschaden'},{type:'Team',title:'Konflikt in der Schicht'},{type:'Politik',title:'Zahlen in der Presse'},{type:'Chance',title:'Freie Kapazität in Süd'}],
    caption:'Zwei Straßenbahnlinien, ein Betriebshof, 140 Leute. Die Vorstudie muss in vier Wochen fertig sein, während Oberleitungen reißen und die Presse anruft. Das Standardszenario, sofort spielbar.',
-   akzent:'#2f6f6a'},
+   akzent:'#2f6f6a',brett:'#f3eadb',rahmen:'#8a5a2d',tisch:'#cdb68a',hintergrund:'#d9c9a8'},
   {key:'versicherung',kurz:'Versicherung',name:'Versicherung',runde:'Monat',
    bereich:'Schadenabteilung Kfz',projekt:'Einführung „Digitale Schadenmeldung“',vorstand:'Frau Dr. Lindner',nachbar:'Abteilung Sach',
    rollen:['Abteilungsleitung','Teamleitung Regulierung','Projektleitung Digital','Sachbearbeiter:in'],
    karten:[{type:'Störung',title:'Unwetter: 400 Schäden in drei Tagen'},{type:'Team',title:'Kündigung im Innendienst'},{type:'Politik',title:'Beschwerde beim Ombudsmann'},{type:'Chance',title:'Sach bietet zwei Leute an'}],
    caption:'Die Schadenabteilung muss die Regulierungsquote halten und gleichzeitig die digitale Schadenmeldung einführen. Jede Runde ist ein Monat, jeden Monat fragt der Vorstand nach der Quote.',
-   akzent:'#4a5f8a'},
+   akzent:'#4a5f8a',brett:'#e9eef5',rahmen:'#3b4b6b',tisch:'#a9b7cc',hintergrund:'#b7c6dc'},
   {key:'energie',kurz:'Energieversorger',name:'Energieversorger',runde:'Quartal',
    bereich:'Netzregion West',projekt:'Netzausbau-Konzept „Netz 2035“',vorstand:'Herr Baumann',nachbar:'Netzregion Ost',
    rollen:['Regionalleitung','Leitung Netzbetrieb','Projektleitung Netzausbau','Netzmeister:in'],
    karten:[{type:'Störung',title:'Mittelspannungsausfall nach Sturm'},{type:'Team',title:'Leitstelle unterbesetzt'},{type:'Politik',title:'Bürgerinitiative gegen die Trasse'},{type:'Chance',title:'Fördermittel ausgeschrieben'}],
    caption:'Das Netz muss stabil bleiben, der Ausbau muss vorankommen. Jede Runde ist ein Quartal, die Regulierungsbehörde will Kennzahlen, und die Nachbarregion hätte den Ausbau gern selbst.',
-   akzent:'#b8762b'},
+   akzent:'#b8762b',brett:'#f6ead3',rahmen:'#a3521c',tisch:'#dfb181',hintergrund:'#e6b384'},
   {key:'kommune',kurz:'Stadtverwaltung',name:'Stadtverwaltung',runde:'Monat',
    bereich:'Bürgeramt Mitte',projekt:'Einführung „Digitales Rathaus“',vorstand:'die Dezernentin',nachbar:'Bürgeramt Nord',
    rollen:['Amtsleitung','Sachgebietsleitung Service','Projektleitung Digital','Sachbearbeiter:in'],
    karten:[{type:'Störung',title:'Fachverfahren ausgefallen'},{type:'Team',title:'Warteschlange bis auf die Straße'},{type:'Politik',title:'Anfrage aus dem Stadtrat'},{type:'Chance',title:'Bürgeramt Nord hat Luft'}],
    caption:'Das Bürgeramt muss Termine abarbeiten und parallel das digitale Rathaus einführen. Jede Runde ist ein Monat, der Stadtrat fragt nach, und die Lokalpresse zählt die Wartenden.',
-   akzent:'#6a4c93'},
+   akzent:'#6a4c93',brett:'#f0eaf5',rahmen:'#54406f',tisch:'#bfb0cf',hintergrund:'#cdbbdf'},
 ];
 const SZ=k=>SZENARIEN.find(s=>s.key===k)||SZENARIEN[0];
 
@@ -190,6 +190,7 @@ function setScene(key){
   currentScene=key;const s=SZ(key);
   document.querySelectorAll('#scene-buttons button').forEach(b=>{const on=b.dataset.key===key;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
   $('scene-caption').innerHTML=`<b>${esc(s.bereich)}</b> · ${esc(s.projekt)} · eine Runde ist ein ${esc(s.runde)}<br><span class="muted">${esc(s.caption)}</span>`;
+  document.querySelector('.scene-wrap').style.setProperty('--szene-bg',s.hintergrund);
   if(window.Brett3D)Brett3D.setScene(s);
 }
 function renderSceneButtons(){
@@ -198,8 +199,8 @@ function renderSceneButtons(){
 }
 
 function initMail(){
-  const subj=encodeURIComponent('Erstgespräch Planspiel Führung und Kollaboration');
-  const body=encodeURIComponent('Guten Tag Herr Krauß,\n\nich interessiere mich für das Planspiel zu Führung und Kollaboration und hätte gern ein Erstgespräch.\n\nUnternehmen:\nBranche:\nGruppengröße:\nInteresse an: Standardszenario / eigenes Szenario\n\nMit freundlichen Grüßen\n');
+  const subj=encodeURIComponent('Erstgespräch SYNK Run & Build');
+  const body=encodeURIComponent('Guten Tag Herr Krauß,\n\nich interessiere mich für SYNK Run & Build, das Planspiel zu Führung und Kollaboration, und hätte gern ein Erstgespräch.\n\nUnternehmen:\nBranche:\nGruppengröße:\nInteresse an: Standardszenario / eigenes Szenario\n\nMit freundlichen Grüßen\n');
   document.querySelectorAll('a[href^="mailto:udo.krauss"]').forEach(a=>a.href=`mailto:udo.krauss@synk-group.com?subject=${subj}&body=${body}`);
 }
 

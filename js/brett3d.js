@@ -42,7 +42,7 @@ window.Brett3D=(function(){
   // Brettoberfläche: Rundenleiste links, zwei Leisten in der Mitte, Stapelfelder rechts
   function boardTexture(s){
     return makeTex(2048,1280,(g,W,H)=>{
-      g.fillStyle=PAPER;g.fillRect(0,0,W,H);
+      g.fillStyle=s.brett||PAPER;g.fillRect(0,0,W,H);
       g.strokeStyle='rgba(36,31,27,.05)';g.lineWidth=2;for(let x=0;x<W;x+=76){g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke()}
       g.fillStyle=INK;g.textBaseline='top';
       // Titel
@@ -153,10 +153,12 @@ window.Brett3D=(function(){
 
   // ---------- Szenario-Wechsel ----------
   let bump=0;
+  const target={frame:new THREE.Color(WOOD),inner:new THREE.Color(WOOD2),table:new THREE.Color(0xcdb68a)};
   function setScene(s){
     if(boardMat.map)boardMat.map.dispose();boardMat.map=boardTexture(s);boardMat.needsUpdate=true;
     s.karten.forEach((k,i)=>{const m=cardMats[i];if(!m)return;if(m.map&&m.map!==backTex)m.map.dispose();m.map=cardTexture(k);m.needsUpdate=true});
-    inner.material.color.set(s.akzent).lerp(new THREE.Color(WOOD2),0.55);
+    // Holzrahmen, Innenkante und Tischplatte wechseln weich die Farbe (siehe frameLoop)
+    target.frame.set(s.rahmen||'#8a5a2d');target.inner.copy(target.frame).multiplyScalar(0.78);target.table.set(s.tisch||'#cdb68a');
     bump=1;
   }
 
@@ -171,6 +173,7 @@ window.Brett3D=(function(){
   function frameLoop(now){
     requestAnimationFrame(frameLoop);if(!visible)return;const dt=Math.min(0.05,(now-last)/1000);last=now;resize();
     if(!drag)angle+=auto*dt;table.rotation.y=angle;
+    frame.material.color.lerp(target.frame,0.08);inner.material.color.lerp(target.inner,0.08);tabletop.material.color.lerp(target.table,0.08);
     if(bump>0){bump=Math.max(0,bump-dt*2.2);const s=1+Math.sin(bump*Math.PI)*0.03;openCards.forEach(c=>{c.position.y=top+0.013+Math.sin(bump*Math.PI)*0.25});table.scale.setScalar(s)}
     renderer.render(scene,camera);
   }

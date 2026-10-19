@@ -57,7 +57,7 @@ section>*{max-width:var(--maxw);margin-left:auto;margin-right:auto}
 .facts dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
 .facts dd{margin:0;font-weight:600}
 .hero-scene{display:grid;gap:14px}
-.scene-wrap{position:relative;aspect-ratio:4/3;border-radius:22px;background:radial-gradient(ellipse at 50% 40%,#efe6d4 0,#e3d6bd 60%,#d6c7a9 100%);box-shadow:inset 0 0 0 1px rgba(36,31,27,.08),0 30px 60px -30px rgba(36,31,27,.45);overflow:hidden}
+.scene-wrap{position:relative;aspect-ratio:4/3;border-radius:22px;background-color:var(--szene-bg,#d9c9a8);background-image:radial-gradient(ellipse at 50% 38%,rgba(255,255,255,.5) 0,rgba(255,255,255,0) 68%);transition:background-color .7s;box-shadow:inset 0 0 0 1px rgba(36,31,27,.08),0 30px 60px -30px rgba(36,31,27,.45);overflow:hidden}
 .scene-wrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y;cursor:grab}
 .scene-wrap canvas:active{cursor:grabbing}
 .scene-fallback{position:absolute;inset:0;display:grid;place-items:center;padding:24px;text-align:center;color:var(--ink-soft)}
