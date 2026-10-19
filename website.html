@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Planspiel Führung und Kollaboration</title>
+<meta name="description" content="Ein Planspiel zu Führung und Kollaboration, das auf Ihr Unternehmen angepasst wird: Rollen, Betrieb und Projekt, Störungen, Eigenarten, Abrechnung am Rundenende.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Shantell+Sans:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="css/website.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="brand" href="#start"><span class="brand-mark" aria-hidden="true"></span><span>SYNK <span class="brand-sub">Planspiel</span></span></a>
+  <nav aria-label="Seitennavigation">
+    <a href="#spiel">Das Spiel</a>
+    <a href="#szenarien">Szenarien</a>
+    <a href="#lernen">Lernen</a>
+    <a href="#ablauf">Ablauf</a>
+    <a href="#preise">Preise</a>
+    <a class="cta small" href="#kontakt">Erstgespräch</a>
+  </nav>
+</header>
+
+<main>
+
+<!-- ---------- Hero mit 3D-Brett ---------- -->
+<section class="hero" id="start">
+  <div class="hero-text">
+    <p class="eyebrow">Planspiel für Führungskräfte und Teams</p>
+    <h1>Führung und Kollaboration. Am Tisch, unter Druck, mit Folgen.</h1>
+    <p class="lead">Vier Rollen, ein laufender Betrieb und ein Projekt, das fertig werden muss. Jede Runde bringt Störungen, jede Entscheidung hat einen Preis, und am Rundenende wird abgerechnet. Das Szenario passen wir auf Ihr Unternehmen an.</p>
+    <div class="hero-actions">
+      <a class="cta" href="#kontakt">Erstgespräch anfragen</a>
+      <a class="link" href="#spiel">Wie das Spiel funktioniert</a>
+    </div>
+    <dl class="facts">
+      <div><dt>Dauer</dt><dd>½ Tag, auf Wunsch 1 Tag</dd></div>
+      <div><dt>Gruppe</dt><dd>4 bis 6 Personen pro Tisch</dd></div>
+      <div><dt>Format</dt><dd>Brett, Karten, Spielleitung</dd></div>
+    </dl>
+  </div>
+  <div class="hero-scene">
+    <div class="scene-wrap">
+      <canvas id="brett3d" aria-label="Langsam rotierendes Spielbrett mit Karten und Figuren"></canvas>
+      <div class="scene-fallback" id="scene-fallback" hidden>
+        <p>Die 3D-Ansicht braucht WebGL. Das Brett sehen Sie im <a href="index.html">Simulator</a>.</p>
+      </div>
+    </div>
+    <div class="scene-switch" role="group" aria-label="Szenario wählen">
+      <span class="scene-switch-label">Gleiches Brett, anderes Szenario:</span>
+      <div class="scene-buttons" id="scene-buttons"></div>
+    </div>
+    <p class="scene-caption" id="scene-caption"></p>
+  </div>
+</section>
+
+<!-- ---------- Bausteine ---------- -->
+<section class="blocks" id="spiel">
+  <div class="section-head">
+    <p class="eyebrow">Die Bausteine</p>
+    <h2>Fünf Dinge, die in jedem Szenario gleich bleiben</h2>
+    <p class="section-lead">Der Inhalt wechselt mit dem Unternehmen. Das Gerüst bleibt, weil es die Dynamik von Führung abbildet, nicht die Branche.</p>
+  </div>
+  <div class="block-grid" id="block-grid"></div>
+</section>
+
+<!-- ---------- Spielkonzept: Core Loop ---------- -->
+<section class="loop" id="loop">
+  <div class="section-head">
+    <p class="eyebrow">Das Spielkonzept</p>
+    <h2>Eine Runde ist eine Woche. Oder ein Monat. Oder ein Quartal.</h2>
+    <p class="section-lead">Jede Runde durchläuft denselben Kreis. Vier Runden, dann ist das Spiel vorbei und die Reflexion beginnt. Was eine Runde im Betrieb des Kunden bedeutet, legen wir in der Anpassung fest.</p>
+  </div>
+  <div class="loop-body">
+    <div class="loop-diagram" id="loop-diagram"></div>
+    <ol class="loop-steps" id="loop-steps"></ol>
+  </div>
+</section>
+
+<!-- ---------- Spielmaterial im Spiel-Look ---------- -->
+<section class="artefacts" id="material">
+  <div class="section-head">
+    <p class="eyebrow">Aus dem Standardszenario „Verkehrsbetrieb“</p>
+    <h2>So sieht das Material aus</h2>
+    <p class="section-lead">Ereigniskarten mit Vorlesetext und zwei bis drei Wegen, von denen keiner sauber ist. Eigenart-Karten, deren Bonus und Malus aus derselben Stärke kommen. Rollen mit offener und verdeckter Seite.</p>
+  </div>
+  <div class="art" id="art"></div>
+  <p class="art-note">Alle Karten stammen aus dem spielbaren Prototyp. <a href="index.html">Simulator öffnen</a> · <a href="druckbogen.html">Druckvorlagen ansehen</a></p>
+</section>
+
+<!-- ---------- Szenarien / Anpassung ---------- -->
+<section class="scenarios" id="szenarien">
+  <div class="section-head">
+    <p class="eyebrow">Die Anpassung</p>
+    <h2>Ihr Betrieb, Ihre Störungen, Ihr Projekt</h2>
+    <p class="section-lead">Wir übersetzen das Spiel in die Sprache Ihres Unternehmens: Rollen, Ereignisse, das Projekt, das fertig werden muss, der Rhythmus der Runden und die Figuren der Welt. Das Regelwerk ist erprobt und bleibt. Drei Beispiele, wie dasselbe Spiel in anderen Häusern aussieht:</p>
+  </div>
+  <div class="scenario-grid" id="scenario-grid"></div>
+  <div class="adapt-steps">
+    <h3>So läuft die Anpassung</h3>
+    <ol id="adapt-steps"></ol>
+  </div>
+</section>
+
+<!-- ---------- Didaktik ---------- -->
+<section class="learning" id="lernen">
+  <div class="section-head">
+    <p class="eyebrow">Das didaktische Konzept</p>
+    <h2>Was die Spielenden mitnehmen</h2>
+    <p class="section-lead">Das Spiel erklärt Führung nicht, es lässt sie erleben. Die Mechaniken sind so gebaut, dass typische Führungsdilemmata am Tisch entstehen, sichtbar werden und in der Reflexion besprochen werden können.</p>
+  </div>
+  <div class="learn-grid" id="learn-grid"></div>
+  <div class="reflection">
+    <div>
+      <h3>Reflexion und Transfer</h3>
+      <p>Nach jeder Runde fragt die Spielleitung: Was ist passiert, wer hat entschieden, was blieb liegen? Das Team schreibt eine Lernkarte, einen Satz, den es in der nächsten Runde anwenden will. Die Lernkarte wirkt dann mechanisch: Wer sie nutzt, bekommt einen Bonus. Lernen zahlt sich im Spiel aus, nicht nur im Workshop.</p>
+      <p>Am Ende stehen vier Lernkarten auf dem Tisch, geschrieben vom Team selbst. Sie sind der Übergang in den Alltag: Welche davon gilt auch am Montag?</p>
+    </div>
+    <div class="lernkarten" id="lernkarten"></div>
+  </div>
+</section>
+
+<!-- ---------- Ablauf einer Session ---------- -->
+<section class="session" id="ablauf">
+  <div class="section-head">
+    <p class="eyebrow">Der Ablauf</p>
+    <h2>Eine Session, ein halber Tag</h2>
+  </div>
+  <div class="timeline" id="timeline"></div>
+  <p class="session-note">Als ganzer Tag: mit vertiefter Reflexion, einem zweiten Durchgang mit gewechselten Rollen und einem Transfer-Teil auf konkrete Situationen aus Ihrem Haus.</p>
+</section>
+
+<!-- ---------- Preise ---------- -->
+<section class="pricing" id="preise">
+  <div class="section-head">
+    <p class="eyebrow">Preise</p>
+    <h2>Zwei Wege ins Spiel</h2>
+    <p class="section-lead">Mit dem Standardszenario „Verkehrsbetrieb“ starten Sie sofort. Mit der Anpassung spielt Ihr Team in seiner eigenen Welt.</p>
+  </div>
+  <div class="price-grid" id="price-grid"></div>
+  <div class="price-notes" id="price-notes"></div>
+</section>
+
+<!-- ---------- Kontakt ---------- -->
+<section class="contact" id="kontakt">
+  <div class="contact-card">
+    <p class="eyebrow">Erstgespräch</p>
+    <h2>Sprechen wir über Ihr Szenario</h2>
+    <p>In einem Gespräch von 30 Minuten klären wir, welche Führungssituationen in Ihrem Haus auf den Tisch gehören, welches Szenario passt und wie eine erste Session aussehen kann.</p>
+    <a class="cta" id="mail-cta" href="mailto:udo.krauss@synk-group.com">Erstgespräch anfragen</a>
+    <p class="contact-meta">Udo Krauß · <a href="mailto:udo.krauss@synk-group.com">udo.krauss@synk-group.com</a></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <span>SYNK Group · Planspiel Führung und Kollaboration</span>
+  <span class="foot-links"><a href="index.html">Simulator</a> · <a href="druckbogen.html">Druckvorlagen</a> · <span class="muted">Prototyp-Seite, Stand Oktober 2026</span></span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="js/grafik.js"></script>
+<script src="js/daten.js"></script>
+<script src="js/website.js"></script>
+<script src="js/brett3d.js"></script>
+</body>
+</html>
