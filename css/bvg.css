@@ -1,0 +1,108 @@
+/* BVG-Edition (Entwurf, Stufe 2 des CD-Vorschlags).
+   Liegt als Skin über dem Grunddesign „Pappe und Tinte“ und greift nur, wenn <html> die Klasse ed-bvg trägt
+   (Adresse ?edition=bvg oder Knopf „Edition“). Mechanik und Daten bleiben unberührt.
+   Farben aus den Design-Tokens von bvg.de (--bds-…), Stand 18.11.2026.
+   Schrift: Transit ist BVG-Hausschrift und nicht lizenziert. Ist sie auf dem Rechner installiert, wird sie genutzt,
+   sonst steht „Hind“ als Platzhalter (humanistische Grotesk, nahe an Transit/Frutiger). Vor dem Druck durch Transit ersetzen. */
+
+html.ed-bvg{
+  --bvg-gelb:#F0D722; --bvg-anthrazit:#252525; --bvg-grau-600:#424242; --bvg-grau-500:#585858; --bvg-grau-50:#CCCCCC; --bvg-grau-25:#E1E1E1; --bvg-grau-5:#F3F3F3;
+  --bvg-rot:#B3080E; --bvg-gruen:#2C633D; --bvg-blau:#2A4EC0;
+
+  /* Papier: heller und neutraler, damit das Gelb leuchtet. Körnung bleibt. */
+  --paper:#f4efe4; --paper-2:#fbf8f1; --card:#e9e1cf; --bone:#e1dccf;
+  /* Holzrahmen wird Haltestellentafel */
+  --wood:#2c2c2c; --wood-2:#252525;
+  /* Tinte wird Anthrazit */
+  --ink:#252525; --ink-soft:#585858; --line:#9a9a9a; --narr:#424242;
+  /* Senf wird BVG-Gelb */
+  --mustard:#F0D722; --accent:#F0D722;
+  --rust:#B3080E; --teal:#2C633D; --olive:#2C633D; --slate:#757575;
+  --good:#2C633D; --crit:#B3080E;
+  /* Kartentypen: BVG-Palette, bewusst ohne Verkehrsmittelfarben */
+  --t-stoerung:#B3080E; --t-team:#2C633D; --t-politik:#2A4EC0; --t-chance:#252525;
+  /* Spielfarben der vier Rollen */
+  --p1:#2A4EC0; --p2:#B3080E; --p3:#2C633D; --p4:#9a6a00;
+
+  --print:"Transit","Hind",Arial,sans-serif;
+}
+
+/* ---------- Typografie: Transit fürs Gedruckte, Handschrift fürs Geschriebene ---------- */
+html.ed-bvg body,
+html.ed-bvg button,html.ed-bvg input,html.ed-bvg select{font-family:var(--print)}
+html.ed-bvg body{font-size:15.5px}
+/* Was Menschen schreiben oder sagen, bleibt handschriftlich */
+html.ed-bvg .log,
+html.ed-bvg textarea,
+html.ed-bvg .lk .k,
+html.ed-bvg .kq,html.ed-bvg .kq2,
+html.ed-bvg .orow .ox,
+html.ed-bvg .prompt.narr,
+html.ed-bvg .mobox,html.ed-bvg .mobox button{font-family:var(--hand)}
+/* Transit hat kein 800, Bold reicht */
+html.ed-bvg .gc-title,html.ed-bvg .kcard .kt,html.ed-bvg .who .nm,html.ed-bvg .ov h1{letter-spacing:-.01em}
+
+/* ---------- Grund ---------- */
+html.ed-bvg body{background-image:radial-gradient(ellipse at 15% 0%,#faf7f0 0,transparent 55%),radial-gradient(ellipse at 90% 100%,#e6e1d6 0,transparent 55%)}
+html.ed-bvg .grain{opacity:.08}
+html.ed-bvg button:hover{background:#fffbe0}
+html.ed-bvg button.primary{background:var(--bvg-gelb);color:var(--bvg-anthrazit)}
+html.ed-bvg button.primary:hover{background:#f6e35c}
+html.ed-bvg button:focus-visible,html.ed-bvg input:focus-visible,html.ed-bvg select:focus-visible,html.ed-bvg textarea:focus-visible,html.ed-bvg [tabindex]:focus-visible{outline-color:var(--bvg-blau)}
+
+/* ---------- Brett: Rahmen wie eine Haltestellentafel, gelbe Kopfleiste ---------- */
+html.ed-bvg .board{border-color:var(--bvg-anthrazit);box-shadow:6px 7px 0 var(--bvg-anthrazit),inset 0 0 0 2px var(--bvg-gelb)}
+html.ed-bvg .wk.cur{background:#fdf5b8;outline-color:var(--bvg-gelb)}
+html.ed-bvg .wk .wp{color:var(--bvg-rot)}
+html.ed-bvg .track.v .cell{background:#e3ebe5}
+html.ed-bvg .track.v .cell.z-low{background:#f6d4d0}
+html.ed-bvg .track.v .cell.z-zero{background:#d98e8a}
+html.ed-bvg .track.p .cell.z-a{background:#fbf3c4}html.ed-bvg .track.p .cell.z-k{background:#f7ea8e}html.ed-bvg .track.p .cell.z-s{background:#f0d722}
+html.ed-bvg .track.p .cell.goal{box-shadow:inset 0 0 0 2px var(--bvg-anthrazit)}
+html.ed-bvg .cell .ms.got{color:var(--bvg-anthrazit);text-shadow:none}
+html.ed-bvg .track .okl{background:#e6efe8}
+
+/* Kartenrücken im Brett (SVG aus grafik.js): gelb mit anthrazitfarbener Zeichnung */
+html.ed-bvg .cback rect:first-of-type{fill:var(--bvg-gelb)}
+html.ed-bvg .cback rect:nth-of-type(2){stroke:var(--bvg-anthrazit)}
+html.ed-bvg .cback text{fill:var(--bvg-anthrazit);font-family:var(--print)}
+
+/* ---------- Tisch und Karten ---------- */
+html.ed-bvg .col.table{background:#dcdcd6;background-image:radial-gradient(ellipse at 30% 20%,#e8e8e3 0,transparent 60%)}
+html.ed-bvg .gcard .gc-to .tag,html.ed-bvg .tm.active,html.ed-bvg .mowas{background:#fdf5b8}
+html.ed-bvg .gcard.t-Chance .gc-head{background:var(--bvg-gelb);color:var(--bvg-anthrazit)}
+html.ed-bvg .gcard.sel{outline-color:var(--bvg-gelb)}
+html.ed-bvg .kcard.eig{background:#fdf6c9}
+html.ed-bvg .side.st,html.ed-bvg .sidetag.st{background:#fbeeb0}
+html.ed-bvg .orow:hover,html.ed-bvg .optc:hover{background:#fffbe0}
+html.ed-bvg .orow.wag{background:#f8f5ec}
+html.ed-bvg textarea.lernkarte,html.ed-bvg .lk .k{background:#fffbe0}
+html.ed-bvg .flash>div.good{background:#e0ece3}
+html.ed-bvg .flash>div.bad{background:#f6d4d0}
+html.ed-bvg .mobox,html.ed-bvg .mofoot{background:#fbf8f1}
+html.ed-bvg .mosl{border-color:var(--bvg-gruen);background:#e6efe8}
+html.ed-bvg .pill.k-boom{background:#fbeeb0}
+html.ed-bvg .ov{background:rgba(37,37,37,.6)}
+
+/* ---------- Edition-Kennzeichen ---------- */
+html.ed-bvg #btn-ed,html.ed-bvg #ed-sel{background:var(--bvg-gelb);color:var(--bvg-anthrazit)}
+
+/* ---------- Druckbogen ---------- */
+html.ed-bvg body.druck{background:#c9c9c4}
+html.ed-bvg .sheet{background:#fffefb}
+html.ed-bvg .pc.gcard.t-Chance .gc-head{background:var(--bvg-gelb);color:var(--bvg-anthrazit)}
+/* Rückseiten: Ereignisse gelb wie Fahrzeuge und Haltestellenschilder */
+html.ed-bvg .pc.back{background:var(--bvg-gelb);color:var(--bvg-anthrazit)}
+html.ed-bvg .pc.back::after{border-color:var(--bvg-anthrazit)}
+html.ed-bvg .pc.back.b-folge{background:var(--bvg-anthrazit);color:var(--bvg-gelb);background-image:repeating-linear-gradient(-45deg,transparent 0 4mm,rgba(240,215,34,.10) 4mm 8mm)}
+html.ed-bvg .pc.back.b-folge::after{border-color:var(--bvg-gelb)}
+html.ed-bvg .pc.back.b-eig{background:#fbeeb0;color:var(--bvg-anthrazit)}
+html.ed-bvg .pc.back.b-goal{background:var(--bvg-anthrazit);color:var(--bvg-gelb);box-shadow:inset 0 0 0 2.5mm var(--bvg-anthrazit),inset 0 0 0 5mm var(--pc)}
+html.ed-bvg .pc.back.b-goal::after{border-color:var(--bvg-gelb)}
+html.ed-bvg .pc.back.b-moon{background:var(--bvg-grau-600);color:var(--bvg-grau-5);box-shadow:inset 0 0 0 2.5mm var(--bvg-grau-600),inset 0 0 0 5mm var(--pc)}
+html.ed-bvg .pc.back.b-moon::after{border-color:var(--bvg-grau-5)}
+html.ed-bvg .pc.kc.eig{background:#fdf6c9}
+html.ed-bvg .pc.kc.goal{background:#f3efe6}
+html.ed-bvg .po{background:#fffdf6}
+html.ed-bvg .po.wag{background:#f8f5ec}
+html.ed-bvg .cutline span{background:#fffefb}

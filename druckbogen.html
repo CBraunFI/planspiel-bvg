@@ -4,9 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Planspiel Druckbogen</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shantell+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Shantell+Sans:ital,wght@0,400;0,600;0,800;1,400&display=swap">
 <link rel="stylesheet" href="css/spiel.css">
 <link rel="stylesheet" href="css/druckbogen.css">
+<link rel="stylesheet" href="css/bvg.css">
+<script>/* Edition: ?edition=bvg oder Knopf, gemerkt im Browser */(function(){var c=document.documentElement.classList,q=null;try{q=new URLSearchParams(location.search).get("edition");if(q)localStorage.setItem("pl-edition",q);else q=localStorage.getItem("pl-edition")}catch(_){}if(q==="bvg")c.add("ed-bvg")})();</script>
 </head>
 <body class="druck">
 <header class="tb">
@@ -17,6 +19,7 @@
     <label><input type="checkbox" id="opt-marks" checked> Schneidemarken</label>
     <label>Brett <select id="opt-brett"><option value="a3">A3 quer</option><option value="a4">A4 quer (71 %)</option></select></label>
     <span class="muted" id="count"></span>
+    <button class="small ed-btn" id="ed-sel" onclick="toggleEdition()">Edition</button>
     <button class="primary small" id="btn-print">Drucken</button>
   </div>
   <div class="tb-h muted">Im Druckdialog: Ränder „Keine“, Skalierung 100 %, Hintergrundgrafiken an.</div>
@@ -25,5 +28,6 @@
 <script src="js/grafik.js"></script>
 <script src="js/daten.js"></script>
 <script src="js/druckbogen.js"></script>
+<script>document.querySelectorAll('.ed-btn').forEach(b=>b.textContent=edLabel())</script>
 </body>
 </html>

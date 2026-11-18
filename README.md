@@ -14,6 +14,7 @@ Entwicklungsstand des Planspiels für das JUMP-Programm (SYNK / Leada). Die digi
   - `css/druckbogen.css` – Druckmaße und `@media print`
   - `js/druckbogen.js` – baut alle Bögen aus `js/daten.js` und `js/grafik.js`
 - `website.html` – Prototyp der Vorstellungs- und Verkaufsseite: Landing Page mit 3D-Spielbrett (Three.js, Szenario-Wechsel per Klick), Bausteinen, Spielkreis, Spielmaterial im Spiel-Look, Beispielszenarien, Lernzielen, Ablauf, Preisen und Kontakt. Inhalte und Szenarien in `js/website.js`, 3D-Szene in `js/brett3d.js`, Gestaltung in `css/website.css`.
+- `css/bvg.css` – BVG-Edition (Entwurf): Farben, Schrift und Kartenrücken im BVG-Design als Skin über dem Grunddesign. Einschalten mit `?edition=bvg` oder dem Knopf „Edition“ im Simulator und im Druckbogen.
 - `stilprobe.html` – Stilprobe für Oberfläche, Portraits und Piktogramme.
 - `docs/Spielleitungsheft_v1.md` – Szenario, Rollen, Eigenarten, Regeln, Spielmaterial, alle 31 Karten mit Vorlesetexten, Designnotizen.
 

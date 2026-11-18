@@ -116,5 +116,10 @@ function d12SVG(n,size,cls){
 const hurdleSVG=(n,size)=>`<svg viewBox="0 0 100 100" width="${size||34}" height="${size||34}" class="hurdle" aria-label="Hürde ${n}"><rect x="6" y="6" width="88" height="88" rx="18" fill="${PAPER}" stroke="${RUST}" stroke-width="7" stroke-dasharray="14 7"/><text x="50" y="68" text-anchor="middle" font-size="50" font-weight="800" fill="${RUST}" font-family="sans-serif">${n}</text></svg>`;
 // Spielfigur für die Leisten
 const pawnSVG=(c,size)=>`<svg viewBox="0 0 40 48" width="${size||22}" height="${Math.round((size||22)*1.2)}" class="pawn" aria-hidden="true"><circle cx="20" cy="11" r="8" fill="${c}" stroke="${INK}" stroke-width="3"/><path d="M8 44q0-18 12-24q12 6 12 24z" fill="${c}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/></svg>`;
+// Edition (Skin): Grunddesign oder BVG, siehe css/bvg.css
+const isBVG=()=>document.documentElement.classList.contains('ed-bvg');
+const edLabel=()=>'Edition: '+(isBVG()?'BVG':'Grund');
+function toggleEdition(btn){const on=document.documentElement.classList.toggle('ed-bvg');try{localStorage.setItem('pl-edition',on?'bvg':'grund')}catch(_){}
+  document.querySelectorAll('.ed-btn').forEach(b=>b.textContent=edLabel());}
 // Kartenrückseite
 const cardBackSVG=(w,label)=>`<svg viewBox="0 0 63 88" width="${w||40}" height="${Math.round((w||40)*88/63)}" class="cback" aria-hidden="true"><rect x="2" y="2" width="59" height="84" rx="6" fill="${'#6e4522'}" stroke="${INK}" stroke-width="3"/><rect x="8" y="8" width="47" height="72" rx="3" fill="none" stroke="${MUST}" stroke-width="2" stroke-dasharray="4 3"/><text x="31.5" y="50" text-anchor="middle" font-size="${label?11:22}" font-weight="800" fill="${MUST}" font-family="sans-serif">${label||'NO'}</text></svg>`;

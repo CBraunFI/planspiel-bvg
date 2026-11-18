@@ -4,7 +4,7 @@
 const SZENARIEN=[
   {key:'verkehr',kurz:'Verkehrsbetrieb',name:'Verkehrsbetrieb',standard:true,runde:'Woche',
    bereich:'Fachgebiet Nord-Ost',projekt:'Vorstudie „Depot der Zukunft“',vorstand:'Dr. Kessler',nachbar:'Fachgebiet Süd',
-   rollen:['Bereichsleitung','Teamleitung Betrieb','Teamleitung Projekt','Mitarbeitende:r'],
+   rollen:['Bereichsleitung','Teamleitung Linie','Teamleitung Projekt','Mitarbeitende:r'],
    karten:[{type:'Störung',title:'Oberleitungsschaden'},{type:'Team',title:'Konflikt in der Schicht'},{type:'Politik',title:'Zahlen in der Presse'},{type:'Chance',title:'Freie Kapazität in Süd'}],
    caption:'Zwei Straßenbahnlinien, ein Betriebshof, 140 Leute. Die Vorstudie muss in vier Wochen fertig sein, während Oberleitungen reißen und die Presse anruft. Das Standardszenario, sofort spielbar.',
    akzent:'#2f6f6a',brett:'#f3eadb',rahmen:'#8a5a2d',tisch:'#cdb68a',hintergrund:'#d9c9a8'},
@@ -31,16 +31,16 @@ const SZ=k=>SZENARIEN.find(s=>s.key===k)||SZENARIEN[0];
 
 const BAUSTEINE=[
   {icon:'twoq',titel:'Rollen',text:'Vier Personen übernehmen vier Funktionen: eine Leitung, zwei Teamleitungen mit unterschiedlichem Schwerpunkt, eine Person aus dem Team. Jede Rolle hat eine offene Seite mit einer Fähigkeit und eine verdeckte Seite mit einem eigenen Ziel und einer Information, die die anderen nicht haben.'},
-  {icon:'scales',titel:'Betrieb und Projekt',text:'Das Tagesgeschäft muss laufen, und gleichzeitig soll ein Projekt fertig werden. Zwei Leisten auf dem Brett zeigen beides: das Vertrauen der Leitung und den Projektfortschritt. Die Leisten hängen zusammen. Wer eine Seite vernachlässigt, zahlt auf der anderen.'},
-  {icon:'storm',titel:'Ereignisse und Störungen',text:'Jede Runde legt die Spielleitung neue Karten auf den Tisch: Störungen im Betrieb, Konflikte im Team, Politik von oben, Chancen von außen. Jede Karte bietet zwei bis drei Wege. Keiner ist sauber. Der teure kostet Zeit, der billige hat Nebenwirkungen, das Wagnis entscheidet der Würfel.'},
+  {icon:'scales',titel:'Linie und Projekt',text:'Das Tagesgeschäft muss laufen, und gleichzeitig soll ein Projekt fertig werden. Zwei Leisten auf dem Brett zeigen beides: das Vertrauen der Leitung und den Projektfortschritt. Die Leisten hängen zusammen. Wer eine Seite vernachlässigt, zahlt auf der anderen.'},
+  {icon:'storm',titel:'Ereignisse und Störungen',text:'Jede Runde legt die Spielleitung neue Karten auf den Tisch: Störungen in der Linie, Konflikte im Team, Politik von oben, Chancen von außen. Jede Karte bietet zwei bis drei Wege. Keiner ist sauber. Der teure kostet Zeit, der billige hat Nebenwirkungen, das Wagnis entscheidet der Würfel.'},
   {icon:'puzzle',titel:'Eigenarten',text:'Jede Person spielt mit einer Eigenart: einer Stärke, die zu weit geht. Wer nie Nein sagt, hilft besser und brennt schneller aus. Bonus und Malus kommen aus derselben Eigenschaft. In der Reflexion ist das die interessanteste Frage: Wo hat sie dir geholfen, wo geschadet?'},
   {icon:'chart',titel:'Abrechnung am Rundenende',text:'Eine Runde steht für eine Woche, einen Monat oder ein Quartal, je nach Rhythmus Ihres Betriebs. Am Ende wird abgerechnet: Was blieb liegen und was kostet das? Wo stehen die Figuren? Welche Folgekarte kommt nächste Runde? Jede Bewegung hat einen sichtbaren Grund.'},
 ];
 
 const KREIS=[
-  {k:'Priorität',t:'Die Leitung ruft an und sagt, was diese Runde zählt: Betrieb oder Projekt. Die Regeln verschieben sich ein wenig.'},
+  {k:'Priorität',t:'Die Leitung ruft an und sagt, was diese Runde zählt: Linie oder Projekt. Die Regeln verschieben sich ein wenig.'},
   {k:'Ereignisse',t:'Neue Karten kommen auf den Tisch, jede an eine Person adressiert. Folgekarten aus früheren Runden werden umgedreht.'},
-  {k:'Ansage',t:'Jede Person legt sich fest: Betrieb oder Projekt. Die Ansage gilt die ganze Runde. Nur wer auf derselben Seite steht, kann helfen.'},
+  {k:'Ansage',t:'Jede Person legt sich fest: Linie oder Projekt. Die Ansage gilt die ganze Runde. Nur wer auf derselben Seite steht, kann helfen.'},
   {k:'Spielphase',t:'Drei Chips Führungszeit pro Person. Karten bearbeiten, am Projekt arbeiten, helfen, Fähigkeiten einsetzen, Wagnisse würfeln.'},
   {k:'Eskalation',t:'Was liegen bleibt, wird schwerer und kostet Vertrauen. Chancen verfallen. Stillstand auf einer Seite kostet ebenfalls.'},
   {k:'Abrechnung',t:'Die Spielleitung liest vor, was sich auf den Leisten bewegt hat und warum. Übrige Chips werden zum Puffer.'},
@@ -49,7 +49,7 @@ const KREIS=[
 
 const LERNZIELE=[
   {titel:'Prioritäten setzen, wenn die Zeit nicht reicht',text:'Drei Chips pro Runde sind absichtlich zu wenig. Die Frage ist nie „Wie schaffen wir alles?“, sondern „Was lassen wir liegen, und wer entscheidet das?“'},
-  {titel:'Betrieb und Veränderung gleichzeitig führen',text:'Zwei gekoppelte Leisten machen das Dilemma messbar: Wer nur Störungen löscht, verliert das Projekt. Wer nur am Projekt baut, verliert den Betrieb und das Vertrauen.'},
+  {titel:'Linie und Veränderung gleichzeitig führen',text:'Zwei gekoppelte Leisten machen das Dilemma messbar: Wer nur Störungen löscht, verliert das Projekt. Wer nur am Projekt baut, verliert die Linie und das Vertrauen.'},
   {titel:'Zusammenarbeit kostet, und sie lohnt sich',text:'Helfen ist der stärkste Bonus im Spiel, und es kostet die helfende Person einen eigenen Chip. Unterstützung ist nie gratis. Wer allein ins Wagnis geht, scheitert oft.'},
   {titel:'Nebenwirkungen und Spätfolgen sehen',text:'Der schnelle Weg bringt eine Folgekarte, die sichtbar auf der Rundenleiste liegt. Das Team sieht die Rechnung kommen und entscheidet, ob es sich vorbereitet oder verdrängt.'},
   {titel:'Eigene Muster erkennen',text:'Die Eigenart-Karten machen Verhaltensmuster spielbar: Perfektionismus, Delegieren, Bauchentscheidungen, „Feierabend ist heilig“. Jede ist eine Stärke, die zu weit geht.'},

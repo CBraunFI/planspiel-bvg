@@ -1,25 +1,25 @@
 // ---------- Stammdaten ----------
 const SCENARIO={
   bereich:'Fachgebiet Nord-Ost', vorstand:'Dr. Kessler', nachbar:'Fachgebiet Süd (Leitung Brandt)',
-  intro:'Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 Leute. Seit Montag liegt die Vorstudie „Depot der Zukunft“ auf eurem Tisch, Abgabe in vier Wochen, Dr. Kessler aus dem Vorstand hat sie persönlich bestellt. Gleichzeitig läuft der Betrieb weiter: Frühschicht, Störungen, Dienstpläne, Presse. Fachgebiet Süd unter Frau Brandt hat Kapazität übrig und ein Auge auf euer Thema. Euer Vertrauen beim Vorstand ist solide, nicht mehr. Jede Woche ist eine Runde. Jede Runde ruft Dr. Kessler an.',
+  intro:'Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 Leute. Seit Montag liegt die Vorstudie „Depot der Zukunft“ auf eurem Tisch, Abgabe in vier Wochen, Dr. Kessler aus dem Vorstand hat sie persönlich bestellt. Gleichzeitig läuft die Linie weiter: Frühschicht, Störungen, Dienstpläne, Presse. Fachgebiet Süd unter Frau Brandt hat Kapazität übrig und ein Auge auf euer Thema. Euer Vertrauen beim Vorstand ist solide, nicht mehr. Jede Woche ist eine Runde. Jede Runde ruft Dr. Kessler an.',
 };
 const ROLES = [
   {key:'BL', role:'Bereichsleitung', focus:'Politik', color:'--p1', ability:'Hilfe von außen: 1 Chip, ein Wagnis wird um 1 leichter (1×/Runde)', abilityKey:'help',
    goal:'Das Vertrauen des Vorstands darf nie unter 4 fallen', info:'Dr. Kessler plant eine Umstrukturierung, falls die Vorstudie kippt. Nord-Ost würde unter Süd aufgehen'},
-  {key:'TB', role:'Teamleitung Betrieb', focus:'Betrieb', color:'--p2', ability:'Störung durchziehen: 2 Chips, ohne Wurf und ohne Nebenwirkung (1×/Spiel)', abilityKey:'solve',
+  {key:'TB', role:'Teamleitung Linie', focus:'Linie', color:'--p2', ability:'Störung durchziehen: 2 Chips, ohne Wurf und ohne Nebenwirkung (1×/Spiel)', abilityKey:'solve',
    goal:'Jede Störung in der Runde lösen, in der sie kommt', info:'{MA} hat ein Angebot von Frau Brandt aus Süd und hat es dir im Vertrauen gesagt'},
   {key:'TP', role:'Teamleitung Projekt', focus:'Projekt', color:'--p3', ability:'Projektschub: 2 Chips für +3 Projekt, ohne Nebenwirkung (1×/Spiel)', abilityKey:'push',
    goal:'Das Projekt darf nie zwei Runden in Folge stehen bleiben', info:'Frau Brandt will die Vorstudie nach Süd holen. Es gab schon ein Gespräch mit Dr. Kessler'},
   {key:'MA', role:'Mitarbeitende:r', focus:'Team', color:'--p4', ability:'Störungsbereitschaft: +2 auf Wagnisse bei Störungen (passiv)', abilityKey:'standby',
    goal:'Du hast ein Angebot aus Süd. Du bleibst, wenn du bis Ende Runde 3 zweimal „zu zweit“ gespielt hast. Sonst: Runde 4 nur ein Chip', info:'Flurfunk: Süd hat gerade Kapazität übrig und sucht Aufgaben'},
 ];
-const FOCUS_MATCH = {Politik:['Politik'], Betrieb:['Störung'], Projekt:['Chance'], Team:['Team']};
+const FOCUS_MATCH = {Politik:['Politik'], Linie:['Störung'], Projekt:['Chance'], Team:['Team']};
 // Portraits: zehn Figuren, jede aus denselben Bausteinen. Spieler wählen eine.
 const PORTRAITS=[
   {id:'p1',name:'Ilka',line:'Leitstand, Nachtschicht, kennt jeden Zug',skin:'#d9b995',hair:'bun',hairc:'#4a3326',cloth:'headset',clothc:'#4f6a73',bg:'#3a5f63',acc:'#d8a93e'},
   {id:'p2',name:'Bernd',line:'Dreißig Dienstjahre, misstraut Folien',skin:'#c9a07e',hair:'cap',hairc:'#2a3a44',cloth:'jacket',clothc:'#3b4b56',bg:'#55533f',acc:'#c0392b'},
   {id:'p3',name:'Selin',line:'Hat die Vorstudie im Kopf und im Ordner',skin:'#e2c3a3',hair:'long',hairc:'#2f2420',cloth:'blazer',clothc:'#6f7a5a',bg:'#4a4f66',glasses:true,acc:'#d8a93e'},
-  {id:'p4',name:'Tomasz',line:'Fahrer, Betriebsrat, laut und herzlich',skin:'#d4a98a',hair:'short',hairc:'#5b4a3a',cloth:'vest',clothc:'#d8a93e',bg:'#5a4a3a',acc:'#2f6f6a'},
+  {id:'p4',name:'Tomasz',line:'Fahrer, in der Arbeitnehmervertretung, laut und herzlich',skin:'#d4a98a',hair:'short',hairc:'#5b4a3a',cloth:'vest',clothc:'#d8a93e',bg:'#5a4a3a',acc:'#2f6f6a'},
   {id:'p5',name:'Grete',line:'Werkstatt, repariert alles, auch Stimmungen',skin:'#e6c9ae',hair:'curly',hairc:'#9a9a9a',cloth:'overall',clothc:'#4a5f72',bg:'#3f5a52',acc:'#c0392b'},
   {id:'p6',name:'Amir',line:'Neu im Haus, stellt die richtigen Fragen',skin:'#b98c68',hair:'short',hairc:'#1f1a16',cloth:'shirt',clothc:'#d9d2c0',bg:'#52606b',glasses:true,acc:'#2f6f6a'},
   {id:'p7',name:'Hanne',line:'Assistenz, weiß vor allen, was der Vorstand will',skin:'#dfb9a0',hair:'bob',hairc:'#7a3f2a',cloth:'blazer',clothc:'#8a5a5a',bg:'#5d4a60',acc:'#d8a93e'},
@@ -36,7 +36,7 @@ const EVENTS = [
     {id:'a',label:'Ersatzverkehr aus eigener Kraft',text:'Alle verfügbaren Busse, die Schicht bleibt länger.',chips:2,resolve:true,later:{card:101,delay:2},out:'Bis mittags fahren eure Busse im Pendel. Die Frühschicht geht um 15 Uhr nach Hause, nicht um 13. Niemand beschwert sich. Noch nicht.'},
     {id:'b',label:'Süd um Busse bitten',text:'Ein Anruf bei Frau Brandt, zwanzig Minuten später rollen fremde Busse.',chips:1,resolve:true,nachbar:true,out:'Frau Brandt sagt sofort zu. „Gern. Wir helfen uns doch.“ Sie sagt es so, dass du es dir merkst.'},
     {id:'w',label:'Provisorium',text:'Der Werkstattmeister sagt, er kriegt das mit Draht und Klemmen hin.',chips:1,roll:{diff:5,fail:{escalateNow:true}},resolve:true,out:'Der Meister steht auf der Leiter und flucht leise.'}]},
-  {id:2,type:'Störung',title:'Krankheitswelle Frühschicht',diff:4,to:'TB',icon:'bed',text:'Drei Kolleg:innen fallen aus, der Dienstplan hat Löcher.',esc:'Überstunden häufen sich, der Betriebsrat beschwert sich.',
+  {id:2,type:'Störung',title:'Krankheitswelle Frühschicht',diff:4,to:'TB',icon:'bed',text:'Drei Kolleg:innen fallen aus, der Dienstplan hat Löcher.',esc:'Überstunden häufen sich, die Arbeitnehmervertretung beschwert sich.',
    read:'Montagmorgen, drei Krankmeldungen in der Frühschicht, alle echt, alle gleichzeitig. Der Dienstplan hat Löcher, die nächste Woche zu groß sind, um sie zu übersehen.',qa:'„Können wir Fahrten streichen?“ Könnt ihr, das merkt der Vorstand. „Wer hat frei?“ Niemand, der nicht schon letzte Woche eingesprungen ist.',opts:[
     {id:'a',label:'{MA} springt ein',text:'Doppelschicht, ohne Diskussion.',chips:1,payer:'MA',resolve:true,noPair:'MA',out:'{MA} nickt, holt den Kaffee und fährt. Für Hilfe bei anderen Dingen ist {MA} diese Woche nicht mehr da.'},
     {id:'b',label:'Dienstplan neu schneiden',text:'Zwei Stunden am Plan, dann passt es, und du bist den Tag los.',chips:2,resolve:true,endRound:true,out:'Um 11 Uhr steht der Plan. Du hast den Rest der Woche keine Zeit mehr für anderes.'},
@@ -103,10 +103,10 @@ const EVENTS = [
     {id:'a',label:'Nachbesetzung aus Süd',text:'Frau Brandt leiht jemanden aus, nicht umsonst.',chips:1,resolve:true,nachbar:true,out:'Ab Montag sitzt ein Disponent aus Süd im Leitstand. Er ist gut. Er grüßt von Frau Brandt.'},
     {id:'b',label:'Intern ausbilden',text:'Jemand aus dem Team wächst rein, langsam.',chips:2,resolve:true,later:{card:105,delay:1},out:'Ein Fahrer will in den Leitstand. Er kann es lernen. Es wird dauern.'},
     {id:'w',label:'Ausschreiben und warten',text:'Vielleicht meldet sich schnell jemand.',chips:1,roll:{diff:5,fail:{}},resolve:true,out:'Die Anzeige ist online.'}]},
-  {id:16,type:'Team',title:'Betriebsrat fragt nach Überstunden',diff:5,to:'BL',icon:'scales',text:'Der Betriebsrat will die Überstundenliste des Quartals sehen.',esc:'Es gibt eine förmliche Beschwerde.',
-   read:'Der Betriebsratsvorsitzende steht mit einem Zettel in deiner Tür. Er will die Überstundenliste des Quartals, bis Freitag, schriftlich. Er lächelt dabei. Die Liste ist nicht schön.',qa:'„Ist das sein Recht?“ Ja. „Wie schlimm ist die Liste?“ Zwei Leute über dem Limit, seit Monaten.',opts:[
-    {id:'a',label:'Zahlen offenlegen',text:'Die Liste ist nicht schön.',chips:1,resolve:true,standing:-1,out:'Der Betriebsrat bedankt sich. Die Liste geht an die Personalabteilung, und von dort weiter nach oben.'},
-    {id:'b',label:'Gespräch mit Betriebsrat und Team',text:'Ursachen statt Zahlen, und eine Zusage, die dich bindet.',chips:2,resolve:true,nextChips:-1,out:'Nach dem Gespräch gibt es einen Plan für weniger Überstunden. Du hast versprochen, ihn selbst zu überwachen.'},
+  {id:16,type:'Team',title:'Arbeitnehmervertretung fragt nach Überstunden',diff:5,to:'BL',icon:'scales',text:'Die Arbeitnehmervertretung will die Überstundenliste des Quartals sehen.',esc:'Es gibt eine förmliche Beschwerde.',
+   read:'Der Vorsitzende der Arbeitnehmervertretung steht mit einem Zettel in deiner Tür. Er will die Überstundenliste des Quartals, bis Freitag, schriftlich. Er lächelt dabei. Die Liste ist nicht schön.',qa:'„Ist das sein Recht?“ Ja. „Wie schlimm ist die Liste?“ Zwei Leute über dem Limit, seit Monaten.',opts:[
+    {id:'a',label:'Zahlen offenlegen',text:'Die Liste ist nicht schön.',chips:1,resolve:true,standing:-1,out:'Die Arbeitnehmervertretung bedankt sich. Die Liste geht an die Personalabteilung, und von dort weiter nach oben.'},
+    {id:'b',label:'Gespräch mit Arbeitnehmervertretung und Team',text:'Ursachen statt Zahlen, und eine Zusage, die dich bindet.',chips:2,resolve:true,nextChips:-1,out:'Nach dem Gespräch gibt es einen Plan für weniger Überstunden. Du hast versprochen, ihn selbst zu überwachen.'},
     {id:'w',label:'Formal korrekt antworten',text:'Alles im Rahmen, steht im Brief.',chips:1,roll:{diff:5,fail:{later:{card:104,delay:1}}},resolve:true,out:'Der Brief ist juristisch einwandfrei.'}]},
   {id:17,type:'Team',title:'Die Neue wird ausgegrenzt',diff:5,to:'MA',icon:'alone',text:'Die neue Kollegin in der Schicht sitzt in der Pause allein.',esc:'Sie hat sich krankgemeldet.',
    read:'Seit sechs Wochen ist eine neue Fahrerin in der Spätschicht. Sie fährt gut. In der Pause sitzt sie allein, im Gruppenchat wird sie nicht erwähnt, beim Dienstwechsel bekommt sie die schlechten Touren. Niemand hat etwas gegen sie, sagen alle.',qa:'„Hat sie sich beschwert?“ Nein. „Woher weißt du es dann?“ Du hast hingeschaut.',opts:[
@@ -131,9 +131,9 @@ const EVENTS = [
     {id:'a',label:'Reserve aus Süd',text:'Zwei Züge geliehen, Rückgabe unklar.',chips:1,resolve:true,nachbar:true,out:'Zwei Züge mit dem Logo von Süd fahren auf euren Linien. Alle sehen es.'},
     {id:'b',label:'Umlauf neu planen',text:'Mit weniger Fahrzeugen den vollen Takt halten. Die Planer sind danach durch.',chips:2,resolve:true,nextChips:-1,out:'Der neue Umlauf hält. Die Planung hat zwei Nächte durchgearbeitet und nimmt nächste Woche frei.'},
     {id:'w',label:'Fahren, bis es knallt',text:'Die Werkstatt wird schon fertig.',chips:1,roll:{diff:4,fail:{later:{card:107,delay:1}}},resolve:true,out:'Ihr fahrt mit dem, was da ist.'}]},
-  {id:22,type:'Team',title:'Zwei wollen in die Vorstudie',diff:5,to:'TP',icon:'arrows',text:'Zwei Teammitglieder wollen raus aus dem Betrieb und rein ins Projekt.',esc:'Beide fahren Dienst nach Vorschrift.',
-   read:'Zwei aus der Planung stehen in der Tür: Sie wollen in die Vorstudie, Vollzeit, ab sofort. Beide sind gut. Beide fehlen dann im Betrieb. Und beide haben gehört, dass die andere auch gefragt hat.',qa:'„Brauchen wir sie im Projekt?“ Mindestens eine. „Und im Betrieb?“ Beide.',opts:[
-    {id:'a',label:'Beide reinholen',text:'Das Projekt freut sich, der Betrieb wird dünn.',chips:1,resolve:true,project:1,standing:-1,out:'Die Vorstudie bekommt zwei kluge Köpfe. Die Planung im Betrieb arbeitet ab jetzt zu zweit statt zu viert.'},
+  {id:22,type:'Team',title:'Zwei wollen in die Vorstudie',diff:5,to:'TP',icon:'arrows',text:'Zwei Teammitglieder wollen raus aus der Linie und rein ins Projekt.',esc:'Beide fahren Dienst nach Vorschrift.',
+   read:'Zwei aus der Planung stehen in der Tür: Sie wollen in die Vorstudie, Vollzeit, ab sofort. Beide sind gut. Beide fehlen dann in der Linie. Und beide haben gehört, dass die andere auch gefragt hat.',qa:'„Brauchen wir sie im Projekt?“ Mindestens eine. „Und in der Linie?“ Beide.',opts:[
+    {id:'a',label:'Beide reinholen',text:'Das Projekt freut sich, die Linie wird dünn.',chips:1,resolve:true,project:1,standing:-1,out:'Die Vorstudie bekommt zwei kluge Köpfe. Die Planung in der Linie arbeitet ab jetzt zu zweit statt zu viert.'},
     {id:'b',label:'Eine Person, klar begründet',text:'Ein Gespräch, in dem jemand enttäuscht wird, und das dich Kraft kostet.',chips:2,resolve:true,nextChips:-1,out:'Eine geht ins Projekt, eine bleibt. Die, die bleibt, sagt: „Verstehe ich.“ Sie meint es nicht so.'},
     {id:'w',label:'Entscheidung vertagen',text:'Nächste Woche, versprochen.',chips:1,roll:{diff:5,fail:{}},resolve:true,out:'Ihr vertagt.'}]},
 ];
@@ -141,7 +141,7 @@ const FOLLOW = [
   {id:101,type:'Störung',title:'Erschöpfte Schicht',diff:5,to:'TB',icon:'tired',text:'Die Überstunden vom Oberleitungsschaden fordern ihren Preis.',esc:'Zwei Fahrer:innen fallen länger aus.',
    read:'Die Überstunden vom Oberleitungsschaden sind nicht vergessen. Drei Krankmeldungen in der Frühschicht, kurze Zündschnüre im Pausenraum, ein Fahrer hat am Steuer geweint. Das Team ist leer.',qa:'„Ist das unsere Schuld?“ Ja. „Was hilft?“ Zeit, die ihr nicht habt.',opts:[
     {id:'a',label:'Freizeitausgleich',text:'Alle bekommen ihre Stunden zurück, jetzt, und der Plan wird dünn.',chips:2,resolve:true,nextChips:-1,out:'Eine Woche lang fährt die Frühschicht mit Mindestbesetzung. Es geht gerade so.'},
-    {id:'b',label:'Durchhalten',text:'Noch zwei Wochen, dann wird es ruhiger.',chips:1,resolve:true,standing:-1,out:'Die Schicht hält durch. Der Betriebsrat schreibt an Dr. Kessler.'},
+    {id:'b',label:'Durchhalten',text:'Noch zwei Wochen, dann wird es ruhiger.',chips:1,resolve:true,standing:-1,out:'Die Schicht hält durch. Die Arbeitnehmervertretung schreibt an Dr. Kessler.'},
     {id:'w',label:'Motivationsrede',text:'Kaffee und Kuchen im Pausenraum.',chips:1,roll:{diff:5,fail:{standing:-1}},resolve:true,out:'Du stellst dich in den Pausenraum.'}]},
   {id:102,type:'Team',title:'Werkstatt zieht sich zurück',diff:5,to:'TP',icon:'doorclose',text:'Nach dem Machtwort liefert die Werkstatt nur noch das Nötigste.',esc:'Die Werkstatt hat die Mitarbeit an der Vorstudie offiziell beendet.',
    read:'Seit dem Machtwort liefert die Werkstatt nur noch, was im Auftrag steht. Mails werden kurz, Termine werden abgesagt, das Wissen über die Hallen bleibt in der Halle.',qa:'„Sind sie beleidigt?“ Sie sind übergangen worden. „Brauchen wir sie?“ Für das Depot-Kapitel: ja.',opts:[

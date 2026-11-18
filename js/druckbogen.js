@@ -56,7 +56,7 @@ function optP(x,e){
 function evFront(e){
   const r=ROLE(e.to);const folge=e.id>=100;
   const foot=e.type==='Chance'?'<span>verfällt am Wochenende</span>':
-    `<span>liegen lassen</span> ${pill('v',sgn(-PEN))} <span class="muted">bei ${xg('phone',11)} Betrieb</span> ${pill('v',sgn(-(PEN+1)))} <span class="muted">· Hürde +1</span>`;
+    `<span>liegen lassen</span> ${pill('v',sgn(-PEN))} <span class="muted">bei ${xg('phone',11)} Linie</span> ${pill('v',sgn(-(PEN+1)))} <span class="muted">· Hürde +1</span>`;
   return `<div class="pc gcard t-${e.type} ${folge?'folge':''}">
     <div class="gc-head"><span class="gc-type">${e.type}${folge?' · Folge':''}</span><span class="nr">${e.id}</span><span class="gc-h" title="Wagnis gelingt ab dieser Augenzahl">${hurdleSVG(wag(e),26)}</span></div>
     <div class="gc-art">${iconSVG(e.icon,66)}</div>
@@ -106,8 +106,8 @@ const projBack=()=>`<div class="pc back b-proj"><div class="bf"><div class="bk">
 function callFront(r,side){
   const v=side==='standing';
   return `<div class="pc kc call ${v?'c-v':'c-p'}" style="--pc:var(${r.color})"><div class="kh"><span>Ansage</span></div>
-    <div class="cbig">${iconSVG(v?'signal':'paper',84)}<div class="kt">${v?'Betrieb':'Projekt'}</div></div>
-    <div class="kb">${v?'Ich kümmere mich diese Woche um den Betrieb.':'Ich arbeite diese Woche an der Vorstudie.'}</div>
+    <div class="cbig">${iconSVG(v?'signal':'paper',84)}<div class="kt">${v?'Linie':'Projekt'}</div></div>
+    <div class="kb">${v?'Ich kümmere mich diese Woche um die Linie.':'Ich arbeite diese Woche an der Vorstudie.'}</div>
     <div class="kf"><i class="rdot" style="background:var(${r.color})"></i>${esc(r.role)}</div></div>`;
 }
 const callBack=r=>`<div class="pc back b-moon" style="--pc:var(${r.color})"><div class="bf"><div class="bk">Ansage · Rückseite</div><svg viewBox="0 0 20 20" class="bgl">${GLYPH.moon}</svg><div class="bt">Fertig für<br>die Woche</div><div class="bs">${esc(r.role)}</div></div></div>`;
@@ -131,10 +131,10 @@ const kessBack=()=>`<div class="pc back b-kess"><div class="bf"><div class="bk">
 function hilfeFront(){
   const step=(n,t,x)=>`<li><b>${n} · ${t}</b><span>${x}</span></li>`;
   return `<div class="pc hilfe"><div class="hh"><span>Spielhilfe</span><b>Eine Woche</b></div><ol class="hsteps">
-    ${step(1,'Ereignis',`Dr. Kessler ruft an, W6: 1–3 ${xg('phone',10)} Betrieb, 4–6 Projekt. Die Spielleitung deckt die Ereignisse der Woche auf (${EV_COUNTS.join(' / ')}) und die fälligen Folgekarten.`)}
-    ${step(2,'Ansage','Alle legen verdeckt Betrieb oder Projekt und decken gleichzeitig auf. Helfen darf nur, wer dieselbe Ansage hat.')}
+    ${step(1,'Ereignis',`Dr. Kessler ruft an, W6: 1–3 ${xg('phone',10)} Linie, 4–6 Projekt. Die Spielleitung deckt die Ereignisse der Woche auf (${EV_COUNTS.join(' / ')}) und die fälligen Folgekarten.`)}
+    ${step(2,'Ansage','Alle legen verdeckt Linie oder Projekt und decken gleichzeitig auf. Helfen darf nur, wer dieselbe Ansage hat.')}
     ${step(3,'Spielphase',`Reihum je ein Zug, ${ST.turnSec} Sekunden Sanduhr, ${ST.chips} Chips Führungszeit. Wer fertig ist, dreht die Ansage auf ${glyph('moon',10)}.`)}
-    ${step(4,'Wochenende',`Jede liegen gebliebene Karte ${pill('v',sgn(-PEN))} (bei Betrieb ${pill('v',sgn(-(PEN+1)))}) und Hürde +1. Niemand am Projekt ${pill('p','−1')}, niemand im Betrieb ${pill('v','−1')}. Chancen verfallen. 2 übrige Chips = 1 Puffer-Chip.`)}
+    ${step(4,'Wochenende',`Jede liegen gebliebene Karte ${pill('v',sgn(-PEN))} (bei Linie ${pill('v',sgn(-(PEN+1)))}) und Hürde +1. Niemand am Projekt ${pill('p','−1')}, niemand in der Linie ${pill('v','−1')}. Chancen verfallen. 2 übrige Chips = 1 Puffer-Chip.`)}
     ${step(5,'Abrechnung','Die Spielleitung liest jede Bewegung auf den Leisten mit ihrem Grund vor.')}
     ${step(6,'Vorstands-Call','Eine Frage von Dr. Kessler. Die Bereichsleitung antwortet und würfelt.')}
     ${step(7,'Reflexion','Was ist passiert, was nehmt ihr mit? Ein Satz auf eine Lernkarte.')}
@@ -164,7 +164,7 @@ function d6Net(faces,label,s){
   return `<figure class="net"><svg viewBox="0 0 ${W} ${H}" style="width:${W}mm;height:${H}mm">${tabs.join('')}${sq}</svg><figcaption>${label}</figcaption></figure>`;
 }
 const pipFace=n=>s=>PIPS[n].map(([x,y])=>`<circle cx="${x*s/100}" cy="${y*s/100}" r="${s*.085}" fill="${INK}"/>`).join('');
-const prioFace=v=>s=>`<g transform="translate(${s*.28} ${s*.1}) scale(${s*.44/20})">${XGLYPH.phone}</g><text x="${s/2}" y="${s*.82}" text-anchor="middle" class="ft" style="font-size:${s*.2}px">${v?'Betrieb':'Projekt'}</text>`;
+const prioFace=v=>s=>`<g transform="translate(${s*.28} ${s*.1}) scale(${s*.44/20})">${XGLYPH.phone}</g><text x="${s/2}" y="${s*.82}" text-anchor="middle" class="ft" style="font-size:${s*.2}px">${v?'Linie':'Projekt'}</text>`;
 // W12: zwei Blüten aus je sechs Fünfecken; die zweite ist die erste, um 180° um den Mittelpunkt einer Außenkante gedreht
 function d12Net(s){
   s=s||13;const R=s/(2*Math.sin(Math.PI/5));
@@ -204,7 +204,7 @@ function coverHtml(){
     <div class="cv-t">Fachgebiet Nord-Ost</div>
     <div class="cv-s">Vorstudie „Depot der Zukunft“</div>
     <div class="cv-art">${ROLES.map(r=>`<span><i class="rdot" style="background:var(${r.color})"></i>${esc(r.role)}</span>`).join('')}</div>
-    <div class="cv-meta"><span><b>4</b> Spielende + Spielleitung</span><span><b>${ST.rounds}</b> Wochen</span><span>Führen zwischen Betrieb und Projekt</span></div>
+    <div class="cv-meta"><span><b>4</b> Spielende + Spielleitung</span><span><b>${ST.rounds}</b> Wochen</span><span>Führen zwischen Linie und Projekt</span></div>
     <div class="cv-f">JUMP-Programm · Prototyp · Regelstand v3.0</div></div></div>`;
 }
 function inventoryHtml(){
@@ -219,7 +219,7 @@ function inventoryHtml(){
     ${row(ROLES.length,'Tableaus','je Person 1')}
     ${row(ROLES.length,'Rollenkarten','je Person 1')}
     ${row(ROLES.length,'Verdeckte Zielkarten','je Person 1')}
-    ${row(ROLES.length*2,'Ansagekarten Betrieb und Projekt','je Person 2')}
+    ${row(ROLES.length*2,'Ansagekarten Linie und Projekt','je Person 2')}
     ${row(EIGENARTEN.length,'Eigenart-Karten','je Person 1')}
     ${row(PROJECT_OPTS.length,'Projekt-Aktionskarten','Tischmitte')}
     ${row(4,'Spielhilfen','je Person 1')}
@@ -329,7 +329,7 @@ function tokensHtml(){
   </div>`,`<div class="tokens-page">
     ${grp('Vertrauen auf der Karte','Glanzwurf, Hilfe von außen',rep(6,()=>disc(xg('plus',44),'plus'))+rep(6,()=>disc(xg('minus',44),'minus')))}
     ${grp('Zustände','',rep(4,()=>disc(glyph('lock',30),'',`gebunden`))+rep(4,()=>disc(xg('tea',30),'',`Ruhe selbst`))+rep(4,()=>disc(xg('ear',30),'',`Flurfunk`))+rep(4,()=>disc(glyph('moon',30),'',`fertig`)))}
-    ${grp('Telefon · Priorität der Woche','W6: 1–3 Betrieb, 4–6 Projekt',rep(2,()=>disc(xg('phone',26),'',`Betrieb`))+rep(2,()=>disc(xg('phone',26),'',`Projekt`)))}
+    ${grp('Telefon · Priorität der Woche','W6: 1–3 Linie, 4–6 Projekt',rep(2,()=>disc(xg('phone',26),'',`Linie`))+rep(2,()=>disc(xg('phone',26),'',`Projekt`)))}
     ${grp('Meilensteine','auf die Sterne der Projektleiste',rep(2,()=>disc(xg('star',38),'star')))}
     <div class="tg"><div class="tgh"><b>Übernahme · Spielfiguren</b> <span>Figuren an der Linie falten, Laschen nach außen</span></div><div class="tgl">
       <div class="disc big">${glyph('sued',54)}<small>Süd übernimmt</small></div>
@@ -341,7 +341,7 @@ function tokensHtml(){
 function ledgerHtml(){
   const rows=22;
   const col=w=>`<div class="lw"><div class="lwh">Woche ${w}</div>
-    <div class="lr meta"><span>${xg('phone',12)} Priorität:</span><span>☐ Betrieb ☐ Projekt</span></div>
+    <div class="lr meta"><span>${xg('phone',12)} Priorität:</span><span>☐ Linie ☐ Projekt</span></div>
     <div class="lr meta"><span>Start</span><span>${glyph('v',11)} ___ ${glyph('p',11)} ___</span></div>
     <div class="lr hd"><span>Stichwort</span><span>${glyph('v',11)}</span><span>${glyph('p',11)}</span></div>
     ${rep(rows,()=>'<div class="lr"><span></span><span></span><span></span></div>')}
@@ -350,8 +350,8 @@ function ledgerHtml(){
     <div class="lr meta lern"><span>${xg('star',11)} Lernkarte:</span><span></span></div></div>`;
   return `<div class="ledger"><div class="lhead"><b>Abrechnungsblock</b><span>Partie: <i class="ln"></i></span><span>Datum: <i class="ln s"></i></span><span>Start: Vertrauen ${ST.standingStart}, Projekt 0, Ziel ${ST.projectTarget}</span></div>
     <div class="lcols">${Array.from({length:ST.rounds},(_,i)=>col(i+1)).join('')}</div>
-    <div class="lfoot"><b>Am Wochenende:</b> jede liegen gebliebene Karte ${pill('v',sgn(-PEN))} und Hürde +1 (bei ${xg('phone',11)} Betrieb ${pill('v',sgn(-(PEN+1)))}) ·
-      niemand am Projekt ${pill('p','−1')} (bei ${xg('phone',11)} Projekt ${pill('p','−2')}, ohne Fortschritt zusätzlich ${pill('v','−1')}) · niemand im Betrieb ${pill('v','−1')} ·
+    <div class="lfoot"><b>Am Wochenende:</b> jede liegen gebliebene Karte ${pill('v',sgn(-PEN))} und Hürde +1 (bei ${xg('phone',11)} Linie ${pill('v',sgn(-(PEN+1)))}) ·
+      niemand am Projekt ${pill('p','−1')} (bei ${xg('phone',11)} Projekt ${pill('p','−2')}, ohne Fortschritt zusätzlich ${pill('v','−1')}) · niemand in der Linie ${pill('v','−1')} ·
       Meilenstein ${MILESTONES.join(' und ')} ${pill('v','+1')} · übrige Chips: 2 = 1 Puffer-Chip · Chancen verfallen. Jede Bewegung eine Zeile mit Grund.</div></div>`;
 }
 
@@ -367,7 +367,7 @@ function overviewHtml(){
       <tr><td>Eigenart-Karten</td><td>${EIGENARTEN.length}</td><td>63 × 88 mm, 9 je Bogen</td></tr>
       <tr><td>Rollenkarten und verdeckte Zielkarten</td><td>${ROLES.length} + ${ROLES.length}</td><td>63 × 88 mm</td></tr>
       <tr><td>Projekt-Aktionskarten</td><td>${PROJECT_OPTS.length}</td><td>63 × 88 mm</td></tr>
-      <tr><td>Ansagekarten Betrieb und Projekt (Rückseite: Mond)</td><td>${ROLES.length*2}</td><td>63 × 88 mm</td></tr>
+      <tr><td>Ansagekarten Linie und Projekt (Rückseite: Mond)</td><td>${ROLES.length*2}</td><td>63 × 88 mm</td></tr>
       <tr><td>Fragekarten Vorstands-Call</td><td>${CALL_QUESTIONS.length}</td><td>63 × 88 mm</td></tr>
       <tr><td>Blanko-Lernkarten</td><td>füllen den letzten Bogen</td><td>63 × 88 mm</td></tr>
       <tr><td>Spielhilfe (Eine Woche / Dein Zug)</td><td>4</td><td>95 × 135 mm, 4 je Bogen</td></tr>

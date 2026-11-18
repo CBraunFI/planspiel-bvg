@@ -26,11 +26,12 @@ function renderBoard(){
       <div class="mat sued" title="Schuld bei Süd: Frau Brandt merkt sich jeden Gefallen"><div class="tokrow">${sued}</div><div class="ml">Süd</div></div>
       ${st.puffer?`<div class="mat" title="Puffer: übrige Zeit des Teams"><div class="bowl">${bowl}</div><div class="ml">Puffer</div></div>`:''}
       <div id="timer" class="clock"><i id="hand"></i><b id="tnum"></b></div>
-      <div class="tools"><div class="phases">${ph}</div><button class="small" id="btn-mo" title="Making-of-Kommentare">Making-of: ${{jeder:'jeder Zug',erst:'1. Mal',aus:'aus'}[st.makingOf]||'aus'}</button><button class="small" id="btn-komp" title="Alle Making-of-Kommentare nachlesen">?</button><button class="small" id="btn-druck" title="Druckvorlagen für Brett, Karten und Material ansehen">Druckvorlagen</button><button class="gear small" id="btn-gear" title="Einstellungen">⚙</button></div>
+      <div class="tools"><div class="phases">${ph}</div><button class="small" id="btn-mo" title="Making-of-Kommentare">Making-of: ${{jeder:'jeder Zug',erst:'1. Mal',aus:'aus'}[st.makingOf]||'aus'}</button><button class="small" id="btn-komp" title="Alle Making-of-Kommentare nachlesen">?</button><button class="small ed-btn" id="btn-ed" title="Gestaltung umschalten: Grunddesign oder BVG-Edition">${edLabel()}</button><button class="small" id="btn-druck" title="Druckvorlagen für Brett, Karten und Material ansehen">Druckvorlagen</button><button class="gear small" id="btn-gear" title="Einstellungen">⚙</button></div>
     </div>`;
   $('btn-gear').addEventListener('click',showSettings);
   $('btn-komp').addEventListener('click',()=>MO.kompendium());
   $('btn-druck').addEventListener('click',()=>window.open('druckbogen.html','_blank'));
+  $('btn-ed').addEventListener('click',toggleEdition);
   $('btn-mo').addEventListener('click',()=>{const m=['jeder','erst','aus'];S.settings.makingOf=m[(m.indexOf(S.settings.makingOf)+1)%3];setupSettings.makingOf=S.settings.makingOf;renderBoard()});
 }
 function trackHtml(k){
@@ -119,7 +120,7 @@ function renderStage(){
       ${S.prio?`<div class="prompt narr">${SCENARIO.vorstand} will diese Woche vor allem: ${SIDE[S.prio]}.</div>`:''}
       <div class="prompt">Worauf setzt du diese Woche? Leg deine Ansagekarte offen.</div>
       <div class="sides">
-        <button class="side st" id="c-standing"><span class="kh">Ansagekarte</span><span class="big">Betrieb</span><span>${S.open.length} Karte${S.open.length===1?'':'n'} auf dem Tisch${n?` · ${n}× ${pill('v',sgn(-pen))} wenn sie liegen bleiben`:''}</span><span class="muted">bisher ${sideCount('standing')}${S.settings.stillstand&&!sideCount('standing')?` · ohne Betrieb: ${pill('v',sgn(-(S.prio==='standing'?2:1)))}`:''}</span></button>
+        <button class="side st" id="c-standing"><span class="kh">Ansagekarte</span><span class="big">Linie</span><span>${S.open.length} Karte${S.open.length===1?'':'n'} auf dem Tisch${n?` · ${n}× ${pill('v',sgn(-pen))} wenn sie liegen bleiben`:''}</span><span class="muted">bisher ${sideCount('standing')}${S.settings.stillstand&&!sideCount('standing')?` · ohne Linie: ${pill('v',sgn(-(S.prio==='standing'?2:1)))}`:''}</span></button>
         <button class="side pr" id="c-project"><span class="kh">Ansagekarte</span><span class="big">Projekt</span><span>Die Vorstudie voranbringen · ${projectPhaseName()}${S.project>=6?' · gründlich kostet 3 Chips':''}${openStoerungen()?` · ${openStoerungen()} Störung${openStoerungen()>1?'en':''} bremsen das Wagnis`:''}</span><span class="muted">bisher ${sideCount('project')}${S.settings.stillstand&&!sideCount('project')?` · ohne Projekt: ${pill('p',sgn(-(S.prio==='project'?2:1)))}`:''}</span></button>
       </div>
       <div class="muted">Die Ansage gilt für die ganze Woche. Mindestens eine Handlung ist Pflicht.</div></div>`;
@@ -143,7 +144,7 @@ function renderStage(){
   if(S.phase==='escalation'){
     const pen=basePen();const lying=S.open.filter(e=>e.type!=='Chance');const fc=forecast(null);
     const rows=lying.map(e=>`<tr><td>${esc(e.title)}</td><td>${e.protected?pill('shield','','darf liegen bleiben')+' Hürde +2':pill('v',sgn(-(pen+(e.peeked?1:0))))+' · Hürde +1'}</td></tr>`).join('');
-    const still=[];if(S.settings.stillstand){if(!S.projectActed)still.push(`<tr><td>Niemand war am Projekt</td><td>${pill('p',sgn(-(S.prio==='project'?2:1)))}</td></tr>`);if(!S.standingActed)still.push(`<tr><td>Niemand war im Betrieb</td><td>${pill('v',sgn(-(S.prio==='standing'?2:1)))}</td></tr>`)}
+    const still=[];if(S.settings.stillstand){if(!S.projectActed)still.push(`<tr><td>Niemand war am Projekt</td><td>${pill('p',sgn(-(S.prio==='project'?2:1)))}</td></tr>`);if(!S.standingActed)still.push(`<tr><td>Niemand war in der Linie</td><td>${pill('v',sgn(-(S.prio==='standing'?2:1)))}</td></tr>`)}
     if(S.prio==='project'&&S.project<=S.projectAtStart)still.push(`<tr><td>Priorität Projekt, kein Fortschritt</td><td>${pill('v','−1')}</td></tr>`);
     h+=`<div class="prompt">Die Woche ist um. Was noch liegt, kommt jetzt auf die Rechnung.</div>
       ${rows||still.length?`<table class="rev">${rows}${still.join('')}</table>`:'<div class="prompt narr">Nichts liegt mehr auf dem Tisch.</div>'}
@@ -208,7 +209,7 @@ function options(p){
       const cheapest=Math.min(...e.opts.map(x=>x.chips||1));
       o.push({id:'ev:'+e.id,kind:'event',eventId:e.id,icon:e.icon,title:e.title,sub:`${e.type} · ${e.opts.length} Wege`,cost:`ab ${cheapest} ${glyph('chip',14)}`,ok:e.type!=='Chance'?`liegen lassen ${pill('v',sgn(-(basePen()+(e.peeked?1:0))))}`:'verfällt sonst',neutral:true,cls:'t-'+e.type,disabled:c<1&&!e.opts.some(x=>x.payer&&x.payer!==p.key&&P(x.payer).chips>0)});
     });
-    if(!S.open.length)o.push({id:'bereit',kind:'bereit',title:'Bereitschaft',sub:'Tisch frei: den Betrieb am Laufen halten (Wagnis)',cost:`1 ${glyph('chip',14)}`,ok:`Wurf ≥ ${bereitDiff()}: ${pill('v','+1')}`,fail:'sonst nichts',disabled:c<1});
+    if(!S.open.length)o.push({id:'bereit',kind:'bereit',title:'Bereitschaft',sub:'Tisch frei: die Linie am Laufen halten (Wagnis)',cost:`1 ${glyph('chip',14)}`,ok:`Wurf ≥ ${bereitDiff()}: ${pill('v','+1')}`,fail:'sonst nichts',disabled:c<1});
     if(p.abilityKey==='help'&&!p.helpUsed)o.push({id:'help',kind:'help',title:'Hilfe von außen',sub:'Fähigkeit · ein Wagnis wird um 1 leichter',cost:`1 ${glyph('chip',14)}`,ok:'Wagnis-Hürde −1',disabled:c<1||!S.open.length||bauch});
     if(p.abilityKey==='solve'&&!p.abilityUsed)o.push({id:'solve',kind:'solve',title:'Störung durchziehen',sub:'Fähigkeit · einmal pro Spiel, der einzige saubere Weg',cost:`2 ${glyph('chip',14)}`,ok:`Störung weg ${pill('shield','+'+basePen())}, keine Nebenwirkung`,disabled:c<2||!S.open.some(e=>e.type==='Störung')||bauch});
   } else {
@@ -394,7 +395,7 @@ function showSetup(){
       <div class="eigpick"><select data-s="${i}" aria-label="Eigenart">${eigOptions(sp.eig)}</select><button class="small" data-roll="${i}" title="Mit dem W12 auswürfeln" aria-label="Eigenart auswürfeln">${d12SVG(sp.eig?EIG(sp.eig).nr:12,22)}</button></div>
       <div id="sd-${i}">${eigPreview(sp.eig)}</div></div>`}).join('')}</div>
     <details><summary>Regeln anpassen</summary><div style="margin-top:8px">${settingsHtml({...DEFAULT_SETTINGS,...setupSettings})}</div></details>${simHtml()}
-    <div class="row"><button class="big primary" id="btn-start">Spiel starten</button>${hasSaved()?'<button id="btn-resume">Spielstand fortsetzen</button>':''}<button class="ghost" id="btn-komp0">Making-of lesen</button><button class="ghost" id="btn-druck0">Druckvorlagen</button></div></div>`;
+    <div class="row"><button class="big primary" id="btn-start">Spiel starten</button>${hasSaved()?'<button id="btn-resume">Spielstand fortsetzen</button>':''}<button class="ghost" id="btn-komp0">Making-of lesen</button><button class="ghost" id="btn-druck0">Druckvorlagen</button><button class="ghost ed-btn" id="btn-ed0" title="Gestaltung umschalten: Grunddesign oder BVG-Edition">${edLabel()}</button></div></div>`;
   ov.querySelectorAll('[data-n]').forEach(i=>i.addEventListener('input',e=>setupPlayers[+i.dataset.n].name=e.target.value));
   ov.querySelectorAll('.pgrid').forEach(g=>g.querySelectorAll('.pp').forEach(pp=>pp.addEventListener('click',()=>{const i=+g.dataset.pg;const pt=PORT(pp.dataset.pid);setupPlayers[i].portrait=pt.id;const inp=ov.querySelector(`[data-n="${i}"]`);if(!inp.value||PORTRAITS.some(x=>x.name===inp.value)){setupPlayers[i].name=pt.name;inp.value=pt.name}$('pf-'+i).innerHTML=portraitSVG(pt,150);$('pl-'+i).textContent=pt.line;g.querySelectorAll('.pp').forEach(x=>x.classList.toggle('on',x.dataset.pid===pt.id))})));
   const setEig=(i,k,rolled)=>{setupPlayers[i].eig=k;ov.querySelector(`[data-s="${i}"]`).value=k;$('sd-'+i).innerHTML=eigPreview(k);const b=ov.querySelector(`[data-roll="${i}"]`);b.innerHTML=d12SVG(EIG(k).nr,22,rolled?'roll':'')};
@@ -405,6 +406,7 @@ function showSetup(){
   $('btn-start').addEventListener('click',startGame);
   $('btn-komp0').addEventListener('click',()=>MO.kompendium());
   $('btn-druck0').addEventListener('click',()=>window.open('druckbogen.html','_blank'));
+  $('btn-ed0').addEventListener('click',toggleEdition);
   $('btn-resume')?.addEventListener('click',()=>{try{S=JSON.parse(localStorage.getItem(STORE));migrate();UI.call=UI.call||{q:CALL_QUESTIONS[0],done:false};closeOverlay();if(timed()&&S.turn!==null)startTurnTimer();render()}catch(e){}});
 }
 function showSettings(){

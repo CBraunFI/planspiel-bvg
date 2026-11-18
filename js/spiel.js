@@ -19,7 +19,7 @@ function pSuccess(diff,bonus){const need=diff-bonus;if(!two()){if(need<=1)return
 const pct=x=>Math.round(x*100)+' %';
 const projectPhaseName=()=>S.project<3?'Anlaufphase':S.project<6?'Kernarbeit':'Abschluss';
 const openStoerungen=()=>S.open.filter(e=>e.type==='Störung').length;
-const SIDE={standing:'Betrieb',project:'Projekt'};
+const SIDE={standing:'Linie',project:'Projekt'};
 const sideCount=s=>S.players.filter(p=>p.side===s).length;
 const basePen=()=>(S.settings.escPen||1)+(S.prio==='standing'?1:0);
 // Eigenarten
@@ -111,7 +111,7 @@ function drawEvent(reason,card){
 }
 function drawRound(){
   S.week=[];S.weekStart={v:S.standing,p:S.project};
-  if(S.settings.prio){S.prio=Math.random()<.5?'standing':'project';const t=S.prio==='standing'?`${SCENARIO.vorstand} ruft an: „Diese Woche zählt der Betrieb. Ich will keine Schlagzeilen.“ Liegengebliebene Karten kosten diese Woche 3 Vertrauen.`:`${SCENARIO.vorstand} ruft an: „Diese Woche will ich Fortschritt bei der Vorstudie sehen.“ Ohne Projektfortschritt kostet die Woche Vertrauen, Projektstillstand kostet doppelt.`;logNarr(t);flash(`Priorität der Woche: ${SIDE[S.prio]}`,'',1800)}
+  if(S.settings.prio){S.prio=Math.random()<.5?'standing':'project';const t=S.prio==='standing'?`${SCENARIO.vorstand} ruft an: „Diese Woche zählt die Linie. Ich will keine Schlagzeilen.“ Liegengebliebene Karten kosten diese Woche 3 Vertrauen.`:`${SCENARIO.vorstand} ruft an: „Diese Woche will ich Fortschritt bei der Vorstudie sehen.“ Ohne Projektfortschritt kostet die Woche Vertrauen, Projektstillstand kostet doppelt.`;logNarr(t);flash(`Priorität der Woche: ${SIDE[S.prio]}`,'',1800)}
   S.projectAtStart=S.project;S.standingActed=false;S.projectActed=false;
   const n=eventsFor(S.round);
   for(let i=0;i<n;i++){const e=drawEvent(i?'weitere Karte':null);if(e&&i)flash(`Und noch etwas: ${e.title}`,'bad',1300)}
@@ -222,10 +222,10 @@ function startCommit(){
 function chooseSide(p,side,auto){
   if(S.phase!=='commit'||S.players[S.turn]!==p||p.side)return;
   stopTurnTimer();p.side=side;
-  L('act',p.key,`${p.name}: setzt auf ${side==='standing'?'den Betrieb':'das Projekt'}${auto?' (Zeit abgelaufen)':''}.`,`${nm(p.key)}: setzt auf <b>${side==='standing'?'den Betrieb':'das Projekt'}</b>${auto?' <span class="fail">(Zeit abgelaufen)</span>':''}.`);
+  L('act',p.key,`${p.name}: setzt auf ${side==='standing'?'die Linie':'das Projekt'}${auto?' (Zeit abgelaufen)':''}.`,`${nm(p.key)}: setzt auf <b>${side==='standing'?'die Linie':'das Projekt'}</b>${auto?' <span class="fail">(Zeit abgelaufen)</span>':''}.`);
   MO.note('seite',{p,side,auto,st:sideCount('standing'),pr:sideCount('project'),left:S.players.filter(x=>!x.side).length});
   let g=0;do{S.turn=(S.turn+1)%S.players.length}while(S.players[S.turn].side&&g++<4);
-  if(S.players.every(x=>x.side)){flash(`Betrieb ${sideCount('standing')} · Projekt ${sideCount('project')}`,'',1500);startPlay()}else startTurnTimer();
+  if(S.players.every(x=>x.side)){flash(`Linie ${sideCount('standing')} · Projekt ${sideCount('project')}`,'',1500);startPlay()}else startTurnTimer();
   render();
 }
 function commitTimeout(){const p=S.players[S.turn];S.stats.timeouts++;chooseSide(p,sideCount('standing')<=sideCount('project')?'standing':'project',true)}
@@ -310,7 +310,7 @@ function doAction(p,kind,opt={}){
   if(kind==='bereit'){
     if(p.chips<1||p.side!=='standing'||S.open.length)return startTurnTimer();
     p.chips--;p.rolled=true;S.standingActed=true;const diff=bereitDiff();
-    logAct(p.key,'hält den Betrieb am Laufen (Bereitschaft).');
+    logAct(p.key,'hält die Linie am Laufen (Bereitschaft).');
     const w=wagnisRoll(p,opt,diff,'Bereitschaft',wagBase(p,{type:'Bereit'}));
     MO.note('bereit',{p,w,diff});
     if(w.ok)setStanding(S.standing+1,'Bereitschaft: der Laden läuft');else flash('Routine. Niemand merkt etwas.','');
@@ -361,7 +361,7 @@ function escalate(){
   S.open=keep;
   if(S.settings.stillstand){
     if(!S.projectActed){const d=S.prio==='project'?2:1;logNarr('Niemand hat diese Woche an der Vorstudie gearbeitet. Was liegen bleibt, veraltet.');setProject(S.project-d,'Stillstand: niemand war am Projekt');MO.note('stillstand',{was:'Projekt'})}
-    if(!S.standingActed){const d=S.prio==='standing'?2:1;logNarr('Niemand hat sich diese Woche um den Betrieb gekümmert. Das Depot merkt es, der Vorstand auch.');setStanding(S.standing-d,'Stillstand: niemand war im Betrieb');MO.note('stillstand',{was:'Betrieb'})}
+    if(!S.standingActed){const d=S.prio==='standing'?2:1;logNarr('Niemand hat sich diese Woche um die Linie gekümmert. Das Depot merkt es, der Vorstand auch.');setStanding(S.standing-d,'Stillstand: niemand war in der Linie');MO.note('stillstand',{was:'Linie'})}
   }
   if(S.prio==='project'&&S.project<=S.projectAtStart){logNarr(`${SCENARIO.vorstand} wollte Fortschritt sehen. Es gab keinen.`);setStanding(S.standing-1,'Priorität Projekt, aber kein Fortschritt')}
   S.phase='abrechnung';MO.note('abrechnung',{start:S.weekStart,v:S.standing,p:S.project,n:S.week.length});render();

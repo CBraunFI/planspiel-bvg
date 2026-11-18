@@ -4,16 +4,16 @@ Stand: 17.10.2026 · Regelstand v3.0 · zum Vorlesen und Nachschlagen während d
 
 ## Szenario (zu Beginn vorlesen)
 
-Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 Leute. Seit Montag liegt die Vorstudie „Depot der Zukunft“ auf eurem Tisch, Abgabe in vier Wochen, Dr. Kessler aus dem Vorstand hat sie persönlich bestellt. Gleichzeitig läuft der Betrieb weiter: Frühschicht, Störungen, Dienstpläne, Presse. Fachgebiet Süd unter Frau Brandt hat Kapazität übrig und ein Auge auf euer Thema. Euer Vertrauen beim Vorstand ist solide, nicht mehr. Jede Woche ist eine Runde. Jede Runde ruft Dr. Kessler an.
+Ihr seid das Fachgebiet Nord-Ost: zwei Straßenbahnlinien, ein Betriebshof, 140 Leute. Seit Montag liegt die Vorstudie „Depot der Zukunft“ auf eurem Tisch, Abgabe in vier Wochen, Dr. Kessler aus dem Vorstand hat sie persönlich bestellt. Gleichzeitig läuft die Linie weiter: Frühschicht, Störungen, Dienstpläne, Presse. Fachgebiet Süd unter Frau Brandt hat Kapazität übrig und ein Auge auf euer Thema. Euer Vertrauen beim Vorstand ist solide, nicht mehr. Jede Woche ist eine Runde. Jede Runde ruft Dr. Kessler an.
 
-**Figuren der Welt:** Dr. Kessler (Vorstand, ruft jede Woche an) · Frau Brandt (Leitung Fachgebiet Süd, freundlich, merkt sich alles) · der Betriebsratsvorsitzende (lächelt, hat immer einen Zettel) · die Redakteurin vom „Nahverkehr“.
+**Figuren der Welt:** Dr. Kessler (Vorstand, ruft jede Woche an) · Frau Brandt (Leitung Fachgebiet Süd, freundlich, merkt sich alles) · der Vorsitzende der Arbeitnehmervertretung (lächelt, hat immer einen Zettel) · die Redakteurin vom „Nahverkehr“.
 
 ## Die Rollen (offene Seite und verdeckte Seite)
 
 | Rolle | Fähigkeit | Geheimes Ziel | Geheiminfo |
 |---|---|---|---|
 | Bereichsleitung | Hilfe von außen: 1 Chip, ein Wagnis wird um 1 leichter (1×/Runde) | Das Vertrauen des Vorstands darf nie unter 4 fallen | Dr. Kessler plant eine Umstrukturierung, falls die Vorstudie kippt. Nord-Ost würde unter Süd aufgehen |
-| Teamleitung Betrieb | Störung durchziehen: 2 Chips, ohne Wurf und ohne Nebenwirkung (1×/Spiel) | Jede Störung in der Runde lösen, in der sie kommt | Mitarbeitende:r hat ein Angebot von Frau Brandt aus Süd und hat es dir im Vertrauen gesagt |
+| Teamleitung Linie | Störung durchziehen: 2 Chips, ohne Wurf und ohne Nebenwirkung (1×/Spiel) | Jede Störung in der Runde lösen, in der sie kommt | Mitarbeitende:r hat ein Angebot von Frau Brandt aus Süd und hat es dir im Vertrauen gesagt |
 | Teamleitung Projekt | Projektschub: 2 Chips für +3 Projekt, ohne Nebenwirkung (1×/Spiel) | Das Projekt darf nie zwei Runden in Folge stehen bleiben | Frau Brandt will die Vorstudie nach Süd holen. Es gab schon ein Gespräch mit Dr. Kessler |
 | Mitarbeitende:r | Störungsbereitschaft: +2 auf Wagnisse bei Störungen (passiv) | Du hast ein Angebot aus Süd. Du bleibst, wenn du bis Ende Runde 3 zweimal „zu zweit“ gespielt hast. Sonst: Runde 4 nur ein Chip | Flurfunk: Süd hat gerade Kapazität übrig und sucht Aufgaben |
 
@@ -38,8 +38,8 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 
 ## Regeln, die die Spielleitung jede Woche ansagt
 
-- **Priorität der Woche:** Zu Beginn jeder Woche ruft Dr. Kessler an und sagt, was zählt: Betrieb oder Projekt. Bei Priorität Betrieb kostet jede liegengebliebene Karte 3 statt 2 Vertrauen. Bei Priorität Projekt kostet Projektstillstand 2 statt 1, und ohne Projektfortschritt sinkt das Vertrauen um 1.
-- **Stillstand kostet:** Arbeitet in einer Woche niemand am Projekt: Projekt −1. Kümmert sich niemand um den Betrieb: Vertrauen −1.
+- **Priorität der Woche:** Zu Beginn jeder Woche ruft Dr. Kessler an und sagt, was zählt: Linie oder Projekt. Bei Priorität Linie kostet jede liegengebliebene Karte 3 statt 2 Vertrauen. Bei Priorität Projekt kostet Projektstillstand 2 statt 1, und ohne Projektfortschritt sinkt das Vertrauen um 1.
+- **Stillstand kostet:** Arbeitet in einer Woche niemand am Projekt: Projekt −1. Kümmert sich niemand um die Linie: Vertrauen −1.
 - **Kein sauberer Weg:** Jede Option auf jeder Karte hat einen Preis. Nur die Fähigkeiten der Rollen sind sauber.
 - **Chips sind Führungszeit:** drei pro Woche. Übrige Chips des Teams werden am Wochenende zu Puffer (zwei übrige = ein Puffer-Chip, höchstens zwei in der Schale, jeder darf nehmen). Wer keine Chips mehr hat, darf Überstunden machen: ein Chip jetzt, nächste Woche einer weniger, und ein Strich auf dem Erschöpfungsmarker. Beim dritten Strich fällt die Person eine Woche aus.
 - **Wagnis:** Die Hürde auf der Karte plus 1. Schwerpunkt +2, Begründung +1, Helfer +2, Lernkarte +1. Patzer bei der 1, Glanzwurf bei der 6 (Vertrauen +1, einmal pro Woche).
@@ -52,7 +52,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 - Spielbrett: Wochenleiste (4 Wochen, mit Feldern für verdeckte Folgekarten und dem Telefon-Plättchen für die Priorität), Vertrauensleiste 0 bis 10 (Felder 1 bis 3 rot: Skepsis), Projektleiste 0 bis 8 (Anlauf, Kernarbeit, Abschluss, Sterne bei 3 und 6), Stapel- und Ablagefeld, Süd-Feld, Puffer-Schale
 - Zwei Spielfiguren für die Leisten
 - 22 Ereigniskarten, 9 Folgekarten (eigene Rückseite)
-- Je Person: Tableau, Rollenkarte, Eigenart-Karte, verdeckte Zielkarte, zwei Ansagekarten (Betrieb, Projekt), Erschöpfungsmarker mit drei Feldern
+- Je Person: Tableau, Rollenkarte, Eigenart-Karte, verdeckte Zielkarte, zwei Ansagekarten (Linie, Projekt), Erschöpfungsmarker mit drei Feldern
 - 4 Projekt-Aktionskarten (Gründlich, Schnell, Süd einbinden, Wagnis)
 - 12 Eigenart-Karten, ein W12, zwei W6
 - Chips (Führungszeit), Puffer-Chips, Süd-Marker, Plättchen: +1, −1, Schloss, Teetasse, Ohr, Mond
@@ -69,7 +69,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 
 ## Grundstapel (22 Karten)
 
-### 1 · Oberleitungsschaden (Störung, an TL Betrieb, Wagnis-Hürde 6)
+### 1 · Oberleitungsschaden (Störung, an TL Linie, Wagnis-Hürde 6)
 
 **Vorlesen:** Dienstag, 6:40 Uhr. Die Leitstelle meldet: Auf dem Hauptabschnitt hängt die Oberleitung durch, ein Pantograph hat sie erwischt. Zwei Linien stehen, auf den Bahnsteigen wird es voll. Die Werkstatt braucht mindestens den Vormittag.
 
@@ -83,13 +83,13 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Süd um Busse bitten** · Ein Anruf bei Frau Brandt, zwanzig Minuten später rollen fremde Busse. | 1 Chip | erledigt, Schuld bei Süd | Frau Brandt sagt sofort zu. „Gern. Wir helfen uns doch.“ Sie sagt es so, dass du es dir merkst. |
 | **Provisorium** · Der Werkstattmeister sagt, er kriegt das mit Draht und Klemmen hin. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Karte eskaliert sofort | Der Meister steht auf der Leiter und flucht leise. |
 
-### 2 · Krankheitswelle Frühschicht (Störung, an TL Betrieb, Wagnis-Hürde 5)
+### 2 · Krankheitswelle Frühschicht (Störung, an TL Linie, Wagnis-Hürde 5)
 
 **Vorlesen:** Montagmorgen, drei Krankmeldungen in der Frühschicht, alle echt, alle gleichzeitig. Der Dienstplan hat Löcher, die nächste Woche zu groß sind, um sie zu übersehen.
 
 **Rückfragen:** „Können wir Fahrten streichen?“ Könnt ihr, das merkt der Vorstand. „Wer hat frei?“ Niemand, der nicht schon letzte Woche eingesprungen ist.
 
-**Wenn sie liegen bleibt:** Überstunden häufen sich, der Betriebsrat beschwert sich.
+**Wenn sie liegen bleibt:** Überstunden häufen sich, die Arbeitnehmervertretung beschwert sich.
 
 | Weg | Kosten | Folge | Ausgang (vorlesen) |
 |---|---|---|---|
@@ -139,7 +139,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Tandem bilden, Wissen übergeben** · Dauert, aber danach hängt nichts mehr an einer Person. | 2 Chips | erledigt, nächste Woche 1 Chip weniger, zählt für Mitarbeitende:r als „zu zweit“ | Mitarbeitende:r sitzt zwei Tage daneben und schreibt mit. Das kostet dich nächste Woche Zeit, aber das Wissen hat jetzt zwei Köpfe. |
 | **Sie schafft das schon** · Sie hat es bisher immer geschafft. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Folgekarte „Ausfall Spezialwissen“ in 1 Woche | Sie sagt: „Geht schon.“ Du glaubst ihr. |
 
-### 6 · Konflikt in der Schicht (Team, an TL Betrieb, Wagnis-Hürde 6)
+### 6 · Konflikt in der Schicht (Team, an TL Linie, Wagnis-Hürde 6)
 
 **Vorlesen:** Zwei Fahrer:innen der Spätschicht reden nicht mehr miteinander, seit einem Streit um einen Dienstwechsel. Jetzt weigern sich beide, am selben Tag Dienst zu tun. Der Plan hält das nicht aus.
 
@@ -234,7 +234,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Stelle sichern** · Du gehst durch die Personalabteilung, bevor Süd es tut. Das kostet dich den Tag. | 2 Chips | erledigt, alle +1 Chip, Handelnde:r danach fertig für die Woche | Drei Unterschriften, ein Telefonat mit Süd, das kurz war. Sie fängt Montag an. |
 | **Mündlich zusagen** · Formalien später. | 1 Chip | Wagnis · Erfolg: erledigt, alle +1 Chip · Fehlschlag: Chip weg, Karte bleibt | Ihr gebt euch die Hand. |
 
-### 13 · Signalstörung im Berufsverkehr (Störung, an TL Betrieb, Wagnis-Hürde 6)
+### 13 · Signalstörung im Berufsverkehr (Störung, an TL Linie, Wagnis-Hürde 6)
 
 **Vorlesen:** 7:50 Uhr, Berufsverkehr. Das Stellwerk meldet Fehler auf zwei Abschnitten, die Signale fallen auf Rot. Die Züge fahren auf Sicht, Schrittgeschwindigkeit, und hinter jedem Zug wird die Lücke größer.
 
@@ -262,7 +262,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Mitarbeitende:r übernimmt die Nacht** · Freiwillig, sagt Mitarbeitende:r. | 1 Chip von Mitarbeitende:r | erledigt, Mitarbeitende:r diese Woche gebunden | Mitarbeitende:r sitzt mit Thermoskanne im Bereitschaftswagen. Es wird eine lange Nacht. |
 | **Wird schon nicht so schlimm** · Die Warnungen sind oft übertrieben. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Vertrauen -2 | Ihr geht schlafen. |
 
-### 15 · Kündigung im Leitstand (Team, an TL Betrieb, Wagnis-Hürde 6)
+### 15 · Kündigung im Leitstand (Team, an TL Linie, Wagnis-Hürde 6)
 
 **Vorlesen:** Der Disponent mit den meisten Nachtschichten kündigt zum Monatsende, ein privater Grund, kein Streit. Die Nachtschichten im Leitstand hängen an ihm. Eine Nachbesetzung dauert normalerweise vier Monate.
 
@@ -276,9 +276,9 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Intern ausbilden** · Jemand aus dem Team wächst rein, langsam. | 2 Chips | erledigt, Folgekarte „Einarbeitung frisst Zeit“ in 1 Woche | Ein Fahrer will in den Leitstand. Er kann es lernen. Es wird dauern. |
 | **Ausschreiben und warten** · Vielleicht meldet sich schnell jemand. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Chip weg, Karte bleibt | Die Anzeige ist online. |
 
-### 16 · Betriebsrat fragt nach Überstunden (Team, an Bereichsleitung, Wagnis-Hürde 6)
+### 16 · Arbeitnehmervertretung fragt nach Überstunden (Team, an Bereichsleitung, Wagnis-Hürde 6)
 
-**Vorlesen:** Der Betriebsratsvorsitzende steht mit einem Zettel in deiner Tür. Er will die Überstundenliste des Quartals, bis Freitag, schriftlich. Er lächelt dabei. Die Liste ist nicht schön.
+**Vorlesen:** Der Vorsitzende der Arbeitnehmervertretung steht mit einem Zettel in deiner Tür. Er will die Überstundenliste des Quartals, bis Freitag, schriftlich. Er lächelt dabei. Die Liste ist nicht schön.
 
 **Rückfragen:** „Ist das sein Recht?“ Ja. „Wie schlimm ist die Liste?“ Zwei Leute über dem Limit, seit Monaten.
 
@@ -286,8 +286,8 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 
 | Weg | Kosten | Folge | Ausgang (vorlesen) |
 |---|---|---|---|
-| **Zahlen offenlegen** · Die Liste ist nicht schön. | 1 Chip | erledigt, Vertrauen -1 | Der Betriebsrat bedankt sich. Die Liste geht an die Personalabteilung, und von dort weiter nach oben. |
-| **Gespräch mit Betriebsrat und Team** · Ursachen statt Zahlen, und eine Zusage, die dich bindet. | 2 Chips | erledigt, nächste Woche 1 Chip weniger | Nach dem Gespräch gibt es einen Plan für weniger Überstunden. Du hast versprochen, ihn selbst zu überwachen. |
+| **Zahlen offenlegen** · Die Liste ist nicht schön. | 1 Chip | erledigt, Vertrauen -1 | Die Arbeitnehmervertretung bedankt sich. Die Liste geht an die Personalabteilung, und von dort weiter nach oben. |
+| **Gespräch mit Arbeitnehmervertretung und Team** · Ursachen statt Zahlen, und eine Zusage, die dich bindet. | 2 Chips | erledigt, nächste Woche 1 Chip weniger | Nach dem Gespräch gibt es einen Plan für weniger Überstunden. Du hast versprochen, ihn selbst zu überwachen. |
 | **Formal korrekt antworten** · Alles im Rahmen, steht im Brief. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Folgekarte „Gerücht im Depot“ in 1 Woche | Der Brief ist juristisch einwandfrei. |
 
 ### 17 · Die Neue wird ausgegrenzt (Team, an Mitarbeitende:r, Wagnis-Hürde 6)
@@ -344,7 +344,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Antrag schreiben** · Zwei Abende, eine gute Chance, und zwei Abende weniger für alles andere. | 2 Chips | erledigt, Projekt +2, nächste Woche 1 Chip weniger | Der Antrag geht um 23:58 Uhr raus. Drei Wochen später kommt die Zusage. |
 | **Kurzantrag** · Eine Seite, Daumen drücken. | 1 Chip | Wagnis · Erfolg: erledigt, Projekt +1 · Fehlschlag: Chip weg, Karte bleibt | Eine Seite, ein Klick. |
 
-### 21 · Drei Züge in der Werkstatt (Störung, an TL Betrieb, Wagnis-Hürde 6)
+### 21 · Drei Züge in der Werkstatt (Störung, an TL Linie, Wagnis-Hürde 6)
 
 **Vorlesen:** Drei Züge stehen gleichzeitig in der Werkstatt, zwei mit Radschäden, einer mit einem Kurzschluss. Die Reserve ist aufgebraucht. Ab morgen fehlen im Berufsverkehr zwei Umläufe.
 
@@ -360,22 +360,22 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 
 ### 22 · Zwei wollen in die Vorstudie (Team, an TL Projekt, Wagnis-Hürde 6)
 
-**Vorlesen:** Zwei aus der Planung stehen in der Tür: Sie wollen in die Vorstudie, Vollzeit, ab sofort. Beide sind gut. Beide fehlen dann im Betrieb. Und beide haben gehört, dass die andere auch gefragt hat.
+**Vorlesen:** Zwei aus der Planung stehen in der Tür: Sie wollen in die Vorstudie, Vollzeit, ab sofort. Beide sind gut. Beide fehlen dann in der Linie. Und beide haben gehört, dass die andere auch gefragt hat.
 
-**Rückfragen:** „Brauchen wir sie im Projekt?“ Mindestens eine. „Und im Betrieb?“ Beide.
+**Rückfragen:** „Brauchen wir sie im Projekt?“ Mindestens eine. „Und in der Linie?“ Beide.
 
 **Wenn sie liegen bleibt:** Beide fahren Dienst nach Vorschrift.
 
 | Weg | Kosten | Folge | Ausgang (vorlesen) |
 |---|---|---|---|
-| **Beide reinholen** · Das Projekt freut sich, der Betrieb wird dünn. | 1 Chip | erledigt, Projekt +1, Vertrauen -1 | Die Vorstudie bekommt zwei kluge Köpfe. Die Planung im Betrieb arbeitet ab jetzt zu zweit statt zu viert. |
+| **Beide reinholen** · Das Projekt freut sich, die Linie wird dünn. | 1 Chip | erledigt, Projekt +1, Vertrauen -1 | Die Vorstudie bekommt zwei kluge Köpfe. Die Planung in der Linie arbeitet ab jetzt zu zweit statt zu viert. |
 | **Eine Person, klar begründet** · Ein Gespräch, in dem jemand enttäuscht wird, und das dich Kraft kostet. | 2 Chips | erledigt, nächste Woche 1 Chip weniger | Eine geht ins Projekt, eine bleibt. Die, die bleibt, sagt: „Verstehe ich.“ Sie meint es nicht so. |
 | **Entscheidung vertagen** · Nächste Woche, versprochen. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Chip weg, Karte bleibt | Ihr vertagt. |
 
 
 ## Folgekarten (kommen nur über Entscheidungen)
 
-### 101 · Erschöpfte Schicht (Störung, an TL Betrieb, Wagnis-Hürde 6)
+### 101 · Erschöpfte Schicht (Störung, an TL Linie, Wagnis-Hürde 6)
 
 **Vorlesen:** Die Überstunden vom Oberleitungsschaden sind nicht vergessen. Drei Krankmeldungen in der Frühschicht, kurze Zündschnüre im Pausenraum, ein Fahrer hat am Steuer geweint. Das Team ist leer.
 
@@ -386,7 +386,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | Weg | Kosten | Folge | Ausgang (vorlesen) |
 |---|---|---|---|
 | **Freizeitausgleich** · Alle bekommen ihre Stunden zurück, jetzt, und der Plan wird dünn. | 2 Chips | erledigt, nächste Woche 1 Chip weniger | Eine Woche lang fährt die Frühschicht mit Mindestbesetzung. Es geht gerade so. |
-| **Durchhalten** · Noch zwei Wochen, dann wird es ruhiger. | 1 Chip | erledigt, Vertrauen -1 | Die Schicht hält durch. Der Betriebsrat schreibt an Dr. Kessler. |
+| **Durchhalten** · Noch zwei Wochen, dann wird es ruhiger. | 1 Chip | erledigt, Vertrauen -1 | Die Schicht hält durch. Die Arbeitnehmervertretung schreibt an Dr. Kessler. |
 | **Motivationsrede** · Kaffee und Kuchen im Pausenraum. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Vertrauen -1 | Du stellst dich in den Pausenraum. |
 
 ### 102 · Werkstatt zieht sich zurück (Team, an TL Projekt, Wagnis-Hürde 6)
@@ -431,7 +431,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Rundgang und Gespräche** · Drei Tage, viele Einzelgespräche, kaum Schreibtisch. | 2 Chips | erledigt, Handelnde:r danach fertig für die Woche | Drei Tage Pausenräume, Werkstatt, Leitstand. Am Ende weißt du mehr als vorher. Der Schreibtisch ist voll. |
 | **Aussitzen** · Gerüchte sterben von allein. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Vertrauen -1 | Du sagst nichts. |
 
-### 105 · Einarbeitung frisst Zeit (Team, an TL Betrieb, Wagnis-Hürde 5)
+### 105 · Einarbeitung frisst Zeit (Team, an TL Linie, Wagnis-Hürde 5)
 
 **Vorlesen:** Der Fahrer, der in den Leitstand wechselt, lernt schnell, aber der Leitstand verzeiht keine Fehler. Er braucht jemanden neben sich, drei Wochen lang, in jeder Schicht.
 
@@ -459,7 +459,7 @@ Jede Person wählt zu Beginn eine Eigenart für ihre Figur oder würfelt sie mit
 | **Gehen lassen** · Manche passen nicht. | 1 Chip | erledigt, Vertrauen -1 | Sie geht. Die Schicht fährt mit einer Person weniger, und Dr. Kessler fragt nach der Fluktuation. |
 | **Prämie anbieten** · Geld hilft, manchmal. | 1 Chip | Wagnis · Erfolg: erledigt · Fehlschlag: Vertrauen -1 | Du nennst eine Zahl. |
 
-### 107 · Zug mit Fahrgästen im Tunnel (Störung, an TL Betrieb, Wagnis-Hürde 7)
+### 107 · Zug mit Fahrgästen im Tunnel (Störung, an TL Linie, Wagnis-Hürde 7)
 
 **Vorlesen:** Es hat geknallt. Ein Zug, der nicht in die Werkstatt durfte, steht im Tunnel unter dem Fluss, 200 Fahrgäste, Notlicht, kein Handyempfang. Die ersten Fotos sind trotzdem schon draußen.
 
@@ -547,7 +547,7 @@ Die Woche beginnt nie mit einem leeren Tisch. Die Zahl der Karten steigt (2, 3, 
 
 Der Vorstand verschiebt jede Woche ein bisschen die Regeln. Was letzte Woche gelobt wurde, interessiert diese Woche niemanden. Die Priorität zwingt euch, die Ansage neu zu überlegen.
 
-*Am echten Tisch:* Die Spielleitung würfelt: 1 bis 3 Betrieb, 4 bis 6 Projekt. Das Telefon-Plättchen kommt auf die aktuelle Woche der Wochenleiste.
+*Am echten Tisch:* Die Spielleitung würfelt: 1 bis 3 Linie, 4 bis 6 Projekt. Das Telefon-Plättchen kommt auf die aktuelle Woche der Wochenleiste.
 
 ### Die Rechnung von früher
 
@@ -555,11 +555,11 @@ Folgekarten sind unser wichtigstes Werkzeug gegen „billig gelöst und vergesse
 
 *Am echten Tisch:* Folgekarten haben eine eigene Rückseite und liegen verdeckt auf der Wochenleiste, im Feld der Woche, in der sie kommen. Zu Wochenbeginn dreht die Spielleitung sie um.
 
-### Ansage: Betrieb oder Projekt?
+### Ansage: Linie oder Projekt?
 
-Bevor jemand handelt, legt sich jede Person fest: Kümmere ich mich diese Woche um den Betrieb oder um die Vorstudie? Die Ansage gilt die ganze Woche. Das ist die eigentliche Führungsentscheidung des Spiels: Wer macht was, und was bleibt dafür liegen?
+Bevor jemand handelt, legt sich jede Person fest: Kümmere ich mich diese Woche um die Linie oder um die Vorstudie? Die Ansage gilt die ganze Woche. Das ist die eigentliche Führungsentscheidung des Spiels: Wer macht was, und was bleibt dafür liegen?
 
-*Am echten Tisch:* Jede Person hat zwei Ansagekarten, Betrieb und Projekt, und legt eine davon offen vor sich. Am Tisch läuft dabei eine Sanduhr.
+*Am echten Tisch:* Jede Person hat zwei Ansagekarten, Linie und Projekt, und legt eine davon offen vor sich. Am Tisch läuft dabei eine Sanduhr.
 
 *Für die Spielleitung:* Achte darauf, ob jemand ansagt, ohne zu fragen, was die anderen vorhaben. Das ist Stoff für die Reflexion.
 
@@ -681,13 +681,13 @@ Hilfe von außen ist echt und gut. Sie hat einen Preis, der erst später fällig
 
 ### Projekt: ein Wagnis
 
-Das Projekt-Wagnis wird mit jeder Phase schwerer. Offene Störungen bremsen: −1 pro Störung auf dem Tisch. Wer den Betrieb brennen lässt, kann sich nicht konzentrieren. Und ist der Vorstand skeptisch (Vertrauen 3 oder weniger), gibt es noch einmal −1. Hier hängen die beiden Leisten am deutlichsten zusammen.
+Das Projekt-Wagnis wird mit jeder Phase schwerer. Offene Störungen bremsen: −1 pro Störung auf dem Tisch. Wer die Linie brennen lässt, kann sich nicht konzentrieren. Und ist der Vorstand skeptisch (Vertrauen 3 oder weniger), gibt es noch einmal −1. Hier hängen die beiden Leisten am deutlichsten zusammen.
 
 *Am echten Tisch:* Aktionskarte „Wagnis“, ein W6 gegen die Projekt-Hürde, die auf dem Brett unter der aktuellen Projektphase steht.
 
 ### Bereitschaft
 
-Was tut man im Betrieb, wenn gerade nichts brennt? Präsenz zeigen. Das bringt manchmal Vertrauen, meistens nichts. Ein freier Tisch soll nicht „Pause“ heißen.
+Was tut man in der Linie, wenn gerade nichts brennt? Präsenz zeigen. Das bringt manchmal Vertrauen, meistens nichts. Ein freier Tisch soll nicht „Pause“ heißen.
 
 *Am echten Tisch:* Ein Chip ins Bereitschaftsfeld, ein W6.
 
@@ -699,7 +699,7 @@ Fähigkeiten sind die einzigen sauberen Wege im Spiel, ohne Nebenwirkung. Dafür
 
 ### Fähigkeit: Störung durchziehen
 
-Einmal pro Spiel darf die Teamleitung Betrieb eine Störung einfach lösen. Die Frage ist, wann: früh, um Ruhe zu haben, oder spät, wenn es wirklich brennt?
+Einmal pro Spiel darf die Teamleitung Linie eine Störung einfach lösen. Die Frage ist, wann: früh, um Ruhe zu haben, oder spät, wenn es wirklich brennt?
 
 *Am echten Tisch:* Die Fähigkeit auf der Rollenkarte mit einem Chip abdecken. Sie ist verbraucht.
 
@@ -765,7 +765,7 @@ Fertig sagen ist eine echte Entscheidung. Übrige Zeit geht nicht verloren, sie 
 
 ### Zu lange gezögert
 
-Die Uhr steht für den Betrieb, der nicht wartet. Wer zu lange überlegt, verliert Zeit, die er gar nicht hatte.
+Die Uhr steht für die Linie, die nicht wartet. Wer zu lange überlegt, verliert Zeit, die er gar nicht hatte.
 
 *Am echten Tisch:* Eine 60-Sekunden-Sanduhr. Ist sie durch, ist ein Chip weg.
 
@@ -791,7 +791,7 @@ In früheren Fassungen liefen die beiden Leisten fast getrennt. Jetzt hängen si
 
 ### Der Vorstand wird skeptisch
 
-Die andere Richtung der Kopplung: Wird der Vorstand misstrauisch, bekommt die Vorstudie weniger Rückendeckung. Wer den Betrieb vernachlässigt, verliert also auch im Projekt.
+Die andere Richtung der Kopplung: Wird der Vorstand misstrauisch, bekommt die Vorstudie weniger Rückendeckung. Wer die Linie vernachlässigt, verliert also auch im Projekt.
 
 *Am echten Tisch:* Die Felder 1 bis 3 der Vertrauensleiste sind rot. Steht die Figur dort, gilt −1 auf Projekt-Wagnisse.
 
@@ -809,7 +809,7 @@ Bis hierhin war alles Entscheidung, jetzt kommt die Wirkung. Liegengebliebenes k
 
 ### Stillstand
 
-Eine Seite ganz zu ignorieren ist bequem, und es kostet. Stillstand im Projekt kostet Projektfortschritt, Stillstand im Betrieb kostet Vertrauen.
+Eine Seite ganz zu ignorieren ist bequem, und es kostet. Stillstand im Projekt kostet Projektfortschritt, Stillstand in der Linie kostet Vertrauen.
 
 *Am echten Tisch:* Die Spielleitung prüft die Ansagekarten: Liegt keine auf einer Seite, zieht sie die Figur zurück.
 
